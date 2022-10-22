@@ -1,0 +1,9 @@
+$font-stack: "Ubuntu Mono", sans-serif;
+
+.header {
+
+  &__title {
+    font-family: $font-stack;
+    color: red;  
+  }
+}
