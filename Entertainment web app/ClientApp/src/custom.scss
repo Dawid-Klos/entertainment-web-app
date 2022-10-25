@@ -1,9 +1,13 @@
+// Normalize pre-default CSS values
+@import "normalize-scss/sass/normalize/import-now";
+
 $font-stack: "Ubuntu Mono", sans-serif;
 
 .header {
 
   &__title {
     font-family: $font-stack;
-    color: red;  
+    color: red;
+    font-size: 4em;
   }
 }

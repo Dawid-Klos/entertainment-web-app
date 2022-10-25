@@ -1,16 +1,13 @@
-import React, { Component } from 'react';
-import { Container } from 'reactstrap';
+import Nav from "./Nav/Nav";
+import SearchBar from "./SearchBar/SearchBar";
 
-export class Layout extends Component {
-  static displayName = Layout.name;
-
-  render() {
+const Layout = () => {
     return (
-      <div>
-        <Container>
-          {this.props.children}
-        </Container>
-      </div>
-    );
-  }
+        <>
+            <Nav />
+            <SearchBar />
+        </>
+    )
 }
+
+export default Layout;
