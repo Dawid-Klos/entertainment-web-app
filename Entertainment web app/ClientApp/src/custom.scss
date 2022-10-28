@@ -9,10 +9,14 @@
 
 
 body {
+  background-color: $color-dark-blue;
   font-size: 16px;
+  color: $color-white;
   font-family: $font-family;
   font-weight: $light;
+  padding: 0 1em;
 }
+
 
 // Import all scss files
 

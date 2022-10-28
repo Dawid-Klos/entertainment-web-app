@@ -1,0 +1,17 @@
+@import "../../../_variables.scss";
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 1.2em;
+  &__link {
+    display: flex;
+    align-items: center;
+  }
+  &__link--active {
+    fill: $color-white;
+  }
+  &__link--default {
+    fill: #5A698F;
+  }
+}

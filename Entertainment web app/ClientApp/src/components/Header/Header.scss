@@ -1,0 +1,21 @@
+@import "../../_variables.scss";
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: $color-dark-blue;
+  max-height: 3.6em;
+  padding: 1em 0;
+  &__logo {
+    width: 1.6em;
+    height: 1.3em;
+  }
+  &__avatar {
+    background-color: $color-white;
+    border: 1px solid $color-white; 
+    border-radius: 50%;
+    width: 1.5em;
+    height: 1.5em;
+  }
+}
