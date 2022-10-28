@@ -1,0 +1,21 @@
+// colors
+$color-black: #10141E;
+$color-grey: #161D2F;
+$color-red: #FC4747;
+$color-light-grey: #5A698F;
+$color-white: #FFFFFF;
+
+// font
+$font-family: "Outfit", sans-serif;
+$light: 300;
+$medium: 500;
+
+// body styles
+$medium-body-txt: $font-family, 0.9em, $light;
+$small-body-txt: $font-family, 0.85em, $light;
+
+// heading styles
+$large-heading: $font-family, 2em, $light;
+$medium-heading: $font-family, 1.5em, $light;
+$small-heading: $font-family, 1.5em, $medium;
+$extra-small-heading: $font-family, 1.2em, $medium;
