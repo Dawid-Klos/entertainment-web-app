@@ -19,7 +19,7 @@ public class Movie
     [StringLength(50)]
     public string ImgTrendingLarge { get; set; }
     [StringLength(50)]
-    public string ImgSmal { get; set; }
+    public string ImgSmall { get; set; }
     [StringLength(50)]
     public string ImgMedium { get; set; }
     [StringLength(50)]
