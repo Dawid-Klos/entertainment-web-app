@@ -1,13 +1,20 @@
 // Normalize pre-default CSS values
 @import "normalize-scss/sass/normalize/import-now";
 
-$font-stack: "Ubuntu Mono", sans-serif;
+// Get fonts
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;500&display=swap');
 
-.header {
+// Additional imports
+@import "_variables.scss";
 
-  &__title {
-    font-family: $font-stack;
-    color: red;
-    font-size: 4em;
-  }
+
+body {
+  font-size: 16px;
+  font-family: $font-family;
+  font-weight: $light;
 }
+
+// Import all scss files
+
+//@import "components/Bookmark/Bookmark";
+//

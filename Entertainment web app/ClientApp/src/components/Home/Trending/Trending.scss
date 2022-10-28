@@ -1,0 +1,8 @@
+@import "../../../variables";
+
+.container {
+  color: black;
+  &__title {
+    font: $large-heading;
+  }
+}

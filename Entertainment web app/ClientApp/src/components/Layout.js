@@ -1,11 +1,11 @@
-import Nav from "./Nav/Nav";
-import SearchBar from "./SearchBar/SearchBar";
+import Header from "./Header/Header";
 import {Outlet} from "react-router-dom";
+import SearchBar from './SearchBar/SearchBar';
 
 const Layout = () => {
     return (
         <>
-            <Nav />
+            <Header />
             <SearchBar />
             <Outlet />
         </>
