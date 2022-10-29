@@ -11,11 +11,11 @@ $light: 300;
 $medium: 500;
 
 // body styles
-$medium-body-txt: $font-family, 0.9em, $light;
-$small-body-txt: $font-family, 0.85em, $light;
+$medium-body-txt: $light 0.9em $font-family;
+$small-body-txt: $light 0.85em $font-family;
 
 // heading styles
-$large-heading: $font-family, 2em, $light;
-$medium-heading: $font-family, 1.5em, $light;
-$small-heading: $font-family, 1.5em, $medium;
-$extra-small-heading: $font-family, 1.2em, $medium;
+$large-heading: $light 2em $font-family;
+$medium-heading: $light 1.5em $font-family;
+$small-heading: $medium 1.5em $font-family;
+$extra-small-heading: $medium 1.2em $font-family;

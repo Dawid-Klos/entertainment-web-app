@@ -1,12 +1,23 @@
 // Normalize pre-default CSS values
 @import "normalize-scss/sass/normalize/import-now";
 
-// Get fonts
+// Import required fonts
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;500&display=swap');
 
 // Additional imports
 @import "_variables.scss";
 
+// Remove default styles
+input, button, textarea, select {
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 0;
+  outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
 
 body {
   background-color: $color-dark-blue;
@@ -15,9 +26,3 @@ body {
   font-family: $font-family;
   font-weight: $light;
 }
-
-
-// Import all scss files
-
-//@import "components/Bookmark/Bookmark";
-//
