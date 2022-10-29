@@ -1,8 +1,19 @@
 @import "../../../variables";
 
-.container {
-  padding: 0.5em 1em;
+.trending {
+  width: 100%;
+  padding: 0.5em 0;
   &__title {
     font: $large-heading-mobile;
+    padding: 0 1em;
+  }
+  &__content {
+    display: grid;
+    grid-gap: 1em;
+    grid-template-columns: repeat(4, calc(70% - 1em)) 10px;
+    overflow-x: auto;
+  }
+  &__content::-webkit-scrollbar {
+    display: none;
   }
 }

@@ -1,0 +1,19 @@
+@import "../../../variables";
+
+.recommend {
+  width: calc(100% - 2em);
+  padding: 0 1em;
+  &__title {
+    font: $large-heading-mobile;
+  }
+  &__content {
+    display: grid;
+    justify-items: center;
+
+    grid-gap: 1em;
+    grid-template-columns: 1fr 1fr;
+  }
+  &__content::-webkit-scrollbar {
+    display: none;
+  }
+}
