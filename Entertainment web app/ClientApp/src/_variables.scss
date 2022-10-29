@@ -1,21 +1,35 @@
-// colors
+// COLOURS
 $color-dark-blue: #10141E;
 $color-semi-dark-blue: #161D2F;
 $color-greyish-blue: #5A698F;
 $color-red: #FC4747;
 $color-white: #FFFFFF;
 
-// font
+// FONT AND WEIGHT
 $font-family: "Outfit", sans-serif;
 $light: 300;
 $medium: 500;
 
-// body styles
-$medium-body-txt: $light 0.9em $font-family;
-$small-body-txt: $light 0.85em $font-family;
 
-// heading styles
-$large-heading: $light 2em $font-family;
-$medium-heading: $light 1.5em $font-family;
-$small-heading: $medium 1.5em $font-family;
-$extra-small-heading: $medium 1.2em $font-family;
+// FONT VARIABLES
+// BODY STYLES
+//desktop
+$medium-body-desktop: $light 0.9em $font-family;
+$small-body-desktop: $light 0.85em $font-family;
+
+//mobile
+$medium-body-mobile: $light 0.8em $font-family;
+$small-body-mobile: $light 0.7em $font-family;
+
+// HEADING STYLES
+// desktop
+$large-heading-desktop: $light 2em $font-family;
+$medium-heading-desktop: $light 1.5em $font-family;
+$small-heading-desktop: $medium 1.5em $font-family;
+$extra-small-heading-desktop: $medium 1.2em $font-family;
+
+//mobile
+$large-heading-mobile: $light 1.3em $font-family;
+$small-heading-mobile: $medium 0.95em $font-family;
+$extra-small-heading-mobile: $medium 0.85em $font-family;
+
