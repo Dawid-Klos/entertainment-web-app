@@ -1,23 +1,26 @@
+using Duende.IdentityServer.EntityFramework.Options;
+using Entertainment_web_app.Models;
+using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace Entertainment_web_app.Data;
 
-public class NetwixDbContext : DbContext
+public class NetwixDbContext : ApiAuthorizationDbContext<ApplicationUser>
 {
-    protected readonly IConfiguration Configuration;
-
-    public NetwixDbContext(IConfiguration configuration)
+    
+    public NetwixDbContext(DbContextOptions options, IOptions<OperationalStoreOptions> operationalStoreOptions)  : base(options,operationalStoreOptions)
     {
-        Configuration = configuration;
     }
     
-    protected override void OnConfiguring(DbContextOptionsBuilder options)
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        options.UseSqlServer(Configuration.GetConnectionString("NetwixDbContext"));
+        base.OnModelCreating(modelBuilder);
+        modelBuilder.Entity<UserMovies>()
+            .HasKey(e => new { e.Id, e.MovieId });
     }
     
     public DbSet<Movie> Movies { get; set; }
-    public DbSet<User> Users { get; set; }
     public DbSet<UserMovies> UserMovies { get; set; }
     
 }

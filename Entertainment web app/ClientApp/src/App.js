@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom';
+import {Route, Routes} from 'react-router-dom';
 import './custom.scss';
 import Layout from './components/Layout';
 import Movies from './components/Movies/Movies';
@@ -7,6 +7,7 @@ import TVSeries from './components/TVSeries/TVSeries';
 import Home from './components/Home/Home';
 
 const App = () => {
+
     return (
         <>
             <Routes>
