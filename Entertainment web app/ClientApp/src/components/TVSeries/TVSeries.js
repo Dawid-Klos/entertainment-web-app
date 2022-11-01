@@ -20,7 +20,7 @@ const TVSeries = () => {
             <h1 className="TVSeries__title">TV Series</h1>
             <div className="TVSeries__content">
                 {loading ? (<h2>Loading...</h2>) : (
-                    content.map(movie => <Card key={movie.movieId} movie={movie}/>)
+                    content.map(movie => <Card key={movie.MovieId} movie={movie}/>)
                 )
                 }
             </div>

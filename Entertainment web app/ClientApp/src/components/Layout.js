@@ -10,13 +10,14 @@ const Layout = () => {
     // const [tvSeries, setTvSeries] = useState([]);
     
     const getAllContent = async () => {
-        let fetchAllContent = await fetch('api/movies');
+        let fetchAllContent = await fetch('api/Movies');
         fetchAllContent = await fetchAllContent.json();
         setContent(fetchAllContent);
     }
     const getTrendingMovies = async () => {
-        let fetchTrending = await fetch('api/movies/GetTrendingMovies');
+        let fetchTrending = await fetch('api/Movies/GetTrendingMovies');
         fetchTrending = await fetchTrending.json();
+        console.log(fetchTrending);
         setTrending(fetchTrending);
     }
 

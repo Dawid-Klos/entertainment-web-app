@@ -5,8 +5,11 @@ const target = env.ASPNETCORE_HTTPS_PORT ? `https://localhost:${env.ASPNETCORE_H
   env.ASPNETCORE_URLS ? env.ASPNETCORE_URLS.split(';')[0] : 'http://localhost:52438';
 
 const context =  [
-    "/api/movies",
-    "/api/movies/GetTrendingMovies",
+    "/api/Movies",
+    "/api/Movies/GetTrendingMovies",
+    "/swagger/v1/swagger.json",
+    "/swagger",
+    "/api/Auth/Register"
 ];
 
 module.exports = function(app) {

@@ -20,7 +20,7 @@ const Recommend = () => {
             <h1 className="recommend__title">Recommended for you</h1>
             <div className="recommend__content">
                 {loading ? (<h2>Loading...</h2>) : (
-                    content.map(movie => <Card key={movie.movieId} movie={movie}/>)
+                    content.map(movie => <Card key={movie.MovieId} movie={movie}/>)
                 )
                 }
             </div>

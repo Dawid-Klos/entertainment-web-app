@@ -20,7 +20,7 @@ const Trending = () => {
             <h1 className="trending__title">Trending</h1>
             <div className="trending__content">
                 {loading ? (<h2>Loading...</h2>) : (
-                    trending.map(movie => <TrendingCard key={movie.movieId} movie={movie}/>)
+                    trending.map(movie => <TrendingCard key={movie.MovieId} movie={movie}/>)
                 )
                 }
             </div>
