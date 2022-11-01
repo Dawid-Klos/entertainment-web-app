@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Entertainment_web_app.Models;
 
 namespace Entertainment_web_app.Data;
 
@@ -24,4 +25,5 @@ public class Movie
     public string ImgMedium { get; set; }
     [StringLength(80)]
     public string ImgLarge { get; set; }
+    public virtual ICollection<ApplicationUser> Users { get; set; }
 }
