@@ -5,6 +5,8 @@ import Movies from './components/Movies/Movies';
 import Bookmark from './components/Bookmark/Bookmark'
 import TVSeries from './components/TVSeries/TVSeries';
 import Home from './components/Home/Home';
+import Login from './components/Auth/Login/Login';
+import Register from './components/Auth/Register/Register';
 
 const App = () => {
 
@@ -17,6 +19,8 @@ const App = () => {
                     <Route path="/tv-series" element={<TVSeries />}/>
                     <Route path="/bookmarked" element={<Bookmark />}/>
                 </Route>
+                <Route path="/login" element={<Login />}/>
+                <Route path="/register" element={<Register />}/>
             </Routes>
         </>
     )

@@ -43,7 +43,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="ClientApp\src\components\Auth\Register" />
       <Folder Include="Migrations" />
     </ItemGroup>
 
