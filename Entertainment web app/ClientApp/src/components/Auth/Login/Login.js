@@ -14,7 +14,7 @@ const Login = () => {
                 </div>
                 <div className="input-container">
                     <label htmlFor="password" className="input-container__label">Password</label>
-                    <input className="input-container__input" type="text" id="password" />
+                    <input className="input-container__input" type="password" id="password" />
                 </div>
                 <button className="login__form--submit-btn" type="submit">Login to your account</button>
                 <div className="create-account">
