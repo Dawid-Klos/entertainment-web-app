@@ -1,0 +1,65 @@
+@import "../../_variables.scss";
+
+.card {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+  &__img {
+    display: flex;
+    justify-content: flex-end;
+    width: 10.2em;
+    height: 6.8em;
+    background-size: cover;
+    background-repeat: no-repeat;
+    border-radius: 0.5em;
+  }
+  &__img--bookmark {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 2em;
+    height: 2em;
+    background-color: rgba(16, 20, 30, .5);
+    border-radius: 50%;
+    margin: 0.5em;
+  }
+  &__info {
+    margin-top: -0.35em;
+  }
+  &__info--title {
+    font: $small-heading-mobile;
+    margin: 0;
+  }
+}
+
+.info {
+  display: flex;
+  flex-flow: row nowrap;
+  font: $small-body-mobile;
+  margin-bottom: -0.8em;
+  &__year {
+    opacity: 75%;
+  }
+  &__category {
+    opacity: 75%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  &__category--img {
+    opacity: 100%;
+    padding-right: .4em;
+  }
+  &__rating {
+    opacity: 75%;
+  }
+  &__separator {
+    align-self: center;
+    margin: 0 .45em;
+    width: 0.2em;
+    height: 0.2em;
+    background-color: $color-white;
+    opacity: 50%;
+    border-radius: 50%;
+  }
+}
