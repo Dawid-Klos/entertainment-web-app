@@ -5,32 +5,37 @@ import {useEffect, useState} from "react";
 
 const Layout = () => {
 
-    const [content, setContent] = useState();
+    const [movies, setMovies] = useState();
     const [trending, setTrending] = useState();
-    // const [tvSeries, setTvSeries] = useState([]);
+    const [tvSeries, setTvSeries] = useState([]);
     
-    const getAllContent = async () => {
-        let fetchAllContent = await fetch('api/Movies');
-        fetchAllContent = await fetchAllContent.json();
-        setContent(fetchAllContent);
+    const getAllMovies = async () => {
+        let fetchAllMovies = await fetch('api/Movies');
+        fetchAllMovies = await fetchAllMovies.json();
+        setMovies(fetchAllMovies);
     }
     const getTrendingMovies = async () => {
         let fetchTrending = await fetch('api/Movies/GetTrendingMovies');
         fetchTrending = await fetchTrending.json();
-        console.log(fetchTrending);
         setTrending(fetchTrending);
+    }
+    const getTvSeries = async () => {
+        let fetchTvSeries = await fetch('api/Movies/GetTvSeries');
+        fetchTvSeries = await fetchTvSeries.json();
+        setTvSeries(fetchTvSeries);
     }
 
     useEffect(() => {
-        getAllContent();
         getTrendingMovies();
+        getAllMovies();
+        getTvSeries();
         },[]);
     
     return (
         <>
             <Header />
             <SearchBar />
-            <Outlet context={{ content, setContent, trending, setTrending }} />
+            <Outlet context={{ movies, setMovies, trending, setTrending, tvSeries, setTvSeries }} />
         </>
     )
 }

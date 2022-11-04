@@ -6,21 +6,21 @@ import {useOutletContext} from "react-router-dom";
 const Recommend = () => {
 
     const [loading, setLoading] = useState(true);
-    const { content } = useOutletContext();
+    const { movies } = useOutletContext();
 
     useEffect(() => {
-        if(content !== undefined) {
+        if(movies !== undefined) {
             setLoading(false)
         }
 
-    }, [content]);
+    }, [movies]);
     
     return(
         <div className="recommend">
             <h1 className="recommend__title">Recommended for you</h1>
             <div className="recommend__content">
                 {loading ? (<h2>Loading...</h2>) : (
-                    content.map(movie => <Card key={movie.MovieId} movie={movie}/>)
+                    movies.map(movie => <Card key={movie.MovieId} movie={movie}/>)
                 )
                 }
             </div>

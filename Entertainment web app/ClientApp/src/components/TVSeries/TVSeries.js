@@ -6,21 +6,21 @@ import {useOutletContext} from "react-router-dom";
 const TVSeries = () => {
 
     const [loading, setLoading] = useState(true);
-    const { content } = useOutletContext();
+    const { tvSeries } = useOutletContext();
 
     useEffect(() => {
-        if(content !== undefined) {
+        if(tvSeries !== undefined) {
             setLoading(false)
         }
 
-    }, [content]);
+    }, [tvSeries]);
     
     return(
         <div className="TVSeries">
             <h1 className="TVSeries__title">TV Series</h1>
             <div className="TVSeries__content">
                 {loading ? (<h2>Loading...</h2>) : (
-                    content.map(movie => <Card key={movie.MovieId} movie={movie}/>)
+                    tvSeries.map(movie => <Card key={ movie.MovieId } movie={ movie }/>)
                 )
                 }
             </div>

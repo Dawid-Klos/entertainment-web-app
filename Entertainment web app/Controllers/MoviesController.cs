@@ -18,16 +18,15 @@ public class MoviesController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllMovies()
     {
-        var movies = await _context.Movies.FromSqlRaw("SELECT * FROM Movies WHERE Category= 'Movie'").ToListAsync();
+        var movies = await _context.Movies.FromSqlRaw("SELECT * FROM Movies WHERE Category = 'Movie'").ToListAsync();
         return new JsonResult(movies);
     }
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetMovie(int id)
+    [HttpGet("{search}")]
+    public async Task<IActionResult> GetMovie(string search)
     {
         var movie = await _context.Movies
-            .FromSqlRaw("SELECT * FROM Movies WHERE MovieId = '{0}'", string.Format("%{0}%", id)).FirstAsync();
-        ;
+            .FromSqlRaw("SELECT * FROM Movies WHERE Title LIKE {0}", string.Format("%{0}%", search)).ToListAsync();
         return new JsonResult(movie);
     }
 
