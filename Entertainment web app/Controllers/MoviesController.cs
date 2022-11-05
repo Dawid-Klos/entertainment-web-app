@@ -22,11 +22,13 @@ public class MoviesController : ControllerBase
         return new JsonResult(movies);
     }
 
-    [HttpGet("{search}")]
-    public async Task<IActionResult> GetMovie(string search)
+    [HttpGet("[action]")]
+    public async Task<IActionResult> Search([FromQuery]string search,[FromQuery]string category)
     {
+        var searchString = search;
+        var categoryString = category;
         var movie = await _context.Movies
-            .FromSqlRaw("SELECT * FROM Movies WHERE Title LIKE {0}", string.Format("%{0}%", search)).ToListAsync();
+.FromSqlRaw($"SELECT * FROM Movies WHERE Title LIKE '%{searchString}%' AND Category LIKE '%{categoryString}%'").ToListAsync();
         return new JsonResult(movie);
     }
 
@@ -48,15 +50,15 @@ public class MoviesController : ControllerBase
         return new JsonResult(tvSeries);
     }
 
-    [HttpGet]
-    [Route("[action]")]
-    public async Task<IActionResult> GetBookmarkedMovies(string userId)
-    {
-        // var user = await _context.Users.FindAsync(userId);
-        var user = await _context.Users.FindAsync(userId);
-        var bookmarkedMovies = _context.Movies.FromSqlRaw(
-            "SELECT * FROM Movies INNER JOIN ApplicationUserMovie ON ApplicationUserMovie.MoviesMovieId = AspNetUsers.Id WHERE isBookmarked = 1").ToListAsync();
-
-        return new JsonResult(bookmarkedMovies);
-    }
+    // [HttpGet]
+    // [Route("[action]")]
+    // public async Task<IActionResult> GetBookmarkedMovies(string userId)
+    // {
+    //     // var user = await _context.Users.FindAsync(userId);
+    //     var user = await _context.Users.FindAsync(userId);
+    //     var bookmarkedMovies = _context.Movies.FromSqlRaw(
+    //         "SELECT * FROM Movies INNER JOIN ApplicationUserMovie ON ApplicationUserMovie.MoviesMovieId = AspNetUsers.Id WHERE isBookmarked = 1").ToListAsync();
+    //
+    //     return new JsonResult(bookmarkedMovies);
+    // }
 }
