@@ -1,7 +1,9 @@
-import './Bookmark.scss';
-import Card from "../Card/Card";
 import {useEffect, useState} from "react";
 import {useOutletContext} from "react-router-dom";
+
+import './Bookmark.scss';
+import Card from "../Card/Card";
+import Spinner from '../../UI/Spinner/Spinner';
 
 const Bookmark = () => {
 
@@ -14,6 +16,8 @@ const Bookmark = () => {
         }
 
     }, [content]);
+    
+    if(loading) return <Spinner />;
     
     return(
         <>
