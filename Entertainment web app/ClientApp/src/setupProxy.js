@@ -9,7 +9,8 @@ const context =  [
     "/api/Movies/GetTrendingMovies",
     "/api/Movies/GetTvSeries",
     "/api/Auth/Register",
-    "/search",
+    "/api/Auth/Login",
+    "/Search",
     "/swagger/v1/swagger.json",
     "/swagger",
 ];

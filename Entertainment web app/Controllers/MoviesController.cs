@@ -1,10 +1,13 @@
+using System.Security.Claims;
 using Entertainment_web_app.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Entertainment_web_app.Controllers;
 
 [ApiController]
+// [Authorize]
 [Route("api/[controller]")]
 public class MoviesController : ControllerBase
 {
@@ -18,13 +21,15 @@ public class MoviesController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllMovies()
     {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier);
         var movies = await _context.Movies.FromSqlRaw("SELECT * FROM Movies WHERE Category = 'Movie'").ToListAsync();
         return new JsonResult(movies);
     }
 
     [HttpGet("[action]")]
-    public async Task<IActionResult> Search([FromQuery]string search,[FromQuery]string category)
+    public async Task<IActionResult> Search([FromQuery]string search,[FromQuery]string? category)
     {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier);
         var searchString = search;
         var categoryString = category;
         var movie = await _context.Movies
@@ -36,6 +41,7 @@ public class MoviesController : ControllerBase
     [Route("[action]")]
     public async Task<IActionResult> GetTrendingMovies(bool isTrending)
     {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier);
         var trendingMovies =
             await _context.Movies.FromSqlRaw("SELECT * FROM Movies WHERE IsTrending = 1").ToListAsync();
         return new JsonResult(trendingMovies);
@@ -45,6 +51,7 @@ public class MoviesController : ControllerBase
     [Route("[action]")]
     public async Task<IActionResult> GetTvSeries()
     {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier);
         var tvSeries =
             await _context.Movies.FromSqlRaw("SELECT * FROM Movies WHERE Category = 'Tv Series'").ToListAsync();
         return new JsonResult(tvSeries);

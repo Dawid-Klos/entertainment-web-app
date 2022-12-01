@@ -30,9 +30,23 @@ public class AuthController : ControllerBase
         return BadRequest("Some properties are not valid");
     }
 
-    // [HttpPost("Login")]
-    // public async Task<IActionResult> LoginAsync([FromBody])
-    // {
-    //     
-    // }
+    [HttpPost("Login")]
+    public async Task<IActionResult> LoginAsync([FromBody]LoginViewModel model)
+    {
+        if (ModelState.IsValid)
+        {
+            var result = await _userService.LoginUserAsync(model);
+            if (result.isSuccess)
+            {
+                return Ok(result);
+            }
+
+            if (!result.isSuccess)
+            {
+                return BadRequest(result);
+            }
+        }
+
+        return BadRequest("Some properties are not valid");
+    }
 }
