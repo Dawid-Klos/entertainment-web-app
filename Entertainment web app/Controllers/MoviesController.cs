@@ -26,8 +26,9 @@ public class MoviesController : ControllerBase
         var movies = await _context.Movies.FromSqlRaw("SELECT * FROM \"Movies\" WHERE \"Category\" = 'Movie'").ToListAsync();
         return new JsonResult(movies);
     }
-
-    [HttpGet("[action]")]
+    
+    [HttpGet]
+    [Route("[action]")]
     public async Task<IActionResult> Search([FromQuery] string search,[FromQuery]string? category)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier);
@@ -37,14 +38,15 @@ public class MoviesController : ControllerBase
 .FromSqlRaw($"SELECT * FROM \"Movies\" WHERE \"Title\" LIKE '%{searchString}%' AND \"Category\" LIKE '%{categoryString}%'").ToListAsync();
         return new JsonResult(movie);
     }
-
+    
     [HttpGet]
     [Route("[action]")]
-    public async Task<IActionResult> GetTrendingMovies(bool isTrending)
+    public async Task<IActionResult> GetTrendingMovies()
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier);
         var trendingMovies =
-            await _context.Movies.FromSqlRaw("SELECT * FROM \"Movies\" WHERE \"IsTrending\" = 1").ToListAsync();
+            await _context.Movies.FromSqlRaw("SELECT * FROM \"Movies\" WHERE \"IsTrending\" = 'True' ").ToListAsync();
+        
         return new JsonResult(trendingMovies);
     }
     

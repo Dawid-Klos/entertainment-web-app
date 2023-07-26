@@ -14,7 +14,8 @@ public class AuthController : ControllerBase
         _userService = userService;
     }
 
-    [HttpPost("Register")]
+    [HttpPost]
+    [Route("[action]")]
     public async Task<IActionResult> RegisterAsync([FromBody]RegisterViewModel model)
     {
         if (ModelState.IsValid)
@@ -30,7 +31,8 @@ public class AuthController : ControllerBase
         return BadRequest("Some properties are not valid");
     }
 
-    [HttpPost("Login")]
+    [HttpPost]
+    [Route("[action]")]
     public async Task<IActionResult> LoginAsync([FromBody]LoginViewModel model)
     {
         if (ModelState.IsValid)

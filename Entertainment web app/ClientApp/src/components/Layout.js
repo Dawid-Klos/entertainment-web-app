@@ -10,25 +10,25 @@ const Layout = () => {
     const [tvSeries, setTvSeries] = useState([]);
     
     const getAllMovies = async () => {
-        let fetchAllMovies = await fetch('api/Movies');
+        let fetchAllMovies = await fetch('api/Movies/GetAllMovies');
         fetchAllMovies = await fetchAllMovies.json();
         setMovies(fetchAllMovies);
     }
-    // const getTrendingMovies = async () => {
-    //     let fetchTrending = await fetch('api/Movies/GetTrendingMovies');
-    //     fetchTrending = await fetchTrending.json();
-    //     setTrending(fetchTrending);
-    // }
-    // const getTvSeries = async () => {
-    //     let fetchTvSeries = await fetch('api/Movies/GetTvSeries');
-    //     fetchTvSeries = await fetchTvSeries.json();
-    //     setTvSeries(fetchTvSeries);
-    // }
+    const getTrendingMovies = async () => {
+        let fetchTrending = await fetch('api/Movies/GetTrendingMovies');
+        fetchTrending = await fetchTrending.json();
+        setTrending(fetchTrending);
+    }
+    const getTvSeries = async () => {
+        let fetchTvSeries = await fetch('api/Movies/GetTvSeries');
+        fetchTvSeries = await fetchTvSeries.json();
+        setTvSeries(fetchTvSeries);
+    }
 
     useEffect(() => {
-        // getTrendingMovies();
+        getTrendingMovies();
         getAllMovies();
-        // getTvSeries();
+        getTvSeries();
         },[]);
     
     return (
