@@ -18,6 +18,5 @@ public class NetwixDbContext : IdentityDbContext<ApplicationUser>
     }
     
     public DbSet<Movie> Movies { get; set; }
-    public DbSet<ApplicationUser> Users { get; set; }
-
+    public new DbSet<ApplicationUser> Users { get; set; }
 }

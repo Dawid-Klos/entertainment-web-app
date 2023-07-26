@@ -1,14 +1,14 @@
-import {useEffect, useState} from "react";
-import {useOutletContext} from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useOutletContext } from "react-router-dom";
 
 import "./Recommend.scss";
 import Card from '../../Card/Card';
-import Spinner from '../../../UI/Spinner/Spinner';
+// import Spinner from '../../../UI/Spinner/Spinner';
 
 const Recommend = () => {
 
     const [loading, setLoading] = useState(true);
-    const {movies} = useOutletContext();
+    const { movies } = useOutletContext();
 
     useEffect(() => {
         if (movies !== undefined) {
@@ -17,14 +17,14 @@ const Recommend = () => {
 
     }, [movies]);
 
-    if (loading) return <Spinner/>;
+    // if (loading) return <Spinner/>;
 
     return (
         <div className="recommend">
             <h1 className="recommend__title">Recommended for you</h1>
             <div className="recommend__content">
                 {
-                    movies.map(movie => <Card key={movie.MovieId} movie={movie}/>)
+                    // movies.map(movie => <Card key={movie.MovieId} movie={movie} />)
                 }
             </div>
         </div>

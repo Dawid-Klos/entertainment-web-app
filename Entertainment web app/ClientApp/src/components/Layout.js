@@ -5,8 +5,8 @@ import {useEffect, useState} from "react";
 
 const Layout = () => {
 
-    const [movies, setMovies] = useState();
-    const [trending, setTrending] = useState();
+    const [movies, setMovies] = useState([]);
+    const [trending, setTrending] = useState([]);
     const [tvSeries, setTvSeries] = useState([]);
     
     const getAllMovies = async () => {
@@ -14,21 +14,21 @@ const Layout = () => {
         fetchAllMovies = await fetchAllMovies.json();
         setMovies(fetchAllMovies);
     }
-    const getTrendingMovies = async () => {
-        let fetchTrending = await fetch('api/Movies/GetTrendingMovies');
-        fetchTrending = await fetchTrending.json();
-        setTrending(fetchTrending);
-    }
-    const getTvSeries = async () => {
-        let fetchTvSeries = await fetch('api/Movies/GetTvSeries');
-        fetchTvSeries = await fetchTvSeries.json();
-        setTvSeries(fetchTvSeries);
-    }
+    // const getTrendingMovies = async () => {
+    //     let fetchTrending = await fetch('api/Movies/GetTrendingMovies');
+    //     fetchTrending = await fetchTrending.json();
+    //     setTrending(fetchTrending);
+    // }
+    // const getTvSeries = async () => {
+    //     let fetchTvSeries = await fetch('api/Movies/GetTvSeries');
+    //     fetchTvSeries = await fetchTvSeries.json();
+    //     setTvSeries(fetchTvSeries);
+    // }
 
     useEffect(() => {
-        getTrendingMovies();
+        // getTrendingMovies();
         getAllMovies();
-        getTvSeries();
+        // getTvSeries();
         },[]);
     
     return (

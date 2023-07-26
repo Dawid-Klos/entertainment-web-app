@@ -14,7 +14,7 @@ builder.Services.AddControllersWithViews();
 // Connection string with DbContext
 var connectionString = builder.Configuration.GetConnectionString("NetwixDbContext");
 builder.Services.AddDbContext<NetwixDbContext>(options =>
-    options.UseSqlServer(connectionString));
+    options.UseNpgsql(connectionString));
 
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
