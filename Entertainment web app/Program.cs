@@ -22,15 +22,13 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     options.Password.RequireDigit = true;
     options.Password.RequiredLength = 8;
     options.Password.RequireLowercase = true;
-}).AddEntityFrameworkStores<NetwixDbContext>()
-    .AddDefaultTokenProviders();
-
+}).AddEntityFrameworkStores<NetwixDbContext>().AddDefaultTokenProviders();
 
 
 builder.Services.AddAuthentication(auth =>
 {
     auth.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    auth.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    // auth.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
@@ -44,14 +42,22 @@ builder.Services.AddAuthentication(auth =>
         ValidateIssuerSigningKey = true
 
     };
+    options.SaveToken = true;
 });
 
 builder.Services.AddScoped<IUserService, UserService>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy", policy =>
+    {
+        policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:44412");
+    });
+});
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddControllers()
     .AddJsonOptions(options => { options.JsonSerializerOptions.PropertyNamingPolicy = null; });
-
 
 
 
@@ -89,10 +95,10 @@ else
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-app.UseRouting();
 
 app.UseAuthentication();
-app.UseAuthorization();
+app.UseRouting();
+// app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",

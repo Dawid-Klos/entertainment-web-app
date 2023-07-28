@@ -87,6 +87,7 @@ public class UserService : IUserService
             new Claim("Email", model.Email),
             new Claim(ClaimTypes.NameIdentifier, user.Id)
         };
+        
         var keyString = _configuration["AuthSettings:Key"];
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(keyString));
 
@@ -96,6 +97,7 @@ public class UserService : IUserService
             claims: claims,
             expires: DateTime.Now.AddDays(30),
             signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256));
+        
         string tokenAsString = new JwtSecurityTokenHandler().WriteToken(token);
 
         return new UserManagerResponse

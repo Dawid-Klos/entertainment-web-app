@@ -1,3 +1,4 @@
+import React from "react";
 import {useRef} from "react";
 import {Link, useNavigate} from "react-router-dom";
 
@@ -10,15 +11,17 @@ const Login = () => {
     const password = useRef();
     const navigate = useNavigate();
     const signIn = useSignIn();
-
     
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
         const body = {
             "Email": email.current.value,
             "Password": password.current.value,
         }
+        
         let res;
+        
         try {
             let login = await fetch('/api/Auth/Login', {
                 method: 'POST',
@@ -30,33 +33,31 @@ const Login = () => {
         } catch (error) {
             console.log("Error: ", error);
         }
+        
         console.log("response: ", res);
-        if(res.isSuccess) {
+        
+        if(res && res.isSuccess) {
             
-            let dateNow = new window.Date().toISOString();
-            const expiryDate = res.ExpireDate;
-            console.log(expiryDate);
-            console.log(dateNow);
+            let dateNow = new window.Date();
+            let expiryDate = new window.Date(res.ExpireDate);
             
-            let expiryDateInMinutes = (dateNow.getTime() - expiryDate.getTime()) / 1000;
-            expiryDateInMinutes /= 60;
-            Math.abs(Math.round(expiryDateInMinutes));
-            console.log(expiryDateInMinutes);
-            if(signIn(
-                {
+            let expiryDateInSeconds = (dateNow.getTime() - expiryDate.getTime()) / 1000;
+            Math.trunc(expiryDateInSeconds);
+            
+            signIn({
                     token: res.Message,
-                    expiresIn: res.ExpireDate,
+                    expiresIn: expiryDateInSeconds / 60,
                     tokenType: "Bearer",
-                }
-            )){
-                // Redirect or do-something
-                navigate("/");
-            }else {
-                //Throw error
-                console.log("There is some problem, user not logged in!");
-            }
+                    authState: { email: email.current.value, authenticated: true }
+            });
+            
+            // Redirect or do-something
+            setTimeout(() => { navigate("/"); }, 100);
+            console.log("success");
+        } else {
+            //Throw error
+            console.log("There is some problem, user not logged in!");
         }
-
     }
     
     return (

@@ -3,7 +3,7 @@ import { useOutletContext } from "react-router-dom";
 
 import "./TVSeries.scss";
 import Card from '../Card/Card';
-// import Spinner from '../../UI/Spinner/Spinner';
+// import Spinner from '../../../UI/Spinner/Spinner';
 
 const TVSeries = () => {
 
@@ -16,14 +16,13 @@ const TVSeries = () => {
         }
 
     }, [tvSeries]);
-
-    // if (loading) return <Spinner/>
-
+    
     return (
         <div className="TVSeries">
             <h1 className="TVSeries__title">TV Series</h1>
             <div className="TVSeries__content">
                 {
+                    loading ? <h1>Loading...</h1> :
                     tvSeries.map(movie => <Card key={movie.MovieId} movie={movie} />)
                 }
             </div>

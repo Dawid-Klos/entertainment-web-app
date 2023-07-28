@@ -1,5 +1,5 @@
-using System.Security.Claims;
 using Entertainment_web_app.Data;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,7 +22,8 @@ public class MoviesController : ControllerBase
     [Route("[action]")]
     public async Task<IActionResult> GetAllMovies()
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier);
+        // var accessToken = HttpContext.GetTokenAsync("access_token");
+        
         var movies = await _context.Movies.FromSqlRaw("SELECT * FROM \"Movies\" WHERE \"Category\" = 'Movie'").ToListAsync();
         return new JsonResult(movies);
     }
@@ -31,7 +32,8 @@ public class MoviesController : ControllerBase
     [Route("[action]")]
     public async Task<IActionResult> Search([FromQuery] string search,[FromQuery]string? category)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier);
+        // var accessToken = HttpContext.GetTokenAsync("access_token");
+        
         var searchString = search;
         var categoryString = category;
         var movie = await _context.Movies
@@ -43,7 +45,8 @@ public class MoviesController : ControllerBase
     [Route("[action]")]
     public async Task<IActionResult> GetTrendingMovies()
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier);
+        // var accessToken = HttpContext.GetTokenAsync("access_token");
+        
         var trendingMovies =
             await _context.Movies.FromSqlRaw("SELECT * FROM \"Movies\" WHERE \"IsTrending\" = 'True' ").ToListAsync();
         
@@ -54,9 +57,10 @@ public class MoviesController : ControllerBase
     [Route("[action]")]
     public async Task<IActionResult> GetTvSeries()
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier);
+        // var accessToken = HttpContext.GetTokenAsync("access_token");
+        
         var tvSeries =
-            await _context.Movies.FromSqlRaw("SELECT * FROM \"Movies\" WHERE \"Category\" = 'Tv Series'").ToListAsync();
+            await _context.Movies.FromSqlRaw("SELECT * FROM \"Movies\" WHERE \"Category\" = 'TV Series'").ToListAsync();
         return new JsonResult(tvSeries);
     }
 

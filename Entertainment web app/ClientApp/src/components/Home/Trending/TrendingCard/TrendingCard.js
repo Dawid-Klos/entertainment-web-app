@@ -2,7 +2,6 @@ import "./TrendingCard.scss";
 
 const image = "./assets/thumbnails/1998/trending/small.jpg";
 
-
 const TrendingCard = ({movie}) => {
 
     const {ImgTrendingSmall, Title, Year, Rating, Category} = movie;

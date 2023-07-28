@@ -17,14 +17,11 @@ const Trending = () => {
         }
     }, [trending]);
     
-    if (loading) {
-        return <></>;
-    }
-    
     return (<div className="trending">
         <h1 className="trending__title">Trending</h1>
         <div className="trending__content">
             {
+                loading ? <div className="trending__loading">Loading...</div> :
                 trending.map(movie => <TrendingCard key={movie.MovieId} movie={movie}/>)
             }
 

@@ -24,7 +24,7 @@ const Recommend = () => {
             <h1 className="recommend__title">Recommended for you</h1>
             <div className="recommend__content">
                 {
-                    // movies.map(movie => <Card key={movie.MovieId} movie={movie} />)
+                    movies.map(movie => <Card key={movie.MovieId} movie={movie} />)
                 }
             </div>
         </div>
