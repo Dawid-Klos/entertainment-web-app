@@ -2,14 +2,12 @@ import Header from "./Header/Header";
 import {Outlet} from "react-router-dom";
 import SearchBar from './SearchBar/SearchBar';
 import {useEffect, useState} from "react";
-import { useIsAuthenticated} from "react-auth-kit";
 
 const Layout = () => {
 
     const [movies, setMovies] = useState([]);
     const [trending, setTrending] = useState([]);
     const [tvSeries, setTvSeries] = useState([]);
-    const isAuthenticated = useIsAuthenticated();
     
     const getHeaders = () => {
         const myHeaders = new Headers();
@@ -51,13 +49,6 @@ const Layout = () => {
     }
 
     useEffect(() => {
-        // check if auth
-        if (isAuthenticated()) {
-            console.log("Authenticated");
-        } else {
-            console.log("Not authenticated");
-        }
-        
         getTrendingMovies();
         getAllMovies();
         getTvSeries();

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,7 +29,6 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 builder.Services.AddAuthentication(auth =>
 {
     auth.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    // auth.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
@@ -51,7 +51,22 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy", policy =>
     {
-        policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:44412");
+        // Allow multiple methods
+        policy.WithMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+            .WithHeaders(
+                HeaderNames.Accept,
+                HeaderNames.ContentType,
+                HeaderNames.Authorization)
+            .AllowCredentials()
+            .SetIsOriginAllowed(origin =>
+            {
+                if (string.IsNullOrWhiteSpace(origin)) return false;
+                // Only add this to allow testing with localhost, remove this line in production!
+                if (origin.ToLower().StartsWith("https://localhost")) return true;
+                // Insert your production domain here.
+                if (origin.ToLower().StartsWith("https://dev.mydomain.com")) return true;
+                return false;
+            });
     });
 });
 
@@ -59,10 +74,6 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddControllers()
     .AddJsonOptions(options => { options.JsonSerializerOptions.PropertyNamingPolicy = null; });
 
-
-
-builder.Services.AddControllersWithViews();
-builder.Services.AddRazorPages();
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -92,13 +103,14 @@ else
     app.UseHsts();
 }
 
+app.UseCors("CorsPolicy");
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseAuthentication();
 app.UseRouting();
-// app.UseAuthorization();
+app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",

@@ -1,5 +1,4 @@
 import {Navigate} from 'react-router-dom';
-import {useIsAuthenticated} from "react-auth-kit";
 
 import Layout from '../components/Layout';
 import Movies from '../components/Movies/Movies';
@@ -11,8 +10,10 @@ import Login from '../components/Auth/Login/Login';
 import Register from '../components/Auth/Register/Register';
 
 const PrivateRoute = ({children}) => {
-    const isAuthenticated = useIsAuthenticated();
-    return isAuthenticated() ? children : <Navigate to="/login"/>;
+    
+    const auth = true;
+    
+    return auth ? children : <Navigate to="/login"/>;
 };
 
 const routerConfig = [

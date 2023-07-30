@@ -6,19 +6,15 @@ import routerConfig from './config/routes';
 
 import './custom.scss';
 
-import {AuthProvider} from 'react-auth-kit';
 
 const rootElement = document.getElementById('root');
 const root = createRoot(rootElement);
 const router = createBrowserRouter(routerConfig);
 
 root.render(
-    <AuthProvider authType={'cookie'}
-                  authName={'_auth'}
-                  cookieDomain={window.location.hostname}
-                  cookieSecure={window.location.protocol === "https:"}>
-        <RouterProvider router={router} />
-    </AuthProvider>
+
+    <RouterProvider router={router} />
+
 );
 
 

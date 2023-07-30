@@ -1,20 +1,16 @@
-import React from "react";
 import {useRef} from "react";
 import {Link, useNavigate} from "react-router-dom";
 
 import './Login.scss';
 
-import { useSignIn } from 'react-auth-kit';
-
 const Login = () => {
     const email = useRef();
     const password = useRef();
     const navigate = useNavigate();
-    const signIn = useSignIn();
     
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         const body = {
             "Email": email.current.value,
             "Password": password.current.value,
@@ -25,11 +21,12 @@ const Login = () => {
         try {
             let login = await fetch('/api/Auth/Login', {
                 method: 'POST',
-                headers: {'Content-Type': 'application/json'},
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(body)
             });
-            login = await login.json();
-            res = login;
+            
+            res = await login.json();
         } catch (error) {
             console.log("Error: ", error);
         }
@@ -37,23 +34,22 @@ const Login = () => {
         console.log("response: ", res);
         
         if(res && res.isSuccess) {
-            
-            let dateNow = new window.Date();
+            const token = res.Message;
+            const dateNow = new window.Date();
             let expiryDate = new window.Date(res.ExpireDate);
+            // expiry date in seconds
+            const expiryDateInSeconds = (expiryDate.getTime() - dateNow.getTime()) / 1000;
             
-            let expiryDateInSeconds = (dateNow.getTime() - expiryDate.getTime()) / 1000;
-            Math.trunc(expiryDateInSeconds);
+            const origin = window.location.origin;
+            console.log(expiryDateInSeconds);
+            console.log(expiryDate);
             
-            signIn({
-                    token: res.Message,
-                    expiresIn: expiryDateInSeconds / 60,
-                    tokenType: "Bearer",
-                    authState: { email: email.current.value, authenticated: true }
-            });
+            // create a cookie and save a token
+            document.cookie = `_auth=${token}; expires=${expiryDate}; SameSite=None; Secure`;
             
-            // Redirect or do-something
-            setTimeout(() => { navigate("/"); }, 100);
-            console.log("success");
+            console.log("User logged in!");
+            
+            navigate("/");
         } else {
             //Throw error
             console.log("There is some problem, user not logged in!");
