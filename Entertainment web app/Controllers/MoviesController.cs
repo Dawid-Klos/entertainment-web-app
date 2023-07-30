@@ -1,5 +1,4 @@
 using Entertainment_web_app.Data;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -7,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Entertainment_web_app.Controllers;
 
 [ApiController]
-// [Authorize]
+[Authorize]
 [Route("api/[controller]")]
 public class MoviesController : ControllerBase
 {
@@ -22,8 +21,6 @@ public class MoviesController : ControllerBase
     [Route("[action]")]
     public async Task<IActionResult> GetAllMovies()
     {
-        // var accessToken = HttpContext.GetTokenAsync("access_token");
-        
         var movies = await _context.Movies.FromSqlRaw("SELECT * FROM \"Movies\" WHERE \"Category\" = 'Movie'").ToListAsync();
         return new JsonResult(movies);
     }
@@ -32,8 +29,6 @@ public class MoviesController : ControllerBase
     [Route("[action]")]
     public async Task<IActionResult> Search([FromQuery] string search,[FromQuery]string? category)
     {
-        // var accessToken = HttpContext.GetTokenAsync("access_token");
-        
         var searchString = search;
         var categoryString = category;
         var movie = await _context.Movies
@@ -45,8 +40,6 @@ public class MoviesController : ControllerBase
     [Route("[action]")]
     public async Task<IActionResult> GetTrendingMovies()
     {
-        // var accessToken = HttpContext.GetTokenAsync("access_token");
-        
         var trendingMovies =
             await _context.Movies.FromSqlRaw("SELECT * FROM \"Movies\" WHERE \"IsTrending\" = 'True' ").ToListAsync();
         
@@ -57,8 +50,6 @@ public class MoviesController : ControllerBase
     [Route("[action]")]
     public async Task<IActionResult> GetTvSeries()
     {
-        // var accessToken = HttpContext.GetTokenAsync("access_token");
-        
         var tvSeries =
             await _context.Movies.FromSqlRaw("SELECT * FROM \"Movies\" WHERE \"Category\" = 'TV Series'").ToListAsync();
         return new JsonResult(tvSeries);

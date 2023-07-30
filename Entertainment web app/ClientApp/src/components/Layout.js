@@ -3,15 +3,22 @@ import {Outlet} from "react-router-dom";
 import SearchBar from './SearchBar/SearchBar';
 import {useEffect, useState} from "react";
 
+import { useCookies } from 'react-cookie';
 const Layout = () => {
 
     const [movies, setMovies] = useState([]);
     const [trending, setTrending] = useState([]);
     const [tvSeries, setTvSeries] = useState([]);
+    const [cookies, setCookie] = useCookies(['_auth']);
     
     const getHeaders = () => {
+        const token = cookies._auth;
+        
         const myHeaders = new Headers();
+        myHeaders.append('Accept', 'application/json');
+        myHeaders.append('withCredentials', 'true');
         myHeaders.append('Content-Type', 'application/json');
+        myHeaders.append('Authorization', `Bearer ${token}`)
         
         return myHeaders;
     }
@@ -33,10 +40,7 @@ const Layout = () => {
         });
         
         fetchTrending = await fetchTrending.json();
-        
-        if (fetchTrending.isSuccess) {
-            setTrending(fetchTrending);
-        }
+        setTrending(fetchTrending);
     }
     const getTvSeries = async () => {
         let fetchTvSeries = await fetch('api/Movies/GetTvSeries',{
@@ -45,13 +49,16 @@ const Layout = () => {
         });
         
         fetchTvSeries = await fetchTvSeries.json();
+        console.log(fetchTvSeries.length);
         setTvSeries(fetchTvSeries);
     }
 
     useEffect(() => {
+        
         getTrendingMovies();
         getAllMovies();
         getTvSeries();
+        
         },[]);
     
     return (

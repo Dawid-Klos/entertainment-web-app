@@ -15,7 +15,7 @@ public class UserService : IUserService
         _userManager = userManager;
         _configuration = configuration;
     }
-
+    
     public async Task<UserManagerResponse> RegisterUserAsync(RegisterViewModel model)
     {
         if (model == null)

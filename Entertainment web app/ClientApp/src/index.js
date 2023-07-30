@@ -12,9 +12,7 @@ const root = createRoot(rootElement);
 const router = createBrowserRouter(routerConfig);
 
 root.render(
-
     <RouterProvider router={router} />
-
 );
 
 

@@ -1,12 +1,16 @@
 import {useRef} from "react";
 import {Link, useNavigate} from "react-router-dom";
 
+import { useCookies } from 'react-cookie';
+
 import './Login.scss';
 
 const Login = () => {
     const email = useRef();
     const password = useRef();
     const navigate = useNavigate();
+    
+    const [cookies, setCookie] = useCookies(['_auth']);
     
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -34,21 +38,9 @@ const Login = () => {
         console.log("response: ", res);
         
         if(res && res.isSuccess) {
-            const token = res.Message;
-            const dateNow = new window.Date();
-            let expiryDate = new window.Date(res.ExpireDate);
-            // expiry date in seconds
-            const expiryDateInSeconds = (expiryDate.getTime() - dateNow.getTime()) / 1000;
-            
-            const origin = window.location.origin;
-            console.log(expiryDateInSeconds);
-            console.log(expiryDate);
-            
-            // create a cookie and save a token
-            document.cookie = `_auth=${token}; expires=${expiryDate}; SameSite=None; Secure`;
-            
             console.log("User logged in!");
             
+            setCookie('_auth', res.Message, { expires: res.expiryDate, sameSite: "none", secure: true });
             navigate("/");
         } else {
             //Throw error

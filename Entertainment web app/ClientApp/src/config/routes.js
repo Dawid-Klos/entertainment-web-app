@@ -21,53 +21,48 @@ const routerConfig = [
         errorElement: <div>Not Found</div>,
         children: [
             {
-                element: <PrivateRoute/>,
+                path: '/',
+                element: <Layout/>,
                 children: [
                     {
                         path: '/',
-                        element: <Layout/>,
+                        element: <Home/>,
                         children: [
                             {
-                                path: '/',
-                                element: <Home/>,
-                                children: [
-                                    {
-                                        path: ':query',
-                                        element: <Search/>
-                                    }
-                                ]
-                            },
-                            {
-                                path: '/movies',
-                                element: <Movies/>,
-                                children: [
-                                    {
-                                        path: ':query',
-                                        element: <Search/>
-                                    }
-                                ]
-                            },
-                            {
-                                path: '/tv-series',
-                                element: <TVSeries/>,
-                                children: [
-                                    {
-                                        path: ':query',
-                                        element: <Search/>
-                                    }
-                                ]
-                            },
-                            {
-                                path: '/bookmarked',
-                                element: <Bookmark/>,
-                                children: [
-                                    {
-                                        path: ':query',
-                                        element: <Search/>
-                                    }
-                                ],
+                                path: ':query',
+                                element: <Search/>
                             }
                         ]
+                    },
+                    {
+                        path: '/movies',
+                        element: <Movies/>,
+                        children: [
+                            {
+                                path: ':query',
+                                element: <Search/>
+                            }
+                        ]
+                    },
+                    {
+                        path: '/tv-series',
+                        element: <TVSeries/>,
+                        children: [
+                            {
+                                path: ':query',
+                                element: <Search/>
+                            }
+                        ]
+                    },
+                    {
+                        path: '/bookmarked',
+                        element: <Bookmark/>,
+                        children: [
+                            {
+                                path: ':query',
+                                element: <Search/>
+                            }
+                        ],
                     }
                 ]
             },
