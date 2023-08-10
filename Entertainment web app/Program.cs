@@ -14,9 +14,9 @@ builder.Services.AddControllersWithViews();
 
 // Connection string with DbContext
 var connectionString = builder.Configuration.GetConnectionString("NetwixDbContext");
+
 builder.Services.AddDbContext<NetwixDbContext>(options =>
     options.UseNpgsql(connectionString));
-
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
@@ -42,7 +42,6 @@ builder.Services.AddAuthentication(auth =>
         ValidateIssuerSigningKey = true
 
     };
-    options.SaveToken = true;
 });
 
 builder.Services.AddScoped<IUserService, UserService>();
@@ -85,7 +84,6 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 var app = builder.Build();
-
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

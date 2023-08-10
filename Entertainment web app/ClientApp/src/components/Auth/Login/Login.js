@@ -1,7 +1,7 @@
 import {useRef} from "react";
 import {Link, useNavigate} from "react-router-dom";
 
-import { useCookies } from 'react-cookie';
+import Cookies from 'js-cookie';
 
 import './Login.scss';
 
@@ -10,17 +10,14 @@ const Login = () => {
     const password = useRef();
     const navigate = useNavigate();
     
-    const [cookies, setCookie] = useCookies(['_auth']);
-    
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+        let res;
+        
         const body = {
             "Email": email.current.value,
             "Password": password.current.value,
         }
-        
-        let res;
         
         try {
             let login = await fetch('/api/Auth/Login', {
@@ -35,15 +32,14 @@ const Login = () => {
             console.log("Error: ", error);
         }
         
-        console.log("response: ", res);
-        
-        if(res && res.isSuccess) {
-            console.log("User logged in!");
+        if(res && res.isSuccess && res.Errors == null) {
+            const token = res.Message;
+            const expireDate = new Date(res.ExpireDate);
             
-            setCookie('_auth', res.Message, { expires: res.expiryDate, sameSite: "none", secure: true });
+            // setCookie('_auth', token, { expires: expireDate, sameSite: "none", secure: true });
+            Cookies.set('_auth', token, { expires: expireDate, sameSite: "none", secure: true })
             navigate("/");
         } else {
-            //Throw error
             console.log("There is some problem, user not logged in!");
         }
     }

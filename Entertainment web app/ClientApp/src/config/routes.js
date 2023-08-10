@@ -1,4 +1,7 @@
 import {Navigate} from 'react-router-dom';
+import Cookies from 'js-cookie';
+
+import {fetchAllMovies, fetchHomeContent, fetchMovie, fetchTvSeries} from '../utils/fetchContent';
 
 import Layout from '../components/Layout';
 import Movies from '../components/Movies/Movies';
@@ -10,10 +13,14 @@ import Login from '../components/Auth/Login/Login';
 import Register from '../components/Auth/Register/Register';
 
 const PrivateRoute = ({children}) => {
+    const authCookie = Cookies.get('_auth');
     
-    const auth = true;
-    
-    return auth ? children : <Navigate to="/login"/>;
+    if (!authCookie) {
+        console.log("auth is null");
+        return <Navigate to="/login"/>;
+    } else {
+        return children;
+    }
 };
 
 const routerConfig = [
@@ -22,11 +29,12 @@ const routerConfig = [
         children: [
             {
                 path: '/',
-                element: <Layout/>,
+                element: <PrivateRoute> <Layout/> </PrivateRoute>,
                 children: [
                     {
                         path: '/',
                         element: <Home/>,
+                        loader: () => fetchHomeContent(),
                         children: [
                             {
                                 path: ':query',
@@ -37,9 +45,11 @@ const routerConfig = [
                     {
                         path: '/movies',
                         element: <Movies/>,
+                        loader: () => fetchAllMovies(),
                         children: [
                             {
                                 path: ':query',
+                                loader: ({params}) => fetchMovie(params),
                                 element: <Search/>
                             }
                         ]
@@ -47,6 +57,7 @@ const routerConfig = [
                     {
                         path: '/tv-series',
                         element: <TVSeries/>,
+                        loader: () => fetchTvSeries(),
                         children: [
                             {
                                 path: ':query',

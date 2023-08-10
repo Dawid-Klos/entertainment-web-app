@@ -1,29 +1,17 @@
-import { useEffect, useState } from "react";
-import { useOutletContext } from "react-router-dom";
-
 import "./TVSeries.scss";
 import Card from '../Card/Card';
-// import Spinner from '../../../UI/Spinner/Spinner';
+import {useLoaderData} from "react-router-dom";
 
 const TVSeries = () => {
-
-    const [loading, setLoading] = useState(true);
-    const { tvSeries } = useOutletContext();
-
-    useEffect(() => {
-        if (tvSeries !== undefined) {
-            setLoading(false)
-        }
-
-    }, [tvSeries]);
+    const tvSeriesData = useLoaderData();
     
     return (
         <div className="TVSeries">
             <h1 className="TVSeries__title">TV Series</h1>
             <div className="TVSeries__content">
                 {
-                    loading ? <h1>Loading...</h1> :
-                    tvSeries.map(movie => <Card key={movie.MovieId} movie={movie} />)
+                    !tvSeriesData ? <h1>Loading...</h1> :
+                        tvSeriesData.map(movie => <Card key={movie.MovieId} movie={movie} />)
                 }
             </div>
         </div>
