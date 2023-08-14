@@ -1,8 +1,6 @@
 import {useRef} from "react";
 import {Link, useNavigate} from "react-router-dom";
 
-import Cookies from 'js-cookie';
-
 import './Login.scss';
 
 const Login = () => {
@@ -35,9 +33,7 @@ const Login = () => {
         if(res && res.isSuccess && res.Errors == null) {
             const token = res.Message;
             const expireDate = new Date(res.ExpireDate);
-            
-            // setCookie('_auth', token, { expires: expireDate, sameSite: "none", secure: true });
-            Cookies.set('_auth', token, { expires: expireDate, sameSite: "none", secure: true })
+
             navigate("/");
         } else {
             console.log("There is some problem, user not logged in!");

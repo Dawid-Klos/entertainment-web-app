@@ -1,21 +1,8 @@
-import Cookies from "js-cookie";
 import axios from "axios";
-
-const getConfig = () => {
-    const token = Cookies.get('_auth');
-
-    return {
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        }
-    };
-}
 
 export const fetchAllMovies = async () => {
     const response = await axios
-        .get('/api/Movies/GetAllMovies', getConfig())
+        .get('/api/Movies/GetAllMovies')
         .catch(error => {
             console.log(error);
             return null;
@@ -26,7 +13,7 @@ export const fetchAllMovies = async () => {
 
 export const fetchTrendingMovies = async () => {
     const response = await axios
-        .get('/api/Movies/GetTrendingMovies', getConfig())
+        .get('/api/Movies/GetTrendingMovies')
         .catch(error => {
             console.log(error);
             return null;
@@ -37,7 +24,7 @@ export const fetchTrendingMovies = async () => {
 
 export const fetchTvSeries = async () => {
     const response = await axios
-        .get('/api/Movies/GetTvSeries', getConfig())
+        .get('/api/Movies/GetTvSeries')
         .catch(error => {
             console.log(error);
             return null;
@@ -48,7 +35,7 @@ export const fetchTvSeries = async () => {
 
 export const fetchMovie = async ({ params }) => {
     const response = await axios
-        .get(`/api/Movies/GetMovie/${params}`, getConfig())
+        .get(`/api/Movies/GetMovie/${params}`)
         .catch(error => {
             console.log(error);
             return null;

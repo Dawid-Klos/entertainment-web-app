@@ -10,6 +10,7 @@ const context =  [
     "/api/Movies/GetTvSeries",
     "/api/Auth/Register",
     "/api/Auth/Login",
+    "/api/Auth/AuthenticateUser",
     "/Search",
     "/swagger/v1/swagger.json",
     "/swagger",

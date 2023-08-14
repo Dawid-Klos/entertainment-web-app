@@ -1,4 +1,5 @@
 using Entertainment_web_app.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Entertainment_web_app.Controllers;
@@ -8,12 +9,24 @@ namespace Entertainment_web_app.Controllers;
 public class AuthController : ControllerBase
 {
     private IUserService _userService;
+    private IHttpContextAccessor _httpContextAccessor;
 
-    public AuthController(IUserService userService)
+    public AuthController(IUserService userService, IHttpContextAccessor httpContextAccessor)
     {
         _userService = userService;
+        _httpContextAccessor = httpContextAccessor;
     }
 
+    [HttpGet]
+    [Authorize]
+    [Route("[action]")]
+    public Boolean AuthenticateUserAsync()
+    {
+        var authStatus = _httpContextAccessor.HttpContext.User.Identity.IsAuthenticated;
+        
+        return authStatus;
+    }
+    
     [HttpPost]
     [Route("[action]")]
     public async Task<IActionResult> RegisterAsync([FromBody]RegisterViewModel model)
