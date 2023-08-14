@@ -9,11 +9,14 @@ namespace Entertainment_web_app.Models;
 public class UserService : IUserService
 {
     private readonly UserManager<ApplicationUser> _userManager;
-    private IConfiguration _configuration;
-    public UserService(UserManager<ApplicationUser> userManager, IConfiguration configuration)
+    private readonly IConfiguration _configuration;
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    
+    public UserService(UserManager<ApplicationUser> userManager, IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
     {
         _userManager = userManager;
         _configuration = configuration;
+        _httpContextAccessor = httpContextAccessor;
     }
     
     public async Task<UserManagerResponse> RegisterUserAsync(RegisterViewModel model)
@@ -99,6 +102,14 @@ public class UserService : IUserService
             signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256));
         
         string tokenAsString = new JwtSecurityTokenHandler().WriteToken(token);
+        
+        var cookieOptions = new CookieOptions
+        {
+            HttpOnly = true,
+            Expires = DateTime.Now.AddDays(30)
+        };
+
+        _httpContextAccessor.HttpContext.Response.Cookies.Append("_auth", tokenAsString, cookieOptions);
 
         return new UserManagerResponse
         {

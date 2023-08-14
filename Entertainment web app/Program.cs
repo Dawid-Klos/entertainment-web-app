@@ -2,6 +2,7 @@ using System.Text;
 using Entertainment_web_app.Data;
 using Entertainment_web_app.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -10,11 +11,8 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllersWithViews();
-
 // Connection string with DbContext
 var connectionString = builder.Configuration.GetConnectionString("NetwixDbContext");
-
 builder.Services.AddDbContext<NetwixDbContext>(options =>
     options.UseNpgsql(connectionString));
 
@@ -25,10 +23,11 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     options.Password.RequireLowercase = true;
 }).AddEntityFrameworkStores<NetwixDbContext>().AddDefaultTokenProviders();
 
-
+// Authentication/Authorization
 builder.Services.AddAuthentication(auth =>
 {
     auth.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    auth.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
@@ -40,8 +39,24 @@ builder.Services.AddAuthentication(auth =>
         RequireExpirationTime = true,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["AuthSettings:Key"])),
         ValidateIssuerSigningKey = true
-
     };
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            context.Token = context.Request.Cookies["_auth"];
+            return Task.CompletedTask;
+        }
+    };
+    options.RequireHttpsMetadata = false;
+    options.SaveToken = true;
+});
+
+builder.Services.AddAuthorization(options =>
+{
+    options.DefaultPolicy = new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme)
+        .RequireAuthenticatedUser()
+        .Build();
 });
 
 builder.Services.AddScoped<IUserService, UserService>();
@@ -69,10 +84,12 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddHttpContextAccessor();
+
+// Controllers/Views
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddControllers()
     .AddJsonOptions(options => { options.JsonSerializerOptions.PropertyNamingPolicy = null; });
-
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -86,8 +103,7 @@ builder.Services.AddSwaggerGen(c =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+if (app.Environment.IsDevelopment()) {
     app.UseMigrationsEndPoint();
     app.UseSwagger();
     app.UseSwaggerUI(options =>
@@ -95,16 +111,13 @@ if (app.Environment.IsDevelopment())
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
     });
 }
-else
-{
+else {
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseCors("CorsPolicy");
-
 app.UseHttpsRedirection();
-app.UseStaticFiles();
 
 app.UseAuthentication();
 app.UseRouting();
@@ -114,6 +127,5 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller}/{action=Index}/{id?}");
 
-app.MapFallbackToFile("/login");
 
 app.Run();
