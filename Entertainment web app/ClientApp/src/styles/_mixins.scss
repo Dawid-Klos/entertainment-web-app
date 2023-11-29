@@ -8,12 +8,13 @@
 
     &__title {
       font: $large-heading-mobile;
+      margin-bottom: 1.5rem;
     }
 
     &__content {
       display: grid;
       position: relative;
-      grid-gap: 1.5rem;
+      grid-gap: 0.75rem;
       grid-template-columns: 1fr 1fr;
     }
 }
