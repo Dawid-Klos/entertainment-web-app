@@ -11,7 +11,9 @@ const context =  [
     "/api/Auth/Register",
     "/api/Auth/Login",
     "/api/Auth/AuthenticateUser",
-    "/Search",
+    "/api/Search/SearchByTitle",
+    "/api/Search/SearchByCategory",
+    "/api/Search/SearchByCategoryAndTitle",
     "/swagger/v1/swagger.json",
     "/swagger",
 ];
