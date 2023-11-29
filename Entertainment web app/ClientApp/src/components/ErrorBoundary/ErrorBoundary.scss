@@ -1,0 +1,23 @@
+@import "../../variables";
+
+.error {
+  width: calc(100% - 2em);
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0 1em;
+  
+  &__title {
+    font: $large-heading-mobile;
+    font-size: 1.5rem;
+    padding: 0 0.5em;
+  }
+  
+  &__message {
+    margin-top: 1em;
+    text-align: center;
+  }
+}
