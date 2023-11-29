@@ -1,14 +1,15 @@
-@import "../../_variables.scss";
+@import "../../styles/_variables";
 
 .card {
   display: flex;
   flex-flow: column nowrap;
   justify-content: flex-start;
+  
   &__img {
     display: flex;
     justify-content: flex-end;
-    width: 10.2em;
-    height: 6.8em;
+    width: 100%;
+    min-height: 8em;
     background-size: cover;
     background-repeat: no-repeat;
     border-radius: 0.5em;

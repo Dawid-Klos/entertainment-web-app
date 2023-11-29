@@ -1,12 +1,15 @@
-@import "../../_variables.scss";
+@import "../../styles/_variables";
 
 .header {
+  width: 100%;
+  
   display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: $color-semi-dark-blue;
   max-height: 3.6em;
   padding: 1em 1em;
+  
   &__logo {
     width: 1.6em;
     height: 1.3em;

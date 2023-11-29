@@ -1,17 +1,19 @@
-@import "../../../variables";
+@import "../../../styles/variables";
 
 .trending {
-  width: 100%;
-  &__title {
-    font: $large-heading-mobile;
-    padding: 0 0.5em;
-  }
+  @include content_container;
+  
   &__content {
+    width: calc(100% + 2rem);
+    margin-left: -1rem;
+    padding: 0 1rem;
+    
     display: grid;
-    grid-gap: 1em;
-    grid-template-columns: repeat(5, calc(70% - 1em)) 10px;
+    grid-gap: 2rem;
+    grid-template-columns: repeat(5, calc(70% - 1rem)) 0;
     overflow-x: auto;
   }
+  
   &__content::-webkit-scrollbar {
     display: none;
   }

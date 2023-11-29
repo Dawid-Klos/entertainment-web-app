@@ -28,3 +28,13 @@ input, button, textarea, select {
   -moz-appearance: none;
   appearance: none;
 }
+
+#root {
+  display: flex;
+  flex-flow: column nowrap;
+  min-height: 100vh;
+  gap: 1rem;
+  padding: 0 1rem;
+  justify-content: flex-start;
+  align-items: center;
+}

@@ -4,7 +4,7 @@ import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
 import routerConfig from './config/routes';
 
-import './custom.scss';
+import './styles/custom.scss';
 
 
 const rootElement = document.getElementById('root');

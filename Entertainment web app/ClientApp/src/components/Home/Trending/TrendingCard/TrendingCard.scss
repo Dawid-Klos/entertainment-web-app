@@ -1,30 +1,31 @@
-@import "../../../../_variables.scss";
+@import "../../../../styles/_variables";
 
 .trending-card {
   display: flex;
   justify-content: space-between;
-  width: 14.2em;
-  height: 8em;
+  min-width: calc(100% - 0.5rem);
+  min-height: 7rem;
   background-size: cover;
   background-repeat: no-repeat;
-  border-radius: 0.5em;
-  padding: 0.5em;
-  margin: 0 1em;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  
   &__bookmark {
     display: flex;
     justify-content: center;
     align-items: center;
     width: 2em;
     height: 2em;
-    background-color: rgba(16, 20, 30, .5);
+    background-color: rgba(16, 20, 30, .75);
     border-radius: 50%;
   }
+  
   &__bookmark--img {
     
   }
   &__info {
     align-self: self-end;
-    padding-left: 0.5em;
+    padding-left: 0.5rem;
   }
   &__info--title {
     font: $small-heading-mobile;
@@ -38,10 +39,10 @@
   font: $medium-body-mobile;
   margin-bottom: -0.8em;
   &__year {
-    opacity: 75%;
+    opacity: 80%;
   }
   &__category {
-    opacity: 75%;
+    opacity: 80%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -51,7 +52,7 @@
     padding-right: .4em;
   }
   &__rating {
-    opacity: 75%;
+    opacity: 80%;
   }
   &__separator {
     align-self: center;
