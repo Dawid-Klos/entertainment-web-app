@@ -54,37 +54,44 @@ const Register = () => {
     return (
         <section className="register">
             <img className="register__logo" src={logo} alt="Netwix company logo"/>
-            <form className="register__form" onSubmit={handleSubmit}>
-                <h2 className="register__form--title">Sign up</h2>
-                <div className="input-container">
-                    <label htmlFor="email" className="input-container__label">Email address</label>
-                    <input className="input-container__input" type="text" ref={email} name="email" id="email"/>
-                </div>
-                <div className="input-container">
-                    <label htmlFor="firstname" className="input-container__label">Firstname</label>
-                    <input className="input-container__input" type="text" ref={firstName} name="firstname"
-                           id="firstname"/>
-                </div>
-                <div className="input-container">
-                    <label htmlFor="firstname" className="input-container__label">Lastname</label>
-                    <input className="input-container__input" type="text" ref={lastName} name="Lastname" id="Lastname"/>
-                </div>
-                <div className="input-container">
-                    <label htmlFor="password" className="input-container__label">Password</label>
-                    <input className="input-container__input" type="password" ref={password} name="password"
-                           id="password"/>
-                </div>
-                <div className="input-container">
-                    <label htmlFor="confirm-password" className="input-container__label">Confirm Password</label>
-                    <input className="input-container__input" type="password" ref={confirmPassword}
-                           id="confirm-password"/>
-                </div>
-                <button className="register__form--submit-btn" type="submit">Create an account</button>
+            
+            <div className="register__container">
+                <form className="form" onSubmit={handleSubmit}>
+                    <h2 className="form__title">Sign up</h2>
+                    <div className="input-container">
+                        <label htmlFor="email" className="input-container__label">Email address</label>
+                        <input className="input-container__input" type="text" ref={email} name="email" id="email"/>
+                    </div>
+                    <div className="input-container">
+                        <label htmlFor="firstname" className="input-container__label">Firstname</label>
+                        <input className="input-container__input" type="text" ref={firstName} name="firstname"
+                               id="firstname"/>
+                    </div>
+                    <div className="input-container">
+                        <label htmlFor="firstname" className="input-container__label">Lastname</label>
+                        <input className="input-container__input" type="text" ref={lastName} name="Lastname" id="Lastname"/>
+                    </div>
+                    <div className="input-container">
+                        <label htmlFor="password" className="input-container__label">Password</label>
+                        <input className="input-container__input" type="password" ref={password} name="password"
+                               id="password"/>
+                    </div>
+                    <div className="input-container">
+                        <label htmlFor="confirm-password" className="input-container__label">Confirm Password</label>
+                        <input className="input-container__input" type="password" ref={confirmPassword}
+                               id="confirm-password"/>
+                    </div>
+                    <button className="form__submit-btn" type="submit">Create an account</button>
+                </form>
+                
                 <div className="create-account">
                     <p className="create-account__text">Already have an account?</p>
                     <Link className="create-account__link" to="/login">Login</Link>
                 </div>
-            </form>
+            </div>
+
+
+
         </section>
     )
 }
