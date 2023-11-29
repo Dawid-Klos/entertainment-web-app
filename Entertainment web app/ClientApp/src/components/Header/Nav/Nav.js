@@ -5,7 +5,7 @@ const Nav = () => {
 
     return (
         <nav className="nav">
-            <NavLink className="nav__link" to="/">
+            <NavLink className="nav__link" to="/Library">
                 {({isActive}) => (
                     <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg">
                         <path
@@ -23,7 +23,7 @@ const Nav = () => {
                     </svg>
                 )}
             </NavLink>
-            <NavLink className="nav__link" to="/TV-series">
+            <NavLink className="nav__link" to="/TV-Series">
                 {({isActive}) => (
                     <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg">
                         <path
@@ -43,7 +43,6 @@ const Nav = () => {
                     </svg>
                 )}
             </NavLink>
-
         </nav>
     )
 }

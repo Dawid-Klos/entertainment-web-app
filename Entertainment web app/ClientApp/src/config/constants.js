@@ -2,7 +2,7 @@
 
 export const pages = {
     home: {
-        path: '/',
+        path: '/Library',
         placeholder: 'Search for movies or TV series',
         category: 'Library'
     },
@@ -14,7 +14,7 @@ export const pages = {
     tvSeries: {
         path: '/TV-Series',
         placeholder: 'Search for TV series',
-        category: 'TV-Series'
+        category: 'TV Series'
     },
     bookmarked: {
         path: '/Bookmarked',

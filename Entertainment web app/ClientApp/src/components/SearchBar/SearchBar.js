@@ -8,46 +8,39 @@ import "./SearchBar.scss";
 
 
 const SearchBar = () => {
-    const [placeholder, setPlaceholder] = useState("Search for movies or TV series");
+    const [pageInfo, setPageInfo] = useState(pages.home);
     const [searchParams, setSearchParams] = useSearchParams();
+    
     const navigate = useNavigate();
     const location = useLocation();
     
-    const getCurrenPage = () => {
-        if(location.pathname === "/") {
-            return "Library";
-        }
-        
-        return Object.values(pages).find(page => location.pathname.includes(page.path)).category;
-    }
-    
     const handleQuery = (e) => {
-        const category = getCurrenPage();
-        
         const query = e.target.value ? e.target.value : " ";
-        const searchQuery = { query: query, category: category };
+        const searchQuery = { query: query, category: pageInfo.category };
         
-        console.log(searchQuery);
         setSearchParams(searchQuery, { replace: true });
     }
 
     const navigateToSearch = (e) => {
         e.preventDefault();
 
-        const query = searchParams.get("query");
-        const category = searchParams.get("category");
+        let query = searchParams.get("query");
 
-        if(!category) {
-            return;
+        if(!query) {
+            query = "";
         }
-
-        navigate(`/Search/${category}/${query}`);
+        
+        console.log("Search category", pageInfo.path);
+        
+        navigate(`/Search${pageInfo.path}/${query}`);
     }
+    
 
     useEffect(() => {
-        const placeholder = Object.values(pages).find(page => page.category === getCurrenPage()).placeholder;
-        setPlaceholder(placeholder);
+        let currentPage = Object.values(pages).find(page => location.pathname.includes(page.path));
+        currentPage = currentPage ? currentPage : pages.home;
         
+        setPageInfo(currentPage);
     }, [location.pathname]);
     
     return (
@@ -55,8 +48,8 @@ const SearchBar = () => {
             <img className="searchBar__icon" src={searchIcon} alt="Search icon"/>
             
             <form className="searchBar__search" onSubmit={navigateToSearch}>
-                <label htmlFor="search" className="visually-hidden">{ placeholder }</label>
-                <input className="searchBar__search--input" type="text" onChange={handleQuery} value={ searchParams.query } id="search" name="search" placeholder={ placeholder }/>
+                <label htmlFor="search" className="visually-hidden">{ pageInfo.placeholder }</label>
+                <input className="searchBar__search--input" type="text" onChange={handleQuery} value={ searchParams.query } id="search" name="search" placeholder={ pageInfo.placeholder }/>
             </form>
             
         </div>

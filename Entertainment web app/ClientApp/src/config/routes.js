@@ -1,4 +1,4 @@
-import {isRouteErrorResponse, redirect, useRouteError} from "react-router-dom";
+import {redirect} from "react-router-dom";
 
 import {fetchAllMovies, fetchHomeContent, fetchSearchResult, fetchTvSeries} from '../utils/fetchContent';
 import {AuthenticateUser} from '../utils/authUser';
@@ -29,7 +29,7 @@ const routerConfig = [
         },
         children: [
             {
-                path: '/',
+                path: '/Library',
                 exact: true,
                 element: <Home/>,
                 loader: () => fetchHomeContent(),
