@@ -32,10 +32,7 @@ const Login = () => {
         }
         
         if(res && res.isSuccess) {
-            // const token = res.Message;
-            // const expireDate = new Date(res.ExpireDate);
-
-            navigate("/");
+            navigate("/Library");
         } else {
             console.log("There is some problem, user not logged in!");
             // TODO: Show error message to the user

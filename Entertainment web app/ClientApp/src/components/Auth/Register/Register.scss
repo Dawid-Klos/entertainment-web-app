@@ -43,6 +43,16 @@
     padding: 1rem;
     border-radius: .5rem;
   }
+  
+  &__success {
+    color: $color-white;
+    font: $small-heading-mobile;
+  }
+  
+  &__error {
+    color: $color-red;
+    font: $small-heading-mobile;
+  }
 }
 
 .input-container {
