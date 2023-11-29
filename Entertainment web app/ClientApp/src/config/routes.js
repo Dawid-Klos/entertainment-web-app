@@ -1,6 +1,6 @@
 import {isRouteErrorResponse, redirect, useRouteError} from "react-router-dom";
 
-import {fetchAllMovies, fetchHomeContent, fetchMovie, fetchTvSeries} from '../utils/fetchContent';
+import {fetchAllMovies, fetchHomeContent, fetchSearchResult, fetchTvSeries} from '../utils/fetchContent';
 import {AuthenticateUser} from '../utils/authUser';
 
 import Layout from '../components/Layout';
@@ -11,31 +11,7 @@ import Home from '../components/Home/Home';
 import Search from '../components/Search/Search';
 import Login from '../components/Auth/Login/Login';
 import Register from '../components/Auth/Register/Register';
-
-
-function ErrorBoundary() {
-    const error = useRouteError();
-
-    if (isRouteErrorResponse(error)) {
-        if (error.status === 404) {
-            return <div>This page doesn't exist!</div>;
-        }
-
-        if (error.status === 401) {
-            return <div>You aren't authorized to see this</div>;
-        }
-
-        if (error.status === 503) {
-            return <div>Looks like our API is down</div>;
-        }
-
-        if (error.status === 418) {
-            return <div>🫖</div>;
-        }
-    }
-
-    return <div>Something went wrong</div>;
-}
+import ErrorBoundary from '../components/ErrorBoundary/ErrorBoundary';
 
 
 const routerConfig = [
@@ -45,7 +21,7 @@ const routerConfig = [
         loader: async () => {
             const userLoggedIn = await AuthenticateUser();
 
-            if (userLoggedIn === null) {
+            if (userLoggedIn === null || userLoggedIn === false) {
                 return redirect('/login');
             }
 
@@ -54,48 +30,29 @@ const routerConfig = [
         children: [
             {
                 path: '/',
+                exact: true,
                 element: <Home/>,
                 loader: () => fetchHomeContent(),
-                children: [
-                    {
-                        path: ':query',
-                        element: <Search/>
-                    }
-                ]
             },
             {
-                path: '/movies',
+                path: '/Search/:category/:query?',
+                element: <Search/>,
+                loader: ({ params }) => fetchSearchResult(params),
+            },
+            {
+                path: '/Movies',
                 element: <Movies/>,
                 loader: () => fetchAllMovies(),
-                children: [
-                    {
-                        path: ':query',
-                        loader: ({params}) => fetchMovie(params),
-                        element: <Search/>
-                    }
-                ]
             },
             {
-                path: '/tv-series',
+                path: '/TV-series',
                 element: <TVSeries/>,
                 loader: () => fetchTvSeries(),
-                children: [
-                    {
-                        path: ':query',
-                        element: <Search/>
-                    }
-                ]
             },
             {
-                path: '/bookmarked',
+                path: '/Bookmarked',
                 element: <Bookmark/>,
                 errorElement: <ErrorBoundary/>,
-                children: [
-                    {
-                        path: ':query',
-                        element: <Search/>
-                    }
-                ],
             }
         ]
     },

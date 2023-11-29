@@ -1,6 +1,7 @@
 import {useRef} from "react";
 import {Link, useNavigate} from "react-router-dom";
 
+import logo from '../../../assets/logo.svg';
 import './Login.scss';
 
 const Login = () => {
@@ -30,19 +31,20 @@ const Login = () => {
             console.log("Error: ", error);
         }
         
-        if(res && res.isSuccess && res.Errors == null) {
+        if(res && res.isSuccess) {
             const token = res.Message;
             const expireDate = new Date(res.ExpireDate);
 
             navigate("/");
         } else {
             console.log("There is some problem, user not logged in!");
+            // TODO: Show error message to the user
         }
     }
     
     return (
         <section className="login">
-            <img className="login__logo" src="./assets/logo.svg" alt="Netwix company logo"/>
+            <img className="login__logo" src={logo} alt="Netwix company logo"/>
             <form className="login__form" onSubmit={handleSubmit}>
                 <h2 className="login__form--title">Login</h2>
                 <div className="input-container">

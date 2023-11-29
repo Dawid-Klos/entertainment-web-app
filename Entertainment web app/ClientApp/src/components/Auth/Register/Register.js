@@ -1,9 +1,10 @@
-import './Register.scss';
 import {Link} from 'react-router-dom';
 import {useRef} from 'react';
 
-const Register = () => {
+import logo from '../../../assets/logo.svg';
+import './Register.scss';
 
+const Register = () => {
     const firstName = useRef();
     const lastName = useRef();
     const email = useRef();
@@ -52,7 +53,7 @@ const Register = () => {
 
     return (
         <section className="register">
-            <img className="register__logo" src="./assets/logo.svg" alt="Netwix company logo"/>
+            <img className="register__logo" src={logo} alt="Netwix company logo"/>
             <form className="register__form" onSubmit={handleSubmit}>
                 <h2 className="register__form--title">Sign up</h2>
                 <div className="input-container">
@@ -78,7 +79,6 @@ const Register = () => {
                     <input className="input-container__input" type="password" ref={confirmPassword}
                            id="confirm-password"/>
                 </div>
-                {/*{ errors ?  }*/}
                 <button className="register__form--submit-btn" type="submit">Create an account</button>
                 <div className="create-account">
                     <p className="create-account__text">Already have an account?</p>

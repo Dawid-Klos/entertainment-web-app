@@ -1,3 +1,7 @@
+import categoryMovieIcon from "../../../../assets/icon-category-movie.svg";
+import categoryTvIcon from "../../../../assets/icon-category-tv.svg";
+import bookmarkIcon from "../../../../assets/icon-bookmark-empty.svg";
+
 import "./TrendingCard.scss";
 
 const image = "./assets/thumbnails/1998/trending/small.jpg";
@@ -14,8 +18,8 @@ const TrendingCard = ({movie}) => {
                     <span className="trending-info__separator"></span>
                     <p className="trending-info__category">
                         <img className="trending-info__category--img"
-                             src={Category === "Movie" ? "./assets/icon-category-movie.svg" : "./assets/icon-category-tv.svg"}
-                             alt={Category === "Movie" ? "Icon of movie" : "Icon of TV Series"}/>
+                             src={Category === "Movie" ? categoryMovieIcon : categoryTvIcon}
+                             alt={Category === "Movie" ? "Movie" : "TV Series"} />
                         {Category}
                     </p>
                     <span className="trending-info__separator"></span>
@@ -25,7 +29,7 @@ const TrendingCard = ({movie}) => {
             </div>
 
             <div className="trending-card__bookmark">
-                <img className="trending-card__bookmark--img" src="./assets/icon-bookmark-empty.svg"
+                <img className="trending-card__bookmark--img" src={bookmarkIcon}
                      alt="Bookmark icon"/>
             </div>
         </div>

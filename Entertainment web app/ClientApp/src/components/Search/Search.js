@@ -1,51 +1,34 @@
-import {useParams, useLocation} from 'react-router-dom';
+import { useLoaderData } from 'react-router-dom';
 import {useState, useEffect} from "react";
-import './Search.scss';
+
+import { pages } from '../../config/constants';
 import Card from "../Card/Card";
+import './Search.scss';
+
 
 const Search = () => {
-    const [searchResult, setSearchResult] = useState(null);
     const [title, setTitle] = useState(null);
-    const location = useLocation();
-
-    const {query} = useParams();
-
-    const setTitleForQuery = (numberOfResults) => {
-        setTitle(`Found ${numberOfResults} results for '${query}'`);
+    const searchResult = useLoaderData();
+    
+    const setTitleForQuery = () => {
+        setTitle(`Found ${searchResult.data.length} results for '${searchResult.query}' in ${searchResult.category}`);
     }
     
-    const setCategoryFormat = (category) => {
-        switch(category) {
-            case "/":
-                return " ";
-            case "/movies":
-                return "Movie";
-            case "/tv-series":
-                return "TV Series"
-            default:
-                return " ";
-        }
-    }
-
-    const getMoviesForQuery = async () => {
-        const category = setCategoryFormat(location.state.category);
-        let fetchSearchResult = await fetch(`api/Movies/Search?search=${query}&category=${category}`);
-        fetchSearchResult = await fetchSearchResult.json();
-        setSearchResult(fetchSearchResult);
-
-        const numberOfResults = fetchSearchResult.length;
-        setTitleForQuery(numberOfResults, query);
-    }
-
+    
     useEffect(() => {
-        getMoviesForQuery();
-    }, [query]);
+        if(!searchResult) {
+            console.log("No search result");
+            return;
+        }
+        console.log(searchResult);
+        setTitleForQuery();
+    }, [searchResult]);
 
     return (
         <div className="search">
             <h1 className="search__title">{title}</h1>
             <div className="search__content">
-                {searchResult ? searchResult.map(movie => <Card key={movie.MovieId} movie={movie}/>) : null}
+                {searchResult ? searchResult.data.map(movie => <Card key={movie.MovieId} movie={movie}/>) : <p>Content has not been found</p>}
             </div>
         </div>
     )

@@ -14,7 +14,7 @@ const Nav = () => {
                     </svg>
                 )}
             </NavLink>
-            <NavLink className="nav__link" to="/movies">
+            <NavLink className="nav__link" to="/Movies">
                 {({isActive}) => (
                     <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg">
                         <path
@@ -23,7 +23,7 @@ const Nav = () => {
                     </svg>
                 )}
             </NavLink>
-            <NavLink className="nav__link" to="/tv-series">
+            <NavLink className="nav__link" to="/TV-series">
                 {({isActive}) => (
                     <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg">
                         <path
@@ -33,7 +33,7 @@ const Nav = () => {
                     </svg>
                 )}
             </NavLink>
-            <NavLink className="nav__link" to="/bookmarked">
+            <NavLink className="nav__link" to="/Bookmarked">
                 {({isActive}) => (
                     <svg width="17" height="20" xmlns="http://www.w3.org/2000/svg">
                         <path
