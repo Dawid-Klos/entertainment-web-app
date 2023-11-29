@@ -21,38 +21,51 @@ public class MoviesController : ControllerBase
     [Route("[action]")]
     public async Task<IActionResult> GetAllMovies()
     {
-        var movies = await _context.Movies.FromSqlRaw("SELECT * FROM \"Movies\" WHERE \"Category\" = 'Movie'").ToListAsync();
-        return new JsonResult(movies);
-    }
-    
-    [HttpGet]
-    [Route("[action]")]
-    public async Task<IActionResult> Search([FromQuery] string search,[FromQuery]string? category)
-    {
-        var searchString = search;
-        var categoryString = category;
-        var movie = await _context.Movies
-.FromSqlRaw($"SELECT * FROM \"Movies\" WHERE \"Title\" LIKE '%{searchString}%' AND \"Category\" LIKE '%{categoryString}%'").ToListAsync();
-        return new JsonResult(movie);
+        try
+        {
+            var movies = await _context.Movies
+                .FromSqlRaw($"SELECT * FROM \"Movies\" WHERE \"Category\" = 'Movies'").ToListAsync();
+            
+            return new JsonResult(movies);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, $"An error occurred: {ex.Message}");
+        }
     }
     
     [HttpGet]
     [Route("[action]")]
     public async Task<IActionResult> GetTrendingMovies()
     {
-        var trendingMovies =
-            await _context.Movies.FromSqlRaw("SELECT * FROM \"Movies\" WHERE \"IsTrending\" = 'True' ").ToListAsync();
+        try
+        {
+            var trendingMovies = await _context.Movies.
+                FromSqlRaw($"SELECT * FROM \"Movies\" WHERE \"IsTrending\" = 'True' ").ToListAsync();
         
-        return new JsonResult(trendingMovies);
+            return new JsonResult(trendingMovies);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, $"An error occurred: {ex.Message}");
+        }
     }
     
     [HttpGet]
     [Route("[action]")]
     public async Task<IActionResult> GetTvSeries()
     {
-        var tvSeries =
-            await _context.Movies.FromSqlRaw("SELECT * FROM \"Movies\" WHERE \"Category\" = 'TV Series'").ToListAsync();
-        return new JsonResult(tvSeries);
+        try
+        {
+            var tvSeries = await _context.Movies
+                .FromSqlRaw($"SELECT * FROM \"Movies\" WHERE \"Category\" = 'TV Series'").ToListAsync();
+           
+            return new JsonResult(tvSeries);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, $"An error occurred: {ex.Message}");
+        }
     }
 
     // [HttpGet]
@@ -61,7 +74,7 @@ public class MoviesController : ControllerBase
     // {
     //     // var user = await _context.Users.FindAsync(userId);
     //     var user = await _context.Users.FindAsync(userId);
-    //     var bookmarkedMovies = _context.Movies.FromSqlRaw(
+    //     var bookmarkedMovies = _context.Movies.FromSqlInterpolated(
     //         "SELECT * FROM Movies INNER JOIN ApplicationUserMovie ON ApplicationUserMovie.MoviesMovieId = AspNetUsers.Id WHERE isBookmarked = 1").ToListAsync();
     //
     //     return new JsonResult(bookmarkedMovies);
