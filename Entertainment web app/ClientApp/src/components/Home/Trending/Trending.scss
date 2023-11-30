@@ -1,20 +1,53 @@
 @import "../../../styles/variables";
 
 .trending {
-  @include content_container;
-  
+  width: 100%;
+
+  @include breakpoint(desktop_md) {
+    grid-area: main;
+    max-width: calc(100dvw - 14rem);
+  }
+
+  &__title {
+    margin-bottom: 1.5rem;
+  }
+
   &__content {
-    width: 100%;
+    min-width: 100%;
     margin-left: -1rem;
     padding: 0 1rem;
     
     display: grid;
+    position: relative;
     grid-gap: 2rem;
-    grid-template-columns: repeat(5, calc(70% - 1rem)) 0;
+    grid-template-columns: repeat(5, 16rem) 0;
     overflow-x: auto;
-  }
-  
-  &__content::-webkit-scrollbar {
-    display: none;
+    
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    @include breakpoint(mobile) {
+      grid-template-columns: repeat(5, 18rem);
+    }
+
+    @include breakpoint(tablet) {
+      padding: 0 2rem;
+      margin-left: -2rem;
+      width: calc(100% + 2rem);
+      grid-template-columns: repeat(5, 28rem);
+      grid-gap: 2.25rem;
+    }
+
+    @include breakpoint(desktop_md) {
+      padding: 0;
+      margin-left: 0;
+      grid-gap: 2.25rem;
+      grid-template-columns: repeat(5, 40rem) 0px;
+    }
+    
+    @include breakpoint(desktop_lg) {
+      grid-template-columns: repeat(5, 48rem);
+    }
   }
 }

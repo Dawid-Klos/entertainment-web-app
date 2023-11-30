@@ -3,17 +3,38 @@
 .nav {
   display: flex;
   align-items: center;
-  gap: 1.2em;
+
+  @include breakpoint(desktop_md) {
+    max-width: 30%;
+    min-height: 100%;
+    flex-direction: column;
+    justify-self: flex-start;
+  }
+  
   &__link {
+    @include transition;
     display: flex;
     align-items: center;
+    padding: 0.5rem;
+
+    @include breakpoint(tablet) {
+      padding: 1rem;
+    }
   }
+  
   svg {
     transform: scale(0.8);
+    
+    @include breakpoint(tablet) {
+      transform: scale(1);
+    }
   }
+  
   &__link--active {
+    @include transition;
     fill: $color-white;
   }
+  
   &__link--default {
     fill: #5A698F;
   }

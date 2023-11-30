@@ -10,11 +10,17 @@
 // Global styles
 body {
   background-color: $color-dark-blue;
-  font-size: 16px;
   color: $color-white;
-  font-family: $font-family;
-  font-weight: $light;
+  font: $medium-body-mobile;
   padding-bottom: 4em;
+  
+  @include breakpoint(tablet) {
+    font: $small-body-desktop;
+  }
+  
+  @include breakpoint(desktop_md) {
+      font: $medium-body-desktop;
+  }
 }
 
 // Remove default styles
@@ -37,4 +43,56 @@ input, button, textarea, select {
   padding: 0 1rem;
   justify-content: flex-start;
   align-items: center;
+  
+  @include breakpoint(tablet) {
+    padding: 0 2rem;
+    gap: 2rem;
+  }
+  
+  @include breakpoint(desktop_md) {
+      width: calc(100% - 4rem);
+      display: grid;
+      row-gap: 1rem;
+      column-gap: 2rem;
+      grid-template-areas: "aside searchBar"
+                            "aside main"
+                            "aside footer";
+      align-items: start;
+  }
+}
+
+h1 {
+  font: $large-heading-mobile;
+  
+  @include breakpoint('tablet') {
+    font: $medium-heading-desktop;
+  }
+
+  @include breakpoint('desktop_md') {
+      font: $large-heading-desktop;
+  }
+}
+
+h2 {
+  font: $small-heading-mobile;
+  
+    @include breakpoint('tablet') {
+        font: $small-heading-desktop;
+    }
+  
+    @include breakpoint('desktop_md') {
+        font: $medium-heading-desktop;
+    }
+}
+
+h3 {
+  font: $extra-small-heading-mobile;
+  
+    @include breakpoint('tablet') {
+        font: $extra-small-heading-desktop;
+    }
+  
+    @include breakpoint('desktop_md') {
+        font: $small-heading-desktop;
+    }
 }

@@ -2,4 +2,6 @@
 
 .recommend {
   @include content_container;
+  
+  grid-area: footer !important;
 }

@@ -6,6 +6,17 @@
   justify-content: flex-start;
   align-items: center;
   padding: 0 1rem;
+  
+@include breakpoint(tablet) {
+    margin-top: -1rem;
+  }
+  
+  @include breakpoint(desktop_md) {
+    grid-area: searchBar;
+    min-width: calc(100dvw - 14rem);
+    padding: 0;
+    margin-top: 4rem;
+  }
     
   &__icon {
     width: 1.5em;
@@ -19,7 +30,6 @@
   &__search--input {
     width: calc(100% - 2rem);
     margin: 0 1rem;
-    font: 300 1em $font-family;
     color: $color-white;
   }
 }
