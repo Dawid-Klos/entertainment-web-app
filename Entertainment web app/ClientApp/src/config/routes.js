@@ -29,6 +29,11 @@ const routerConfig = [
         },
         children: [
             {
+                path: '/',
+                exact: true,
+                loader: () => redirect('/Library'),
+            },
+            {
                 path: '/Library',
                 exact: true,
                 element: <Home/>,
