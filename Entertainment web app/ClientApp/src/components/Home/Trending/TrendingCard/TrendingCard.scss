@@ -4,27 +4,27 @@
   position: relative;
   display: flex;
   justify-content: space-between;
-  min-width: calc(100% - 1rem);
-  min-height: 8.5rem;
+  min-height: 8rem;
   border-radius: 0.5rem;
   padding: 0.5rem;
   
   @include breakpoint(mobile) {
-    min-width: calc(100% - 1.5rem);
-    min-height: 10rem;
-    padding: 0.75rem;
+    padding: 1rem;
   }
   
   @include breakpoint(tablet) {
-    min-width: calc(100% - 1rem);
     min-height: 12rem;
     padding: 1rem;
   }
 
   @include breakpoint(desktop_md) {
-      min-width: 30rem;
-      min-height: 20rem;
+      min-height: 12rem;
       padding: 1rem;
+  }
+  
+  @include breakpoint(desktop_lg) {
+      min-height: 16rem;
+      padding: 1.5rem;
   }
   
   &:after {
@@ -55,24 +55,19 @@
   &__info {
     z-index: 1;
     align-self: self-end;
-    padding-left: 0.5rem;
-    font: $small-body-mobile;
     
-    @include breakpoint(mobile) {
-      font: $medium-body-mobile;
-    }
     
-    @include breakpoint(tablet) {
-      font: $small-body-desktop;
-    }
+    &--title {
+      margin: 0;
+      
+        @include breakpoint(tablet) {
+          font: $small-heading-desktop;
+        }
 
-    @include breakpoint(desktop_md) {
-      font: $medium-body-desktop;
+        @include breakpoint(desktop_lg) {
+          font: $medium-heading-desktop;
+        }
     }
-  }
-  
-  &__info--title {
-    margin: 0;
   }
 }
 
@@ -80,6 +75,14 @@
   display: flex;
   flex-flow: row nowrap;
   margin-bottom: -0.8em;
+
+  @include breakpoint(mobile) {
+    font: $small-body-mobile;
+  }
+  
+  @include breakpoint(tablet) {
+    font: $medium-body-mobile;
+  }
   
   &__year {
     opacity: 80%;
