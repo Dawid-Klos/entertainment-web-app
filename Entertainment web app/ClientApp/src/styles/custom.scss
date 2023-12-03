@@ -65,10 +65,12 @@ input, button, textarea, select {
       grid-template-areas: "aside searchBar"
                             "aside main"
                             "aside footer";
+      grid-template-columns: 1fr 12fr;
       align-items: start;
   }
   
     @include breakpoint(desktop_lg) {
+      grid-template-columns: 1fr 16fr;
       row-gap: 3rem;
     }
 }

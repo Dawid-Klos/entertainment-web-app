@@ -8,35 +8,37 @@
 
   @include breakpoint(desktop_md) {
     grid-area: main;
+    display: flex;
+    flex-direction: column;
   }
   
-    &__content {
-      display: grid;
-      position: relative;
-      grid-gap: 2rem 0.5rem;
-      grid-template-columns: 1fr 1fr;
-      align-content: flex-start;
-      
-      @include breakpoint(mobile) {
-        grid-gap: 2rem 1rem;
-      }
-      
-      @include breakpoint(tablet) {
-        grid-template-columns: 1fr 1fr 1fr;
-        grid-gap: 1.5rem;
-      }
-      
-      @include breakpoint(desktop_md) {
-        min-height: 90dvh;
-        grid-template-columns: repeat(4, 1fr);
-        grid-gap: 1.5rem;
-        row-gap: 3rem;
-      }
-      
-      @include breakpoint(desktop_lg) {
-        gap: 2rem;
-      }
+  &__content {
+    display: grid;
+    position: relative;
+    grid-gap: 2rem 0.5rem;
+    grid-template-columns: 1fr 1fr;
+    align-content: flex-start;
+    
+    @include breakpoint(mobile) {
+      grid-gap: 2rem 1rem;
     }
+    
+    @include breakpoint(tablet) {
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-gap: 1.5rem;
+    }
+    
+    @include breakpoint(desktop_md) {
+      min-height: 90dvh;
+      grid-template-columns: repeat(4, 1fr);
+      grid-gap: 1.5rem;
+      row-gap: 3rem;
+    }
+    
+    @include breakpoint(desktop_lg) {
+      gap: 2rem;
+    }
+  }
 }
 
 @mixin breakpoint($point) {
