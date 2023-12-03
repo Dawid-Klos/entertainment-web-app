@@ -1,8 +1,7 @@
 using System.ComponentModel.DataAnnotations;
-using Entertainment_web_app.Data;
 using Microsoft.AspNetCore.Identity;
 
-namespace Entertainment_web_app.Models;
+namespace Entertainment_web_app.Data;
 
 public class ApplicationUser : IdentityUser
 {
@@ -12,5 +11,5 @@ public class ApplicationUser : IdentityUser
     [Required]
     [StringLength(20)]
     public string? Lastname { get; set; }
-    public virtual ICollection<Movie>? Movies { get; set; }
+    public ICollection<Movie> Bookmarks { get; } = new List<Movie>();
 }
