@@ -1,0 +1,112 @@
+// Normalize pre-default CSS values
+@import "normalize-scss/sass/normalize/import-now";
+
+// Import required fonts
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;500&display=swap');
+
+// Additional imports
+@import "_variables.scss";
+
+// Global styles
+body {
+  background-color: $color-dark-blue;
+  color: $color-white;
+  font: $small-body-mobile;
+  padding-bottom: 4rem;
+  
+  @include breakpoint(mobile) {
+      font: $medium-body-mobile;
+  }
+  
+  @include breakpoint(desktop_lg) {
+    font: $small-body-desktop;
+  }
+  
+  @include breakpoint(desktop_xl) {
+    font: $medium-body-desktop;
+  }
+}
+
+// Remove default styles
+input, button, textarea, select {
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 0;
+  outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+#root {
+  display: flex;
+  flex-flow: column nowrap;
+  min-height: 100vh;
+  gap: 1.5rem;
+  padding: 0 0.5rem;
+  justify-content: flex-start;
+  align-items: center;
+  
+  @include breakpoint(mobile) {
+    padding: 0 1rem;
+  }
+  
+  @include breakpoint(tablet) {
+    padding: 0 2rem;
+    gap: 2.5rem;
+  }
+  
+  @include breakpoint(desktop_md) {
+      width: calc(100% - 4rem);
+      display: grid;
+      row-gap: 1rem;
+      column-gap: 2rem;
+      grid-template-areas: "aside searchBar"
+                            "aside main"
+                            "aside footer";
+      align-items: start;
+  }
+  
+    @include breakpoint(desktop_lg) {
+      row-gap: 3rem;
+    }
+}
+
+h1 {
+  font: $large-heading-mobile;
+  margin: 0 0 1rem;
+
+  @include breakpoint(desktop_lg) {
+    font: $medium-heading-desktop;
+  }
+
+  @include breakpoint(desktop_xl) {
+      font: $large-heading-desktop;
+  }
+}
+
+h2 {
+  font: $small-heading-mobile;
+  margin: 0 0 1rem;
+  
+    @include breakpoint(desktop_lg) {
+        font: $small-heading-desktop;
+    }
+  
+    @include breakpoint(desktop_xl) {
+        font: $medium-heading-desktop;
+    }
+}
+
+h3 {
+  font: $extra-small-heading-mobile;
+  
+    @include breakpoint(desktop_lg) {
+        font: $extra-small-heading-desktop;
+    }
+  
+    @include breakpoint(desktop_xl) {
+        font: $small-heading-desktop;
+    }
+}

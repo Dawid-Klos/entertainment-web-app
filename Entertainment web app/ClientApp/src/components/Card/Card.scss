@@ -1,18 +1,26 @@
-@import "../../_variables.scss";
+@import "../../styles/_variables";
 
 .card {
   display: flex;
   flex-flow: column nowrap;
   justify-content: flex-start;
+  min-width: max-content;
+  
   &__img {
     display: flex;
     justify-content: flex-end;
-    width: 10.2em;
-    height: 6.8em;
+    width: 100%;
+    min-height: 8rem;
     background-size: cover;
     background-repeat: no-repeat;
     border-radius: 0.5em;
+    
+    @include breakpoint(desktop_md) {
+      min-height: 14rem;
+    }
+    
   }
+  
   &__img--bookmark {
     display: flex;
     justify-content: center;
@@ -23,11 +31,12 @@
     border-radius: 50%;
     margin: 0.5em;
   }
+  
   &__info {
     margin-top: -0.35em;
   }
+  
   &__info--title {
-    font: $small-heading-mobile;
     margin: 0;
   }
 }
@@ -35,24 +44,24 @@
 .info {
   display: flex;
   flex-flow: row nowrap;
-  font: $small-body-mobile;
   margin-bottom: -0.8em;
-  &__year {
-    opacity: 75%;
+  opacity: 80%;
+  
+  @include breakpoint(mobile) {
+    font: $small-body-mobile;
   }
+  
   &__category {
-    opacity: 75%;
     display: flex;
     justify-content: center;
     align-items: center;
   }
+  
   &__category--img {
     opacity: 100%;
     padding-right: .4em;
   }
-  &__rating {
-    opacity: 75%;
-  }
+  
   &__separator {
     align-self: center;
     margin: 0 .45em;

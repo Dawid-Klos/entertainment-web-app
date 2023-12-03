@@ -11,7 +11,12 @@ const TrendingCard = ({movie}) => {
     const {ImgTrendingSmall, Title, Year, Rating, Category} = movie;
 
     return (
-        <div className="trending-card" style={{backgroundImage: 'url(' + ImgTrendingSmall + ')'}}>
+        <div className="trending-card" style={{
+            backgroundImage: 'url(' + ImgTrendingSmall + ')',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat'
+        }}>
             <div className="trending-card__info">
                 <div className="trending-info">
                     <p className="trending-info__year">{Year}</p>

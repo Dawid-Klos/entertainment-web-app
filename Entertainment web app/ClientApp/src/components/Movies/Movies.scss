@@ -1,16 +1,5 @@
-@import "../../variables";
+@import "../../styles/variables";
 
 .movies {
-  width: calc(100% - 2em);
-  padding: 0 1em;
-  &__title {
-    font: $large-heading-mobile;
-  }
-  &__content {
-    display: grid;
-    justify-items: center;
-    position: relative;
-    grid-gap: 1em;
-    grid-template-columns: 1fr 1fr;
-  }
+  @include content_container;
 }

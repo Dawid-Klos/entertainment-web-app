@@ -1,21 +1,54 @@
-@import "../../_variables.scss";
+@import "../../styles/_variables";
 
 .header {
+  width: calc(100% - 1rem);
   display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: $color-semi-dark-blue;
-  max-height: 3.6em;
-  padding: 1em 1em;
+  padding: 0.75rem 1rem;
+
+  @include breakpoint(mobile) {
+    width: 100%;
+  }
+
+  @include breakpoint(tablet) {
+    border-radius: 0.75rem;
+    margin: 1rem;
+  }
+  
+  @include breakpoint(desktop_md) {
+    grid-area: aside;
+    place-self: flex-start;
+    max-width: 4rem;
+    min-height: 80dvh;
+    margin-left: 0;
+    flex-direction: column;
+    position: sticky;
+    top: 2rem;
+    left: 0;
+  }
+  
   &__logo {
     width: 1.6em;
     height: 1.3em;
+    
+    @include breakpoint(desktop_md) {
+      width: 2em;
+      height: 1.6em;
+    }
   }
+  
   &__avatar {
     background-color: $color-white;
     border: 1px solid $color-white; 
     border-radius: 50%;
-    width: 1.5em;
-    height: 1.5em;
+    width: 1.5rem;
+    height: 1.5rem;
+    
+    @include breakpoint(desktop_md) {
+      width: 2.5rem;
+      height: 2.5rem;
+    }
   }
 }

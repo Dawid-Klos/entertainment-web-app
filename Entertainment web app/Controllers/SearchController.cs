@@ -28,6 +28,7 @@ public class SearchController : ControllerBase
         }
         
         var titleParam = new NpgsqlParameter(":title", "%" + title + "%");
+        
         string sqlQuery = "SELECT * FROM \"Movies\" WHERE \"Title\" LIKE :title";
         
         try

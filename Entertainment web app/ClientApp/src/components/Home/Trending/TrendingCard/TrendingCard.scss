@@ -1,58 +1,109 @@
-@import "../../../../_variables.scss";
+@import "../../../../styles/_variables";
 
 .trending-card {
+  position: relative;
   display: flex;
   justify-content: space-between;
-  width: 14.2em;
-  height: 8em;
-  background-size: cover;
-  background-repeat: no-repeat;
-  border-radius: 0.5em;
-  padding: 0.5em;
-  margin: 0 1em;
+  min-height: 8rem;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  
+  @include breakpoint(mobile) {
+    padding: 1rem;
+  }
+  
+  @include breakpoint(tablet) {
+    min-height: 12rem;
+    padding: 1rem;
+  }
+
+  @include breakpoint(desktop_md) {
+      min-height: 12rem;
+      padding: 1rem;
+  }
+  
+  @include breakpoint(desktop_lg) {
+      min-height: 16rem;
+      padding: 1.5rem;
+  }
+  
+  &:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    border-radius: 0.5rem;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.00) 40%, rgba(0, 0, 0, 0.9) 100%);
+  }
+  
   &__bookmark {
     display: flex;
     justify-content: center;
     align-items: center;
     width: 2em;
     height: 2em;
-    background-color: rgba(16, 20, 30, .5);
+    background-color: rgba(16, 20, 30, .75);
     border-radius: 50%;
   }
+  
   &__bookmark--img {
     
   }
+  
   &__info {
+    z-index: 1;
     align-self: self-end;
-    padding-left: 0.5em;
-  }
-  &__info--title {
-    font: $small-heading-mobile;
-    margin: 0;
+    
+    
+    &--title {
+      margin: 0;
+      
+        @include breakpoint(tablet) {
+          font: $small-heading-desktop;
+        }
+
+        @include breakpoint(desktop_lg) {
+          font: $medium-heading-desktop;
+        }
+    }
   }
 }
 
 .trending-info {
   display: flex;
   flex-flow: row nowrap;
-  font: $medium-body-mobile;
   margin-bottom: -0.8em;
-  &__year {
-    opacity: 75%;
+
+  @include breakpoint(mobile) {
+    font: $small-body-mobile;
   }
+  
+  @include breakpoint(tablet) {
+    font: $medium-body-mobile;
+  }
+  
+  &__year {
+    opacity: 80%;
+  }
+  
   &__category {
-    opacity: 75%;
+    opacity: 80%;
     display: flex;
     justify-content: center;
     align-items: center;
   }
+  
   &__category--img {
     opacity: 100%;
     padding-right: .4em;
   }
+  
   &__rating {
-    opacity: 75%;
+    opacity: 80%;
   }
+  
   &__separator {
     align-self: center;
     margin: 0 .75em;

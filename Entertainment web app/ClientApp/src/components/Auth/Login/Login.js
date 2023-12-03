@@ -32,10 +32,7 @@ const Login = () => {
         }
         
         if(res && res.isSuccess) {
-            const token = res.Message;
-            const expireDate = new Date(res.ExpireDate);
-
-            navigate("/");
+            navigate("/Library");
         } else {
             console.log("There is some problem, user not logged in!");
             // TODO: Show error message to the user
@@ -45,22 +42,31 @@ const Login = () => {
     return (
         <section className="login">
             <img className="login__logo" src={logo} alt="Netwix company logo"/>
-            <form className="login__form" onSubmit={handleSubmit}>
-                <h2 className="login__form--title">Login</h2>
-                <div className="input-container">
-                    <label htmlFor="email" className="input-container__label">Email address</label>
-                    <input className="input-container__input" type="text" ref={email} id="email"/>
-                </div>
-                <div className="input-container">
-                    <label htmlFor="password" className="input-container__label">Password</label>
-                    <input className="input-container__input" type="password" ref={password} id="password"/>
-                </div>
-                <button className="login__form--submit-btn" type="submit">Login to your account</button>
+            
+            <div className="login__container">
+            
+            
+                <form className="form" onSubmit={handleSubmit}>
+                    <h2 className="form__title">Login</h2>
+                    
+                    <div className="form__inputs-wrapper">
+                        <div className="input">
+                            <label htmlFor="email" className="input__label">Email address</label>
+                            <input className="input__input" type="text" ref={email} id="email"/>
+                        </div>
+                        <div className="input">
+                            <label htmlFor="password" className="input__label">Password</label>
+                            <input className="input__input" type="password" ref={password} id="password"/>
+                        </div>
+                    </div>
+                    
+                    <button className="form__submit-btn" type="submit">Login to your account</button>
+                </form>
                 <div className="create-account">
                     <p className="create-account__text">Don't have an account?</p>
                     <Link className="create-account__link" to="/register">Sign Up</Link>
                 </div>
-            </form>
+            </div>
         </section>
     )
 }

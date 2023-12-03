@@ -10,7 +10,12 @@ const Card = ({ movie }) => {
     
     return (
         <div className="card">
-            <div className="card__img" style={{backgroundImage: 'url(' + ImgSmall + ')'}}>
+            <div className="card__img" style={{
+                background: 'url(' + ImgSmall + ')',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat'
+            }}>
                 <div className="card__img--bookmark">
                     <img src={bookmarkIcon} alt="Bookmark icon"/>
                 </div>
