@@ -45,26 +45,13 @@
   display: flex;
   flex-flow: row nowrap;
   margin-bottom: -0.8em;
-  font: $small-body-mobile;
-
+  opacity: 80%;
+  
   @include breakpoint(mobile) {
-    font: $medium-body-mobile;
-  }
-
-  @include breakpoint(tablet) {
-    font: $small-body-desktop;
-  }
-  
-  @include breakpoint(desktop_md) {
-    font: $medium-body-desktop;
-  }
-  
-  &__year {
-    opacity: 80%;
+    font: $small-body-mobile;
   }
   
   &__category {
-    opacity: 80%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -73,10 +60,6 @@
   &__category--img {
     opacity: 100%;
     padding-right: .4em;
-  }
-  
-  &__rating {
-    opacity: 80%;
   }
   
   &__separator {
