@@ -1,7 +1,5 @@
-using Entertainment_web_app.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-
 
 namespace Entertainment_web_app.Data;
 
@@ -14,9 +12,16 @@ public class NetwixDbContext : IdentityDbContext<ApplicationUser>
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<ApplicationUser>()
+            .HasMany(e => e.Bookmarks)
+            .WithMany(e => e.Users)
+            .UsingEntity<Bookmark>();
+        
         base.OnModelCreating(modelBuilder);
     }
     
-    public DbSet<Movie> Movies { get; set; }
     public new DbSet<ApplicationUser> Users { get; set; }
+    public DbSet<Movie> Movies { get; set; }
+    public DbSet<Bookmark> Bookmarks { get; set; }
+    public DbSet<Trending> Trending { get; set; }
 }
