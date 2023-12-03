@@ -10,16 +10,16 @@
     grid-area: main;
   }
   
-    &__title {
-      margin-bottom: 1.5rem;
-    }
-
     &__content {
       display: grid;
       position: relative;
-      grid-gap: 0.75rem;
+      grid-gap: 2rem 0.5rem;
       grid-template-columns: 1fr 1fr;
       align-content: flex-start;
+      
+      @include breakpoint(mobile) {
+        grid-gap: 2rem 1rem;
+      }
       
       @include breakpoint(tablet) {
         grid-template-columns: 1fr 1fr 1fr;
@@ -29,12 +29,12 @@
       @include breakpoint(desktop_md) {
         min-height: 90dvh;
         grid-template-columns: repeat(4, 1fr);
-        gap: 1.5rem;
+        grid-gap: 1.5rem;
         row-gap: 3rem;
       }
       
       @include breakpoint(desktop_lg) {
-        gap: 4rem;
+        gap: 2rem;
       }
     }
 }
