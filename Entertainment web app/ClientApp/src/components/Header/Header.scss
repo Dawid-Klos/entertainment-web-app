@@ -1,14 +1,16 @@
 @import "../../styles/_variables";
 
 .header {
-  width: 100%;
-  
+  width: calc(100% - 1rem);
   display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: $color-semi-dark-blue;
-  max-height: 3.6em;
-  padding: 1em 1em;
+  padding: 0.75rem 1rem;
+
+  @include breakpoint(mobile) {
+    width: 100%;
+  }
 
   @include breakpoint(tablet) {
     border-radius: 0.75rem;
@@ -41,12 +43,12 @@
     background-color: $color-white;
     border: 1px solid $color-white; 
     border-radius: 50%;
-    width: 1.5em;
-    height: 1.5em;
+    width: 1.5rem;
+    height: 1.5rem;
     
     @include breakpoint(desktop_md) {
-      width: 2.5em;
-      height: 2.5em;
+      width: 2.5rem;
+      height: 2.5rem;
     }
   }
 }
