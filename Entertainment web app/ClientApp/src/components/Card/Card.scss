@@ -51,6 +51,10 @@
     font: $small-body-mobile;
   }
   
+  @include breakpoint(desktop_md) {
+    font: $small-body-desktop;
+  }
+  
   &__category {
     display: flex;
     justify-content: center;
