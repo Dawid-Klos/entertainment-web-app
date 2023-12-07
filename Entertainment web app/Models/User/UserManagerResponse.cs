@@ -1,4 +1,4 @@
-namespace Entertainment_web_app.Models;
+namespace Entertainment_web_app.Models.User;
 
 public class UserManagerResponse
 {

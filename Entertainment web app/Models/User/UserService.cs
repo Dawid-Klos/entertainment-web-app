@@ -1,11 +1,13 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Entertainment_web_app.Data;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Entertainment_web_app.Models;
+using Entertainment_web_app.Models.Auth;
+
+namespace Entertainment_web_app.Models.User;
 
 public class UserService : IUserService
 {

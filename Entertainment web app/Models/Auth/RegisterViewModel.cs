@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Entertainment_web_app.Models;
+namespace Entertainment_web_app.Models.Auth;
 
 public class RegisterViewModel
 {

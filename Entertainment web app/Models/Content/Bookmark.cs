@@ -1,5 +1,5 @@
 
-namespace Entertainment_web_app.Data;
+namespace Entertainment_web_app.Models.Content;
 
 public class Bookmark
 {

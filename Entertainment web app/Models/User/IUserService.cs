@@ -1,4 +1,7 @@
-namespace Entertainment_web_app.Models;
+using Entertainment_web_app.Models.Auth;
+
+namespace Entertainment_web_app.Models.User;
+
 public interface IUserService
     {
         Task<UserManagerResponse> RegisterUserAsync(RegisterViewModel model);
