@@ -1,4 +1,4 @@
-import Layout from "../Layout";
+import Layout from "../../Layout";
 import "./ErrorBoundary.scss";
 import { useRouteError } from "react-router-dom";
 

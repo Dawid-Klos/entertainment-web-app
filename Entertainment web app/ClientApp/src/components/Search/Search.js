@@ -1,7 +1,7 @@
 import { useLoaderData } from "react-router-dom";
 import { useState, useEffect } from "react";
 
-import Card from "../Card/Card";
+import Card from "../common/Card/Card";
 
 import "./Search.scss";
 
@@ -27,7 +27,7 @@ const Search = () => {
       <div className="search__content">
         {searchResult ? (
           searchResult.data.map((movie) => (
-            <Card key={movie.MovieId} movie={movie} />
+            <Card key={movie.MovieId} movie={movie} variant="standard" />
           ))
         ) : (
           <p>Content has not been found</p>

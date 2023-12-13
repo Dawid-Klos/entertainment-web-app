@@ -1,4 +1,4 @@
-import TrendingCard from "./TrendingCard/TrendingCard";
+import Card from "../../common/Card/Card";
 
 import "./Trending.scss";
 
@@ -14,10 +14,11 @@ const Trending = ({ content }) => {
           <div className="trending__loading">Loading...</div>
         ) : (
           movies.map((movie) => (
-            <TrendingCard
+            <Card
               key={movie.MovieId}
               movie={movie}
               bookmarks={bookmarks}
+              variant="trending"
             />
           ))
         )}

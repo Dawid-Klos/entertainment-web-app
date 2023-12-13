@@ -1,6 +1,6 @@
 import { useLoaderData } from "react-router-dom";
 
-import Card from "../Card/Card";
+import Card from "../common/Card/Card";
 import "./Bookmark.scss";
 
 const Bookmark = () => {
@@ -22,7 +22,12 @@ const Bookmark = () => {
             <h1>Loading...</h1>
           ) : (
             filterByCategory(movies, "Movies").map((movie) => (
-              <Card key={movie.MovieId} movie={movie} bookmarks={bookmarks} />
+              <Card
+                key={movie.MovieId}
+                movie={movie}
+                bookmarks={bookmarks}
+                variant="standard"
+              />
             ))
           )}
         </div>
@@ -34,7 +39,12 @@ const Bookmark = () => {
             <h1>Loading...</h1>
           ) : (
             filterByCategory(movies, "TV Series").map((movie) => (
-              <Card key={movie.MovieId} movie={movie} bookmarks={bookmarks} />
+              <Card
+                key={movie.MovieId}
+                movie={movie}
+                bookmarks={bookmarks}
+                variant="standard"
+              />
             ))
           )}
         </div>

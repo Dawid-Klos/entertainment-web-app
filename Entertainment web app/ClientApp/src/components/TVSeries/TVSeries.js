@@ -1,6 +1,6 @@
 import { useLoaderData } from "react-router-dom";
 
-import Card from "../Card/Card";
+import Card from "../common/Card/Card";
 
 import "./TVSeries.scss";
 
@@ -18,7 +18,12 @@ const TVSeries = () => {
           <h1>Loading...</h1>
         ) : (
           tvSeries.map((movie) => (
-            <Card key={movie.MovieId} movie={movie} bookmarks={bookmarks} />
+            <Card
+              key={movie.MovieId}
+              movie={movie}
+              bookmarks={bookmarks}
+              variant="standard"
+            />
           ))
         )}
       </div>
