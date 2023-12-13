@@ -19,7 +19,7 @@ public class MoviesController : ControllerBase
 
     [HttpGet]
     [Route("[action]")]
-    public async Task<IActionResult> GetAllMovies()
+    public async Task<IActionResult> GetMovies()
     {
         try
         {
@@ -36,7 +36,7 @@ public class MoviesController : ControllerBase
     
     [HttpGet]
     [Route("[action]")]
-    public async Task<IActionResult> GetTrendingMovies()
+    public async Task<IActionResult> GetTrending()
     {
         try
         {
@@ -67,16 +67,4 @@ public class MoviesController : ControllerBase
             return StatusCode(StatusCodes.Status500InternalServerError, $"An error occurred: {ex.Message}");
         }
     }
-
-    // [HttpGet]
-    // [Route("[action]")]
-    // public async Task<IActionResult> GetBookmarkedMovies(string userId)
-    // {
-    //     // var user = await _context.Users.FindAsync(userId);
-    //     var user = await _context.Users.FindAsync(userId);
-    //     var bookmarkedMovies = _context.Movies.FromSqlInterpolated(
-    //         "SELECT * FROM Movies INNER JOIN ApplicationUserMovie ON ApplicationUserMovie.MoviesMovieId = AspNetUsers.Id WHERE isBookmarked = 1").ToListAsync();
-    //
-    //     return new JsonResult(bookmarkedMovies);
-    // }
 }
