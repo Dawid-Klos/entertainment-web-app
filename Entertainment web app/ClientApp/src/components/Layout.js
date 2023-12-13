@@ -1,17 +1,16 @@
-import {Outlet} from "react-router-dom";
+import { Outlet } from "react-router-dom";
 
 import Header from "./Header/Header";
-import SearchBar from './SearchBar/SearchBar';
+import SearchBar from "./SearchBar/SearchBar";
 
 const Layout = () => {
-    
-    return (
-        <>
-            <Header />
-            <SearchBar />
-            <Outlet />
-        </>
-    )
-}
+  return (
+    <>
+      <Header />
+      <SearchBar />
+      <Outlet />
+    </>
+  );
+};
 
 export default Layout;

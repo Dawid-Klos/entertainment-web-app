@@ -1,5 +1,3 @@
-
-
 export const pages = {
     home: {
         path: '/Library',
