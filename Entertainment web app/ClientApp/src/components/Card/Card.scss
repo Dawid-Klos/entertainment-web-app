@@ -4,39 +4,36 @@
   display: flex;
   flex-flow: column nowrap;
   justify-content: flex-start;
-  min-width: max-content;
-  
-  &__img {
-    display: flex;
-    justify-content: flex-end;
-    width: 100%;
-    min-height: 8rem;
-    background-size: cover;
-    background-repeat: no-repeat;
-    border-radius: 0.5em;
-    
-    @include breakpoint(desktop_md) {
-      min-height: 14rem;
-    }
-    
-  }
-  
-  &__img--bookmark {
+  min-width: fit-content;
+  gap: 0.5rem;
+}
+
+.top {
+  display: flex;
+  justify-content: flex-end;
+  aspect-ratio: 14 / 9;
+  background-size: cover;
+  background-repeat: no-repeat;
+  border-radius: 0.5em;
+
+  &__bookmark {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 2em;
-    height: 2em;
+    width: 2rem;
+    height: 2rem;
     background-color: rgba(16, 20, 30, .5);
     border-radius: 50%;
     margin: 0.5em;
   }
+}
   
-  &__info {
-    margin-top: -0.35em;
-  }
-  
-  &__info--title {
+.bottom {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 0.5rem;
+    
+  &__title {
     margin: 0;
   }
 }
@@ -44,28 +41,24 @@
 .info {
   display: flex;
   flex-flow: row nowrap;
-  margin-bottom: -0.8em;
   opacity: 80%;
-  
+  gap: 0.1rem;
+
   @include breakpoint(mobile) {
     font: $small-body-mobile;
   }
-  
+
   @include breakpoint(desktop_md) {
     font: $small-body-desktop;
   }
-  
+
   &__category {
     display: flex;
     justify-content: center;
     align-items: center;
+    gap: 0.25rem;
   }
-  
-  &__category--img {
-    opacity: 100%;
-    padding-right: .4em;
-  }
-  
+
   &__separator {
     align-self: center;
     margin: 0 .45em;
@@ -76,3 +69,5 @@
     border-radius: 50%;
   }
 }
+
+

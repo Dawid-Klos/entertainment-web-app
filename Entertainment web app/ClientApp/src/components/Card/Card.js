@@ -1,39 +1,72 @@
-import bookmarkIcon from "../../assets/icon-bookmark-empty.svg";
+import {useEffect, useState} from "react";
+import axios from "axios";
+
+import emptyBookmarkIcon from "../../assets/icon-bookmark-empty.svg";
+import fullBookmarkIcon from "../../assets/icon-bookmark-full.svg";
 import categoryMovieIcon from "../../assets/icon-category-movie.svg";
 import categoryTvIcon from "../../assets/icon-category-tv.svg";
 
 import "./Card.scss";
 
-const Card = ({ movie }) => {
+const Card = ({ movie, bookmarks }) => {
+    const [cardInfo, setCardInfo] = useState({id: 0, isBookmarked: false});
+    const { MovieId, ImgSmall, Title, Category, Year, Rating } = movie;
     
-    const { ImgSmall, Title, Category, Year, Rating } = movie;
+    const removeBookmark = async () => {
+        try {
+            const res = await axios.delete('/api/Bookmark/Remove?movieId=' + cardInfo.id);
+        } catch(error) {
+            throw new Error("Failed to fetch search result, please try again later.");
+        }
+    }
+    
+    const addBookmark = async () => {
+        try {
+            const res = await axios.post('/api/Bookmark/Add?movieId=' + cardInfo.id);
+        } catch(error) {
+            throw new Error("Failed to fetch search result, please try again later.");
+        }
+    }
+    
+    const handleAddBookmark = async () => {
+        cardInfo.isBookmarked ? await removeBookmark() : await addBookmark();
+        setCardInfo({...cardInfo, isBookmarked: !cardInfo.isBookmarked})
+    };
+    
+    useEffect(() => {
+        
+        if(movie && bookmarks) {
+            setCardInfo({id: MovieId, isBookmarked: bookmarks.includes(MovieId)});
+        }
+        
+    }, [movie, bookmarks, MovieId]);
+    
     
     return (
         <div className="card">
-            <div className="card__img" style={{
+            <div className="top" style={{
                 background: 'url(' + ImgSmall + ')',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat'
             }}>
-                <div className="card__img--bookmark">
-                    <img src={bookmarkIcon} alt="Bookmark icon"/>
-                </div>
+                <button onClick={handleAddBookmark} className="top__bookmark" aria-label="Adds a movie to bookmarks">
+                    <img src={cardInfo.isBookmarked ? fullBookmarkIcon : emptyBookmarkIcon} alt="Adds a movie to bookmarks"/>
+                </button>
             </div>
-            <div className="card__info">
+            <div className="bottom">
                 <div className="info">
-                    <p className="info__year">{ Year }</p>
+                    <p>{ Year }</p>
                     <span className="info__separator"></span>
                     <p className="info__category">
-                        <img className="info__category--img"
-                             src={Category === "Movie" ? categoryMovieIcon : categoryTvIcon}
+                        <img src={Category === "Movie" ? categoryMovieIcon : categoryTvIcon}
                              alt={Category === "Movie" ? "Movie" : "TV Series"} />
                         { Category }
                     </p>
                     <span className="info__separator"></span>
-                    <p className="info__rating">{ Rating }</p>
+                    <p>{ Rating }</p>
                 </div>
-                <h2 className="card__info--title">{ Title }</h2>
+                <h2 className="bottom__title">{ Title }</h2>
             </div>
         </div>
     )
