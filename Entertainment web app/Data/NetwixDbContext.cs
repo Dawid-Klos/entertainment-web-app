@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
+using Entertainment_web_app.Models.Content;
+using Entertainment_web_app.Models.User;
+
 namespace Entertainment_web_app.Data;
 
 public class NetwixDbContext : IdentityDbContext<ApplicationUser>
