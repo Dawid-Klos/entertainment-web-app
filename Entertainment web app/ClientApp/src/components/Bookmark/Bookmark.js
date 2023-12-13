@@ -1,33 +1,40 @@
-import { useState } from "react";
+import {useLoaderData} from "react-router-dom";
 
-import './Bookmark.scss';
 import Card from "../Card/Card";
+import './Bookmark.scss';
+
 
 const Bookmark = () => {
-    const [loading, setLoading] = useState(true);
+    const bookmarkData = useLoaderData();
+    
+    const bookmarks = bookmarkData.bookmarks;
+    const movies = bookmarkData.data;
+    
+    const filterByCategory = (data, category) => {
+        return data.filter(movie => movie.Category === category);
+    }
     
     return (
         <>
-            <div className="bookmark">
+            <section className="bookmark">
                 <h1 className="bookmark__title">Bookmarked Movies</h1>
                 <div className="bookmark__content">
-                    {/*{loading ? (<h2>Loading...</h2>) : (*/}
-                    {/*    content.map(movie => <Card key={movie.MovieId} movie={movie} />)*/}
-                    {/*)*/}
-                    {/*}*/}
+                    {
+                        !bookmarkData ? <h1>Loading...</h1> :
+                        filterByCategory(movies, "Movies").map(movie => <Card key={movie.MovieId} movie={movie} bookmarks={bookmarks} />)
+                    }
                 </div>
-            </div>
-            <div className="bookmark-tv">
+            </section>
+            <section className="bookmark-tv">
                 <h1 className="bookmark-tv__title">Bookmarked TV Series</h1>
                 <div className="bookmark-tv__content">
-                    {/*{loading ? (<h2>Loading...</h2>) : (*/}
-                    {/*    content.map(movie => <Card key={movie.MovieId} movie={movie} />)*/}
-                    {/*)*/}
-                    {/*}*/}
+                    {
+                        !bookmarkData ? <h1>Loading...</h1> :
+                        filterByCategory(movies, "TV Series").map(movie => <Card key={movie.MovieId} movie={movie} bookmarks={bookmarks} />)
+                    }
                 </div>
-            </div>
+            </section>
         </>
-
     )
 }
 
