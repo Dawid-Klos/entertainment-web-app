@@ -11,47 +11,35 @@ const fixCategoryFormat = (path) => {
 };
 
 export const fetchBookmarked = async () => {
-  let content;
-
   try {
     const bookmarksResponse = await axios.get("/api/Bookmark/GetBookmarks");
-    content = bookmarksResponse.data.map((bookmark) => bookmark.MovieId);
+
+    return bookmarksResponse.data.map((bookmark) => bookmark.MovieId);
   } catch (error) {
     throw new Error(
       "Failed to download content, please check your internet connection or try later.",
     );
   }
-
-  return content;
 };
 
 export const fetchContent = async (path) => {
-  const content = {
-    data: [],
-    bookmarks: [],
-  };
-
   try {
     const contentResponse = await axios.get(`/api/${path}`);
-    content.data = contentResponse.data;
+    const bookmarksResponse = await fetchBookmarked();
 
-    content.bookmarks = await fetchBookmarked();
+    return { data: contentResponse.data, bookmarks: bookmarksResponse };
   } catch (error) {
     throw new Error(
       "Failed to download content, please check your internet connection or try later.",
     );
   }
-
-  return content;
 };
 
 export const fetchSearchResult = async (params) => {
   const category = fixCategoryFormat(params.category);
 
-  let response;
-
   if (category === "Library" && params.query) {
-    response = await axios
+    const response = await axios
       .get(`/api/Search/SearchByTitle?title=${params.query}`)
       .catch((error) => {
         throw new Error(
@@ -63,7 +51,7 @@ export const fetchSearchResult = async (params) => {
   }
 
   if (!params.query) {
-    response = await axios
+    const response = await axios
       .get(`/api/Search/SearchByCategory?category=${category}`)
       .catch((error) => {
         throw new Error(
@@ -75,7 +63,7 @@ export const fetchSearchResult = async (params) => {
   }
 
   if (params.query && category) {
-    response = await axios
+    const response = await axios
       .get(
         `/api/Search/SearchByCategoryAndTitle?category=${category}&title=${params.query}`,
       )
