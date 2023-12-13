@@ -1,6 +1,6 @@
 import {redirect} from "react-router-dom";
 
-import {fetchAllMovies, fetchHomeContent, fetchSearchResult, fetchTvSeries} from '../utils/fetchContent';
+import {fetchSearchResult, fetchContent} from '../utils/fetchContent';
 import {AuthenticateUser} from '../utils/authUser';
 
 import Layout from '../components/Layout';
@@ -35,9 +35,13 @@ const routerConfig = [
             },
             {
                 path: '/Library',
-                exact: true,
                 element: <Home/>,
-                loader: () => fetchHomeContent(),
+                loader: async () => {
+                    const recommended = await fetchContent("Movies/GetMovies");
+                    const trending = await fetchContent("Trending/GetTrending");
+                    
+                    return { recommended: recommended, trending: trending};
+                },
             },
             {
                 path: '/Search/:category/:query?',
@@ -47,17 +51,18 @@ const routerConfig = [
             {
                 path: '/Movies',
                 element: <Movies/>,
-                loader: () => fetchAllMovies(),
+                loader: () => fetchContent("Movies/GetMovies"),
             },
             {
                 path: '/TV-series',
                 element: <TVSeries/>,
-                loader: () => fetchTvSeries(),
+                loader: () => fetchContent("Movies/GetTvSeries"),
             },
             {
                 path: '/Bookmarked',
                 element: <Bookmark/>,
-                errorElement: <ErrorBoundary/>,
+                // loader: () => fetchBookmarked(),
+                loader: () => fetchContent("Bookmark/GetBookmarks"),
             }
         ]
     },
