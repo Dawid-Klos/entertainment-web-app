@@ -14,6 +14,10 @@ const context =  [
     "/api/Search/SearchByTitle",
     "/api/Search/SearchByCategory",
     "/api/Search/SearchByCategoryAndTitle",
+    "/api/Bookmark/GetBookmarks",
+    "/api/Bookmark/Add",
+    "/api/Bookmark/Remove",
+    "/api/Trending/GetTrending",
     "/swagger/v1/swagger.json",
     "/swagger",
 ];
