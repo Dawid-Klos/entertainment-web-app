@@ -12,7 +12,8 @@
   }
   
   &__link {
-    @include transition;
+    @include transition(color);
+    
     display: flex;
     align-items: center;
     padding: 0.5rem;
@@ -31,7 +32,7 @@
   }
   
   &__link--active {
-    @include transition;
+    @include transition(fill);
     fill: $color-white;
   }
   
