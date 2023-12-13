@@ -1,30 +1,23 @@
 @import "../../../../styles/_variables";
 
 .trending-card {
+  scroll-snap-align: center;
+  
   position: relative;
   display: flex;
   justify-content: space-between;
   min-height: 8rem;
   border-radius: 0.5rem;
   padding: 0.5rem;
+  aspect-ratio: 16 / 9;
+  background-size: cover;
   
   @include breakpoint(mobile) {
     padding: 1rem;
   }
   
-  @include breakpoint(tablet) {
-    min-height: 12rem;
-    padding: 1rem;
-  }
-
   @include breakpoint(desktop_md) {
-      min-height: 12rem;
-      padding: 1rem;
-  }
-  
-  @include breakpoint(desktop_lg) {
-      min-height: 16rem;
-      padding: 1.5rem;
+    scroll-snap-align: start;
   }
   
   &:after {
@@ -59,14 +52,6 @@
     
     &--title {
       margin: 0;
-      
-        @include breakpoint(tablet) {
-          font: $small-heading-desktop;
-        }
-
-        @include breakpoint(desktop_lg) {
-          font: $medium-heading-desktop;
-        }
     }
   }
 }
@@ -110,7 +95,7 @@
     width: 0.2em;
     height: 0.2em;
     background-color: $color-white;
-    opacity: 50%;
+    opacity: 80%;
     border-radius: 50%;
   }
 }

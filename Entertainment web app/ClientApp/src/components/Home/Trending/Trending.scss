@@ -1,28 +1,21 @@
 @import "../../../styles/variables";
 
 .trending {
-  width: 100%;
+  max-width: 100%;
   overflow: hidden;
-
+  
   @include breakpoint(desktop_md) {
     grid-area: main;
-    width: calc(100% + 2rem);
   }
 
   &__content {
     min-width: 100%;
-    margin-left: -0.5rem;
-    padding: 0 0.5rem;
-
     display: grid;
-    position: relative;
     grid-gap: 1rem;
     grid-template-columns: repeat(5, 15rem);
     overflow-x: scroll;
-
-    &::-webkit-scrollbar {
-      display: none;
-    }
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
     
     @include breakpoint(mobile) {
       grid-template-columns: repeat(5, 18rem);
@@ -31,8 +24,7 @@
     @include breakpoint(tablet) {
       padding: 0 2rem;
       margin-left: -2rem;
-      width: calc(100% - 2rem);
-      grid-template-columns: repeat(5, 24rem) 0px;
+      grid-template-columns: repeat(5, 20rem) 0px;
       grid-gap: 1.5rem;
     }
 
@@ -40,11 +32,14 @@
       padding: 0;
       margin-left: 0;
       grid-gap: 2rem;
-      grid-template-columns: repeat(5, 24rem) 0px;
     }
 
     @include breakpoint(desktop_lg) {
-      grid-template-columns: repeat(5, 34rem) 0px;
+      grid-template-columns: repeat(5, 26rem) 0px;
+    }
+
+    &::-webkit-scrollbar {
+      display: none;
     }
   }
 }
