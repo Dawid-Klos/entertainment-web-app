@@ -39,42 +39,58 @@ export const fetchSearchResult = async (params) => {
   const category = fixCategoryFormat(params.category);
 
   if (category === "Library" && params.query) {
-    const response = await axios
-      .get(`/api/Search/SearchByTitle?title=${params.query}`)
-      .catch((error) => {
-        throw new Error(
-          "Failed to fetch search result, please try again later.",
-        );
-      });
+    try {
+      const response = await axios.get(
+        `/api/Search/SearchByTitle?title=${params.query}`,
+      );
+      const bookmarksResponse = await fetchBookmarked();
 
-    return { data: response.data, query: params.query, category: "Library" };
+      return {
+        data: response.data,
+        bookmarks: bookmarksResponse,
+        query: params.query,
+        category: "Library",
+      };
+    } catch (error) {
+      throw new Error("Failed to fetch search result, please try again later.");
+    }
   }
 
   if (!params.query) {
-    const response = await axios
-      .get(`/api/Search/SearchByCategory?category=${category}`)
-      .catch((error) => {
-        throw new Error(
-          "Failed to fetch search result, please try again later.",
-        );
-      });
+    try {
+      const response = await axios.get(
+        `/api/Search/SearchByCategory?category=${category}`,
+      );
+      const bookmarksResponse = await fetchBookmarked();
 
-    return { data: response.data, query: "", category: category };
+      return {
+        data: response.data,
+        bookmarks: bookmarksResponse,
+        query: params.query,
+        category: category,
+      };
+    } catch (error) {
+      throw new Error("Failed to fetch search result, please try again later.");
+    }
   }
 
   if (params.query && category) {
-    const response = await axios
-      .get(
+    try {
+      const response = await axios.get(
         `/api/Search/SearchByCategoryAndTitle?category=${category}&title=${params.query}`,
-      )
-      .catch((error) => {
-        throw new Error(
-          "Failed to fetch search result, please try again later.",
-        );
-      });
+      );
+      const bookmarksResponse = await fetchBookmarked();
 
-    return { data: response.data, query: params.query, category: category };
+      return {
+        data: response.data,
+        bookmarks: bookmarksResponse,
+        query: params.query,
+        category: category,
+      };
+    } catch (error) {
+      throw new Error("Failed to fetch search result, please try again later.");
+    }
   }
 
-  return null;
+  throw new Error("Failed to fetch search result, please try again later.");
 };
