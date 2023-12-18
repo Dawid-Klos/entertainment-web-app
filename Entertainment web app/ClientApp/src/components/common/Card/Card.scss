@@ -1,0 +1,115 @@
+@import "../../../styles/_variables";
+
+.card {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+  min-width: fit-content;
+  gap: 0.5rem;
+}
+
+.card-bookmark {
+  display: flex;
+  justify-content: flex-end;
+  aspect-ratio: 14 / 9;
+  background-size: cover;
+  background-repeat: no-repeat;
+  border-radius: 0.5em;
+
+  &__button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 2rem;
+    height: 2rem;
+    background-color: rgba(16, 20, 30, .5);
+    border-radius: 50%;
+    margin: 0.5em;
+  }
+}
+  
+.card-bottom {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 0.5rem;
+    
+  &__title {
+    margin: 0;
+  }
+}
+
+.card-info {
+  display: flex;
+  flex-flow: row nowrap;
+  opacity: 80%;
+  gap: 0.1rem;
+
+  @include breakpoint(mobile) {
+    font: $small-body-mobile;
+  }
+
+  @include breakpoint(desktop_md) {
+    font: $small-body-desktop;
+  }
+
+  &__category {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  &__separator {
+    align-self: center;
+    margin: 0 .5rem;
+    width: 0.2rem;
+    height: 0.2rem;
+    background-color: $color-white;
+    opacity: 50%;
+    border-radius: 50%;
+  }
+}
+
+.trending-card {
+  scroll-snap-align: center;
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  min-height: 8rem;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  aspect-ratio: 16 / 9;
+  background-size: cover;
+
+  @include breakpoint(mobile) {
+    padding: 1rem;
+  }
+
+  @include breakpoint(desktop_md) {
+    scroll-snap-align: start;
+  }
+
+  &:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    border-radius: 0.5rem;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.00) 40%, rgba(0, 0, 0, 0.9) 100%);
+  }
+  
+  .card-bookmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .card-bottom {
+    z-index: 1;
+    align-self: flex-end;
+  }
+}

@@ -1,82 +1,96 @@
 import axios from "axios";
 
-import { pages } from '../config/constants';
+import { pages } from "../config/constants";
 
-const fixCategoryFormat = (path) => { 
-    const category = Object.values(pages).find(page => page.path.includes(path));
+const fixCategoryFormat = (path) => {
+  const category = Object.values(pages).find((page) =>
+    page.path.includes(path),
+  );
 
-    return category ? category.category : "";
+  return category ? category.category : "";
 };
 
-export const fetchAllMovies = async () => {
-    const response = await axios
-        .get('/api/Movies/GetAllMovies')
-        .catch(error => {
-            throw new Error("Failed to fetch movies, please try again later.");
-        });
+export const fetchBookmarked = async () => {
+  try {
+    const bookmarksResponse = await axios.get("/api/Bookmark/GetBookmarks");
 
-    return response.data
-}
+    return bookmarksResponse.data.map((bookmark) => bookmark.MovieId);
+  } catch (error) {
+    throw new Error(
+      "Failed to download content, please check your internet connection or try later.",
+    );
+  }
+};
 
-export const fetchTvSeries = async () => {
-    const response = await axios
-        .get('/api/Movies/GetTvSeries')
-        .catch(error => {
-            throw new Error("Failed to fetch TV series, please try again later.");
-        });
+export const fetchContent = async (path) => {
+  try {
+    const contentResponse = await axios.get(`/api/${path}`);
+    const bookmarksResponse = await fetchBookmarked();
 
-    return response.data
-}
-
-export const fetchTrendingMovies = async () => {
-    const response = await axios
-        .get('/api/Movies/GetTrendingMovies')
-        .catch(error => {
-            throw new Error("Failed to fetch trending movies, please try again later.");
-        });
-
-    return response.data
-}
-
-export const fetchHomeContent = async () => {
-    return { recommended: await fetchAllMovies(), trending: await fetchTrendingMovies()};
-}
+    return { data: contentResponse.data, bookmarks: bookmarksResponse };
+  } catch (error) {
+    throw new Error(
+      "Failed to download content, please check your internet connection or try later.",
+    );
+  }
+};
 
 export const fetchSearchResult = async (params) => {
-    const category = fixCategoryFormat(params.category);
-    
-    let response;
-    
-    if(category === "Library" && params.query) {
-        response = await axios
-            .get(`/api/Search/SearchByTitle?title=${params.query}`)
-            .catch(error => {
-                throw new Error("Failed to fetch search result, please try again later.");
-            });
-        
-        return { data: response.data, query: params.query, category: "Library" };
-    }
-    
-    
-    if(!params.query) {
-        response = await axios
-            .get(`/api/Search/SearchByCategory?category=${category}`)
-            .catch(error => {
-                throw new Error("Failed to fetch search result, please try again later.");
-            });
-        
-        return { data: response.data, query: "", category: category };
-    }
-    
-    if(params.query && category) {
-        response = await axios
-            .get(`/api/Search/SearchByCategoryAndTitle?category=${category}&title=${params.query}`)
-            .catch(error => {
-                throw new Error("Failed to fetch search result, please try again later.");
-            });
+  const category = fixCategoryFormat(params.category);
 
-        return { data: response.data, query: params.query, category: category };
+  if (category === "Library" && params.query) {
+    try {
+      const response = await axios.get(
+        `/api/Search/SearchByTitle?title=${params.query}`,
+      );
+      const bookmarksResponse = await fetchBookmarked();
+
+      return {
+        data: response.data,
+        bookmarks: bookmarksResponse,
+        query: params.query,
+        category: "Library",
+      };
+    } catch (error) {
+      throw new Error("Failed to fetch search result, please try again later.");
     }
-    
-    return null;
-}
+  }
+
+  if (!params.query) {
+    try {
+      const response = await axios.get(
+        `/api/Search/SearchByCategory?category=${category}`,
+      );
+      const bookmarksResponse = await fetchBookmarked();
+
+      return {
+        data: response.data,
+        bookmarks: bookmarksResponse,
+        query: params.query,
+        category: category,
+      };
+    } catch (error) {
+      throw new Error("Failed to fetch search result, please try again later.");
+    }
+  }
+
+  if (params.query && category) {
+    try {
+      const response = await axios.get(
+        `/api/Search/SearchByCategoryAndTitle?category=${category}&title=${params.query}`,
+      );
+      const bookmarksResponse = await fetchBookmarked();
+
+      return {
+        data: response.data,
+        bookmarks: bookmarksResponse,
+        query: params.query,
+        category: category,
+      };
+    } catch (error) {
+      throw new Error("Failed to fetch search result, please try again later.");
+    }
+  }
+
+  throw new Error("Failed to fetch search result, please try again later.");
+};

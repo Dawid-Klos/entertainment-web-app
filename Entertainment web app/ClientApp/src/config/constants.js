@@ -1,5 +1,3 @@
-
-
 export const pages = {
     home: {
         path: '/Library',
@@ -18,7 +16,7 @@ export const pages = {
     },
     bookmarked: {
         path: '/Bookmarked',
-        placeholder: 'Search for bookmarked movies',
+        placeholder: 'Search for bookmarked content',
         category: 'Bookmarked'
     }
 }

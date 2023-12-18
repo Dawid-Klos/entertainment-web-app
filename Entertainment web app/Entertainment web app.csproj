@@ -43,6 +43,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="ClientApp\src\components\common\" />
       <Folder Include="Migrations" />
     </ItemGroup>
 

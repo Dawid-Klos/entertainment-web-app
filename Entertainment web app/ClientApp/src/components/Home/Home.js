@@ -1,17 +1,17 @@
+import { useLoaderData } from "react-router-dom";
+
 import Trending from "./Trending/Trending";
 import Recommended from "./Recommended/Recommended";
-import {useLoaderData} from "react-router-dom";
 
 const Home = () => {
-    const homeContent = useLoaderData();
-    
-    return(
-        <>
-            <Trending movies={homeContent.trending} />
-            <Recommended movies={homeContent.recommended} />
-        </>
-    )
+  const homeContent = useLoaderData();
 
-}
+  return (
+    <>
+      <Trending content={homeContent.trending} />
+      <Recommended content={homeContent.recommended} />
+    </>
+  );
+};
 
 export default Home;

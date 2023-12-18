@@ -1,6 +1,4 @@
 using System.Text;
-using Entertainment_web_app.Data;
-using Entertainment_web_app.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -8,6 +6,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
+
+using Entertainment_web_app.Data;
+using Entertainment_web_app.Models.User;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -114,6 +115,7 @@ if (app.Environment.IsDevelopment()) {
 else {
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
+    app.UseHttpsRedirection();
 }
 
 app.UseCors("CorsPolicy");

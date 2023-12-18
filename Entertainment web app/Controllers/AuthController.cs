@@ -1,6 +1,9 @@
-using Entertainment_web_app.Models;
+using Entertainment_web_app.Models.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
+using Entertainment_web_app.Models.User;
+
 
 namespace Entertainment_web_app.Controllers;
 

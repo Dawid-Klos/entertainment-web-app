@@ -1,34 +1,56 @@
-import { useState } from "react";
+import { useLoaderData } from "react-router-dom";
 
-import './Bookmark.scss';
-import Card from "../Card/Card";
+import Card from "../common/Card/Card";
+import "./Bookmark.scss";
 
 const Bookmark = () => {
-    const [loading, setLoading] = useState(true);
-    
-    return (
-        <>
-            <div className="bookmark">
-                <h1 className="bookmark__title">Bookmarked Movies</h1>
-                <div className="bookmark__content">
-                    {/*{loading ? (<h2>Loading...</h2>) : (*/}
-                    {/*    content.map(movie => <Card key={movie.MovieId} movie={movie} />)*/}
-                    {/*)*/}
-                    {/*}*/}
-                </div>
-            </div>
-            <div className="bookmark-tv">
-                <h1 className="bookmark-tv__title">Bookmarked TV Series</h1>
-                <div className="bookmark-tv__content">
-                    {/*{loading ? (<h2>Loading...</h2>) : (*/}
-                    {/*    content.map(movie => <Card key={movie.MovieId} movie={movie} />)*/}
-                    {/*)*/}
-                    {/*}*/}
-                </div>
-            </div>
-        </>
+  const bookmarkData = useLoaderData();
 
-    )
-}
+  const bookmarks = bookmarkData.bookmarks;
+  const movies = bookmarkData.data;
+
+  const filterByCategory = (data, category) => {
+    return data.filter((movie) => movie.Category === category);
+  };
+
+  return (
+    <>
+      <section className="bookmark">
+        <h1 className="bookmark__title">Bookmarked Movies</h1>
+        <div className="bookmark__content">
+          {!bookmarkData ? (
+            <h1>Loading...</h1>
+          ) : (
+            filterByCategory(movies, "Movies").map((movie) => (
+              <Card
+                key={movie.MovieId}
+                movie={movie}
+                bookmarks={bookmarks}
+                variant="standard"
+              />
+            ))
+          )}
+        </div>
+      </section>
+      <section className="bookmark-tv">
+        <h1 className="bookmark-tv__title">Bookmarked TV Series</h1>
+        <div className="bookmark-tv__content">
+          {!bookmarkData ? (
+            <h1>Loading...</h1>
+          ) : (
+            filterByCategory(movies, "TV Series").map((movie) => (
+              <Card
+                key={movie.MovieId}
+                movie={movie}
+                bookmarks={bookmarks}
+                variant="standard"
+              />
+            ))
+          )}
+        </div>
+      </section>
+    </>
+  );
+};
 
 export default Bookmark;
