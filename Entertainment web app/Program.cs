@@ -116,12 +116,20 @@ if (app.Environment.IsDevelopment()) {
     });
 } else {
     app.UseHsts();
-    app.UseHttpsRedirection();
+    app.UseDefaultFiles();
+    app.UseStaticFiles();
 }
 
 app.UseCors("CorsPolicy");
 app.UseAuthentication();
+
+app.UseRouting();
 app.UseAuthorization();
-app.MapControllers();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+    endpoints.MapFallbackToFile("/index.html");
+});
 
 app.Run();
