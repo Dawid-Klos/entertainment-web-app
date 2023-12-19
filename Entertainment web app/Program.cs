@@ -79,17 +79,15 @@ builder.Services.AddCors(options =>
                 if (string.IsNullOrWhiteSpace(origin)) return false;
                 // Only add this to allow testing with localhost, remove this line in production!
                 if (origin.ToLower().StartsWith("https://localhost")) return true;
-                // Insert your production domain here.
-                if (origin.ToLower().StartsWith("https://dev.mydomain.com")) return true;
+                if (origin.ToLower().StartsWith("http://51.38.81.129")) return true;
                 return false;
             });
     });
 });
 
 builder.Services.AddHttpContextAccessor();
-
-// Controllers/Views
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
 builder.Services.AddControllers()
     .AddJsonOptions(options => { options.JsonSerializerOptions.PropertyNamingPolicy = null; });
 
@@ -97,14 +95,18 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "My Awesome API",
+        Title = "Netwix API",
         Version = "v1"
     });
 });
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
+
 if (app.Environment.IsDevelopment()) {
     app.UseMigrationsEndPoint();
     app.UseSwagger();
@@ -112,27 +114,14 @@ if (app.Environment.IsDevelopment()) {
     {
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
     });
-}
-else {
-    app.UseForwardedHeaders(new ForwardedHeadersOptions
-    {
-        ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-    });
-    
+} else {
     app.UseHsts();
     app.UseHttpsRedirection();
 }
 
 app.UseCors("CorsPolicy");
-app.UseHttpsRedirection();
-
 app.UseAuthentication();
-app.UseRouting();
 app.UseAuthorization();
-
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller}/{action=Index}/{id?}");
-
+app.MapControllers();
 
 app.Run();
