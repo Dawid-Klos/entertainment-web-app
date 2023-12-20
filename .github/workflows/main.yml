@@ -28,7 +28,7 @@ jobs:
 
   - name: Add server's public SSH key to known_hosts
     run: |
-      echo "$(ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.SERVER_IP }})" >> ~/.ssh/known_hosts
+      echo "$(ssh-keyscan -p${{ secrets.SSH_PORT }} ${{ secrets.SERVER_IP }})" >> ~/.ssh/known_hosts || echo "$(ssh-keyscan -p${{ secrets.SSH_PORT }} ${{ secrets.SERVER_IP }})" > ~/.ssh/known_hosts
 
   - name: Deploy
     run: |
