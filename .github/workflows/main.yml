@@ -39,7 +39,7 @@ jobs:
 
   - name: Deploy
     run: |
-      ssh -o StrictHostKeyChecking=no -p ${{ secrets.SSH_PORT }} ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_IP }} << EOF
+      ssh -i ../private.key -o StrictHostKeyChecking=no -p ${{ secrets.SSH_PORT }} ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_IP }} << EOF
       cd /var/www/netwix
       git pull
       pm2 restart ecosystem.config.js
