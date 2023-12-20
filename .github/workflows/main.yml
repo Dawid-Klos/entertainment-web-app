@@ -26,9 +26,16 @@ jobs:
   - name: Test
     run: dotnet test --no-restore --verbosity normal
 
-  - name: Add server's public SSH key to known_hosts
+  - name: Create SSH key
     run: |
-      echo "$(ssh-keyscan -p${{ secrets.SSH_PORT }} ${{ secrets.SERVER_IP }})" >> ~/.ssh/known_hosts || echo "$(ssh-keyscan -p${{ secrets.SSH_PORT }} ${{ secrets.SERVER_IP }})" > ~/.ssh/known_hosts
+      mkdir -p ~/.ssh/
+      echo "$SSH_PRIVATE_KEY" > ../private.key
+      sudo chmod 600 ../private.key
+      echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+    shell: bash
+    env:
+      SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
+      SSH_KNOWN_HOSTS: ${{secrets.SSH_KNOWN_HOSTS}}
 
   - name: Deploy
     run: |
