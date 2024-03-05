@@ -1,0 +1,21 @@
+@import "../../styles/_variables";
+
+.auth-section {
+  @include login_container;
+}
+
+.form {
+  @include form_container;
+}
+
+.input-container {
+  @include input_container;
+}
+
+.create-account {
+  @include flex_center_row;
+
+  gap: 1rem;
+  padding: 2rem 0 1rem 0;
+  font: $medium-body-mobile;
+}

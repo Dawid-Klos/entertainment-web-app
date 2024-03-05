@@ -1,11 +1,13 @@
 @import "../../styles/variables";
 
 .bookmark {
+  grid-area: main;
+  
   @include content_container;
 }
 
 .bookmark-tv {
-  @include content_container;
-
   grid-area: footer !important;
+  
+  @include content_container;
 }

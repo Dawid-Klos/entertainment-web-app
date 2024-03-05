@@ -5,6 +5,7 @@
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  grid-area: searchBar;
   
   @include breakpoint(tablet) {
     margin-top: -1rem;

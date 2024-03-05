@@ -1,13 +1,11 @@
 @import "../../../styles/variables";
 
 .trending {
+  grid-area: main;
+  
   max-width: 100%;
   overflow: hidden;
   
-  @include breakpoint(desktop_md) {
-    grid-area: main;
-  }
-
   &__content {
     min-width: 100%;
     display: grid;

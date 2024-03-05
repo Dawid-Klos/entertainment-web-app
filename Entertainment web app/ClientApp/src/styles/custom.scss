@@ -5,10 +5,10 @@
 @import "_variables.scss";
 
 body {
+  min-height: 100dvh;
   background-color: $color-dark-blue;
   color: $color-white;
   font: $small-body-mobile;
-  padding-bottom: 4rem;
   
   @include breakpoint(tablet) {
     font: $medium-body-mobile;
@@ -23,7 +23,13 @@ body {
   }
 }
 
+a {
+  text-decoration: none;
+  color: $color-red;
+}
+
 input, button, textarea, select, p {
+  color: $color-white;
   padding: 0;
   margin: 0;
   background: none;
@@ -36,12 +42,18 @@ input, button, textarea, select, p {
 }
 
 #root {
-  display: flex;
-  flex-flow: column nowrap;
-  gap: 1.5rem;
-  padding: 0 0.25rem;
-  justify-content: flex-start;
+  width: calc(100% - 2rem);
+  min-height: 100dvh;
+  
+  display: grid;
+  grid-template-areas: 
+              "header"
+              "searchBar"
+              "main"
+              "footer";
   align-items: center;
+  gap: 1.5rem;
+  padding: 0 1rem 4rem 1rem;
   
   @include breakpoint(mobile) {
     padding: 0 1rem;
@@ -54,7 +66,7 @@ input, button, textarea, select, p {
   
   @include breakpoint(desktop_md) {
       width: calc(100% - 4rem);
-      display: grid;
+      min-height: 100dvh;
       row-gap: 1rem;
       column-gap: 2rem;
       grid-template-areas: 
@@ -66,10 +78,10 @@ input, button, textarea, select, p {
       align-items: start;
   }
   
-    @include breakpoint(desktop_lg) {
-      grid-template-columns: 1fr 16fr;
-      row-gap: 3rem;
-    }
+  @include breakpoint(desktop_lg) {
+    grid-template-columns: 1fr 16fr;
+    row-gap: 3rem;
+  }
 }
 
 h1 {
