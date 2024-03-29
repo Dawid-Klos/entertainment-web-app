@@ -65,6 +65,17 @@ public class UserService : IUserService
         };
     }
 
+    public async Task<UserManagerResponse> LogoutUserAsync()
+    {
+        _httpContextAccessor.HttpContext.Response.Cookies.Delete("_auth");
+        
+        return new UserManagerResponse
+        {
+            Message = "User logged out successfully!",
+            isSuccess = true
+        };
+    }
+
     public async Task<UserManagerResponse> LoginUserAsync(LoginViewModel model)
     {
         var user = await _userManager.FindByEmailAsync(model.Email);
@@ -86,6 +97,8 @@ public class UserService : IUserService
                 Message = "The provided combination of email and password does not match our records",
                 isSuccess = false
             };
+        
+
         }
 
         var claims = new[]

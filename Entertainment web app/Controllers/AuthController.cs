@@ -72,4 +72,25 @@ public class AuthController : ControllerBase
 
         return BadRequest("Please provide a valid email and password");
     }
+    
+    [HttpPost]
+    [Authorize]
+    [Route("[action]")]
+    public async Task<IActionResult> LogoutAsync()
+    {
+        var result = await _userService.LogoutUserAsync();
+        
+        if (result.isSuccess)
+        {
+            return Ok(result);
+        }
+
+        if (!result.isSuccess)
+        {
+            return BadRequest(result);
+        }
+
+        return BadRequest("An error occurred, user could not be logged out");
+    }
+
 }

@@ -10,6 +10,7 @@ const context =  [
     "/api/Movies/GetTvSeries",
     "/api/Auth/Register",
     "/api/Auth/Login",
+    "/api/Auth/Logout",
     "/api/Auth/AuthenticateUser",
     "/api/Search/SearchByTitle",
     "/api/Search/SearchByCategory",
