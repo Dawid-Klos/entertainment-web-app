@@ -1,5 +1,8 @@
 import { useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+
+import { useAuth } from "../../../hooks/useAuth";
+import Spinner from "../../common/Spinner/Spinner";
 
 import logo from "../../../assets/logo.svg";
 import "../Auth.scss";
@@ -7,36 +10,16 @@ import "../Auth.scss";
 const Login = () => {
   const email = useRef();
   const password = useRef();
-  const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    let res;
+  const { submission, handleSubmit } = useAuth();
 
+  const submitForm = async (e) => {
     const body = {
       Email: email.current.value,
       Password: password.current.value,
     };
 
-    try {
-      let login = await fetch("/api/Auth/Login", {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
-
-      res = await login.json();
-    } catch (error) {
-      console.log("Error: ", error);
-    }
-
-    if (res && res.isSuccess) {
-      navigate("/Library");
-    } else {
-      console.log("There is some problem, user not logged in!");
-      // TODO: Show error message to the user
-    }
+    await handleSubmit(e, body, "/api/Auth/Login");
   };
 
   return (
@@ -48,7 +31,7 @@ const Login = () => {
       />
 
       <div className="auth-section__container">
-        <form className="form" onSubmit={handleSubmit}>
+        <form className="form" onSubmit={submitForm}>
           <h2 className="form__title">Login</h2>
 
           <div className="form__inputs-wrapper">
@@ -76,8 +59,14 @@ const Login = () => {
             </div>
           </div>
 
+          {(submission.status === "success" ||
+            submission.status === "error") && (
+            <p className="form__status">{submission.message}</p>
+          )}
+
           <button className="form__submit-btn" type="submit">
-            Login to your account
+            {submission.status === "submitting" ? "" : "Login to your account"}
+            <Spinner loading={submission.status === "submitting"} />
           </button>
         </form>
         <div className="create-account">

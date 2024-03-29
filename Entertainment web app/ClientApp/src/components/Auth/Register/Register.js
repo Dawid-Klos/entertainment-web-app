@@ -1,79 +1,33 @@
-import { Link, useNavigate } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import { useRef } from "react";
 
+import { useAuth } from "../../../hooks/useAuth";
 import logo from "../../../assets/logo.svg";
 import "../Auth.scss";
+import Spinner from "../../common/Spinner/Spinner";
 
 const Register = () => {
-  const [isSuccess, setIsSuccess] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [message, setMessage] = useState("");
-
-  const navigate = useNavigate();
   const firstName = useRef();
   const lastName = useRef();
   const email = useRef();
   const password = useRef();
   const confirmPassword = useRef();
 
-  const getDetails = () => {
-    return {
+  const { submission, handleSubmit } = useAuth();
+
+  const submitForm = async (e) => {
+    e.preventDefault();
+
+    const body = {
       Email: email.current.value,
       Firstname: firstName.current.value,
       Lastname: lastName.current.value,
       Password: password.current.value,
       ConfirmPassword: confirmPassword.current.value,
     };
+
+    await handleSubmit(e, body, "/api/Auth/Register");
   };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const body = getDetails();
-
-    try {
-      let register = await fetch("/api/Auth/Register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      });
-      register = register.json();
-
-      if (register && register.isSuccess) {
-        console.log(register);
-
-        setMessage(register.message);
-        setIsSuccess(true);
-        setIsSubmitted(true);
-      }
-
-      if (register && !register.isSuccess) {
-        // unpack register.Errors object to a variable errors as one string
-        let errors = Object.values(register.errors).join(" ");
-        console.log("errors: ", errors);
-
-        setMessage(errors);
-        setIsSuccess(false);
-        setIsSubmitted(true);
-      }
-    } catch (error) {
-      setMessage(error);
-      setIsSuccess(false);
-      setIsSubmitted(true);
-
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    if (isSuccess && isSubmitted) {
-      setTimeout(() => {
-        navigate("/Library");
-      }, 3000);
-    }
-  }, [isSubmitted]);
 
   return (
     <section className="auth-section">
@@ -84,7 +38,7 @@ const Register = () => {
       />
 
       <div className="auth-section__container">
-        <form className="form" onSubmit={handleSubmit}>
+        <form className="form" onSubmit={submitForm}>
           <h2 className="form__title">Sign up</h2>
           <div className="input-container">
             <label htmlFor="email" className="input-container__label">
@@ -148,22 +102,23 @@ const Register = () => {
               id="confirm-password"
             />
           </div>
-          {isSuccess && isSubmitted && (
-            <p className="form__success">
-              Account created successfully!
-              <br />
-              {message}
-            </p>
+
+          {(submission.status === "success" ||
+            submission.status === "error") && (
+            <p className="form__status">{submission.message}</p>
           )}
-          {!isSuccess && isSubmitted && (
-            <p className="form__error">
-              There is some problem, user not registered!
-              <br />
-              {message}
-            </p>
+
+          {submission.errors && submission.errors.length > 1 && (
+            <ul className="form__errors">
+              {submission.errors.map((error, index) => (
+                <li key={index}>{error}</li>
+              ))}
+            </ul>
           )}
+
           <button className="form__submit-btn" type="submit">
-            Create an account
+            {submission.status === "submitting" ? "" : "Create an account"}
+            <Spinner loading={submission.status === "submitting"} />
           </button>
         </form>
 

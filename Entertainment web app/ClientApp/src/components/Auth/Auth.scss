@@ -2,6 +2,8 @@
 
 .auth-section {
   @include login_container;
+
+  grid-row-start: 2;
 }
 
 .form {

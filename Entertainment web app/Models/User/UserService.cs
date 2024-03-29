@@ -83,7 +83,7 @@ public class UserService : IUserService
         {
             return new UserManagerResponse
             {
-                Message = "Invalid password",
+                Message = "The provided combination of email and password does not match our records",
                 isSuccess = false
             };
         }
@@ -101,7 +101,7 @@ public class UserService : IUserService
             issuer: _configuration["AuthSettings:Issuer"],
             audience: _configuration["AuthSettings:Audience"],
             claims: claims,
-            expires: DateTime.Now.AddDays(30),
+            expires: DateTime.Now.AddDays(5),
             signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256));
         
         string tokenAsString = new JwtSecurityTokenHandler().WriteToken(token);
@@ -109,14 +109,14 @@ public class UserService : IUserService
         var cookieOptions = new CookieOptions
         {
             HttpOnly = true,
-            Expires = DateTime.Now.AddDays(30)
+            Expires = DateTime.Now.AddDays(5)
         };
 
         _httpContextAccessor.HttpContext.Response.Cookies.Append("_auth", tokenAsString, cookieOptions);
 
         return new UserManagerResponse
         {
-            Message = tokenAsString,
+            Message = "User logged in successfully!",
             isSuccess = true,
             ExpireDate = token.ValidTo
         };
