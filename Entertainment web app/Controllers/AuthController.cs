@@ -42,7 +42,11 @@ public class AuthController : ControllerBase
             {
                 return Ok(result);
             }
-            return BadRequest(result);
+            
+            if (!result.isSuccess)
+            {
+                return BadRequest(result);
+            }
         }
         return BadRequest("Some properties are not valid");
     }
@@ -54,6 +58,7 @@ public class AuthController : ControllerBase
         if (ModelState.IsValid)
         {
             var result = await _userService.LoginUserAsync(model);
+            
             if (result.isSuccess)
             {
                 return Ok(result);
@@ -65,6 +70,6 @@ public class AuthController : ControllerBase
             }
         }
 
-        return BadRequest("Some properties are not valid");
+        return BadRequest("Please provide a valid email and password");
     }
 }

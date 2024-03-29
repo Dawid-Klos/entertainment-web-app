@@ -1,5 +1,7 @@
 @import "../../styles/variables";
 
 .movies {
+  grid-area: main;
+  
   @include content_container;
 }

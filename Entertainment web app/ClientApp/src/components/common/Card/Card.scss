@@ -14,7 +14,7 @@
   aspect-ratio: 14 / 9;
   background-size: cover;
   background-repeat: no-repeat;
-  border-radius: 0.5em;
+  border-radius: 0.5rem;
 
   &__button {
     display: flex;
@@ -40,7 +40,7 @@
 
 .card-info {
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: row wrap;
   opacity: 80%;
   gap: 0.1rem;
 

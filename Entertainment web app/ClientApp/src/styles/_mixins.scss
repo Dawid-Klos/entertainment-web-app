@@ -1,69 +1,7 @@
+@import 'mixins/responsive';
+@import 'mixins/form';
+@import 'mixins/containers';
 
 @mixin transition($element) {
   transition: $element 0.3s;
-}
-
-@mixin content_container {
-    width: 100%;
-
-  @include breakpoint(desktop_md) {
-    grid-area: main;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  &__content {
-    display: grid;
-    position: relative;
-    grid-gap: 2rem 0.5rem;
-    grid-template-columns: 1fr 1fr;
-    align-content: flex-start;
-    
-    @include breakpoint(mobile) {
-      grid-gap: 2rem 1rem;
-    }
-    
-    @include breakpoint(tablet) {
-      grid-template-columns: 1fr 1fr 1fr;
-      grid-gap: 1.5rem;
-    }
-    
-    @include breakpoint(desktop_md) {
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      grid-gap: 1.5rem;
-      row-gap: 3rem;
-    }
-    
-    @include breakpoint(desktop_lg) {
-      gap: 2rem;
-    }
-  }
-}
-
-@mixin breakpoint($point) {
-  @if $point == mobile {
-      @media (min-width: 320px) {
-      @content;
-      }
-  }
-  @else if $point == tablet {
-    @media (min-width: 768px){
-      @content;
-    }
-  }
-  @else if $point == desktop_md {
-    @media (min-width: 1024px) {
-      @content;
-    }
-  }
-    @else if $point == desktop_lg {
-        @media (min-width: 1440px) {
-        @content;
-        }
-    }
-    @else if $point == desktop_xl {
-        @media (min-width: 1920px) {
-        @content;
-        }
-    }
 }
