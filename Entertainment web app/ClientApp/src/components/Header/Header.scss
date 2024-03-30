@@ -1,56 +1,84 @@
 @import "../../styles/_variables";
 
 .header {
-  grid-area: header;
-  
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: $color-semi-dark-blue;
-  padding: 0.75rem 1rem;
-  margin-left: -1rem;
+    grid-area: header;
 
-  
-  @include breakpoint(tablet) {
-    border-radius: 0.75rem;
-    margin: 1rem;
-  }
-  
-  @include breakpoint(desktop_md) {
-    grid-area: aside;
-    place-self: flex-start;
-    
-    max-width: 4rem;
-    min-height: 80dvh;
-    position: sticky;
-    top: 2rem;
-    left: 0;
-    
-    margin-left: 0;
-    flex-direction: column;
-  }
-  
-  &__logo {
-    width: 1.6em;
-    height: 1.3em;
-    
-    @include breakpoint(desktop_md) {
-      width: 2em;
-      height: 1.6em;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: $color-semi-dark-blue;
+    padding: 0.75rem 1rem;
+    margin-left: -1rem;
+
+
+    @include breakpoint(tablet) {
+        border-radius: 0.75rem;
+        margin: 1rem;
     }
-  }
-  
-  &__avatar {
-    background-color: $color-white;
-    border: 1px solid $color-white; 
-    border-radius: 50%;
-    width: 1.5rem;
-    height: 1.5rem;
-    
+
     @include breakpoint(desktop_md) {
-      width: 2.5rem;
-      height: 2.5rem;
+        grid-area: aside;
+        place-self: flex-start;
+
+        max-width: 4rem;
+        min-height: 80dvh;
+        position: sticky;
+        top: 2rem;
+        left: 0;
+
+        margin-left: 0;
+        flex-direction: column;
     }
-  }
+
+    &__logo {
+        width: 1.6em;
+        height: 1.3em;
+
+        @include breakpoint(desktop_md) {
+            width: 2em;
+            height: 1.6em;
+        }
+    }
+
+}
+
+.user-info {
+    display: flex;
+    flex-flow: column nowrap; 
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: center;
+
+    &__avatar {
+        background-color: $color-white;
+        border: 1px solid $color-white; 
+        border-radius: 50%;
+        width: 1.5rem;
+        height: 1.5rem;
+
+        @include breakpoint(desktop_md) {
+            width: 2.5rem;
+            height: 2.5rem;
+        }
+    }
+    &__button {
+        display: flex;
+        flex-flow: column nowrap; 
+        align-items: center;
+        justify-content: center; 
+        gap: 0.5rem;
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        cursor: pointer;
+        padding-block: 1rem 0.5rem;
+        border: none;
+        color: $color-greyish-blue;
+        
+        &:hover {
+            @include transition(color);
+            color: $color-white;
+        }
+    }
 }

@@ -1,16 +1,27 @@
 import Nav from "./Nav/Nav";
 
+import { useAuth } from "../../hooks/useAuth";
+import Spinner from "../common/Spinner/Spinner";
+
 import logo from "../../assets/logo.svg";
 import avatar from "../../assets/image-avatar.png";
 
 import "./Header.scss";
 
 const Header = () => {
+  const { logout, submission } = useAuth();
+
   return (
     <header className="header">
       <img className="header__logo" src={logo} alt="Netwix company logo" />
       <Nav />
-      <img className="header__avatar" src={avatar} alt="User avatar" />
+      <div className="user-info">
+        <img className="user-info__avatar" src={avatar} alt="User avatar" />
+        <button className="user-info__button" type="submit" onClick={logout}>
+          <Spinner loading={submission.status === "logging out"} />
+          Logout
+        </button>
+      </div>
     </header>
   );
 };

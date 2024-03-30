@@ -1,11 +1,12 @@
 import { useState } from "react";
 import axios from "axios";
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export const useAuth = () => {
   const [submission, setSubmission] = useState({ status: "", message: "" });
   const navigate = useNavigate();
+  const location = useLocation;
 
   const handleSubmit = async (e, body, endpoint) => {
     e.preventDefault();
@@ -53,5 +54,30 @@ export const useAuth = () => {
     }
   };
 
-  return { submission, handleSubmit };
+  const logout = async () => {
+    try {
+      setSubmission({ status: "logging out", message: "Logging out..." });
+      await axios.post("/api/Auth/Logout");
+
+      setTimeout(() => {
+        setSubmission({
+          status: "success",
+          message: "You have been logged out.",
+        });
+        navigate("/login");
+      }, 1000);
+    } catch (error) {
+      setSubmission({
+        status: "error",
+        message:
+          "There is some problem. Please, refresh the page and try again.",
+        errors: error.response.data.Message,
+      });
+
+      // try to refresh the page to resolve the issue
+      navigate(location.pathname);
+    }
+  };
+
+  return { submission, handleSubmit, logout };
 };
