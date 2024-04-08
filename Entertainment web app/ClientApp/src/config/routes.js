@@ -29,11 +29,6 @@ const routerConfig = [
     children: [
       {
         path: "/",
-        exact: true,
-        loader: () => redirect("/Library"),
-      },
-      {
-        path: "/Library",
         element: <Home />,
         loader: async () => {
           const recommended = await fetchContent("Movies/GetMovies");
@@ -43,9 +38,15 @@ const routerConfig = [
         },
       },
       {
-        path: "/Search/:category/:query?",
+        path: "/Search",
         element: <Search />,
-        loader: ({ params }) => fetchSearchResult(params),
+        loader: ({ request }) => {
+          const url = new URL(request.url);
+          const query = url.searchParams.get("query");
+          const category = url.searchParams.get("category");
+
+          return fetchSearchResult(query, category);
+        },
       },
       {
         path: "/Movies",
@@ -60,7 +61,6 @@ const routerConfig = [
       {
         path: "/Bookmarked",
         element: <Bookmark />,
-        // loader: () => fetchBookmarked(),
         loader: () => fetchContent("Bookmark/GetBookmarks"),
       },
     ],
