@@ -1,47 +1,11 @@
-import { useEffect, useState } from "react";
-import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
+import { useSearch } from "../../hooks/useSearch";
 
-import { pages } from "../../config/constants";
 import searchIcon from "../../assets/icon-search.svg";
 
 import "./SearchBar.scss";
 
 const SearchBar = () => {
-  const [pageInfo, setPageInfo] = useState(pages.home);
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  const handleQuery = (e) => {
-    const query = e.target.value ? e.target.value : " ";
-    const searchQuery = { query: query, category: pageInfo.category };
-
-    setSearchParams(searchQuery, { replace: true });
-  };
-
-  const navigateToSearch = (e) => {
-    e.preventDefault();
-
-    let query = searchParams.get("query");
-
-    if (!query) {
-      query = "";
-    }
-
-    console.log("Search category", pageInfo.path);
-
-    navigate(`/Search${pageInfo.path}/${query}`);
-  };
-
-  useEffect(() => {
-    let currentPage = Object.values(pages).find((page) =>
-      location.pathname.includes(page.path),
-    );
-    currentPage = currentPage ? currentPage : pages.home;
-
-    setPageInfo(currentPage);
-  }, [location.pathname]);
+  const { pageInfo, navigateToSearch } = useSearch();
 
   return (
     <div className="searchBar">
@@ -54,8 +18,6 @@ const SearchBar = () => {
         <input
           className="searchBar__search--input"
           type="text"
-          onChange={handleQuery}
-          value={searchParams.query}
           id="search"
           name="search"
           placeholder={pageInfo.placeholder}
