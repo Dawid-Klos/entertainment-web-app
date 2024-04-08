@@ -25,7 +25,7 @@ export const useAuth = () => {
             message: login.data.Message,
           });
 
-          navigate("/Library");
+          navigate("/");
         }, 500);
       } else {
         setSubmission({
