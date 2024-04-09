@@ -82,12 +82,20 @@
 
   @include breakpoint(mobile) {
     max-height: 12rem;
-      padding: 1rem;
+    padding: 1rem;
   }
 
   @include breakpoint(desktop_md) {
     max-height: 16rem;
     padding: 1.5rem;
+  }
+
+  &:hover {
+      cursor: grab;
+    }
+
+  &:active {
+    cursor: grabbing;
   }
 
   &:after {
