@@ -1,4 +1,4 @@
-import Card from "../../common/Card/Card";
+import Slider from "./Slider/Slider";
 
 import "./Trending.scss";
 
@@ -9,20 +9,11 @@ const Trending = ({ content }) => {
   return (
     <div className="trending">
       <h1 className="trending__title">Trending</h1>
-      <div className="trending__content">
-        {!content ? (
-          <div className="trending__loading">Loading...</div>
-        ) : (
-          movies.map((movie) => (
-            <Card
-              key={movie.MovieId}
-              movie={movie}
-              bookmarks={bookmarks}
-              variant="trending"
-            />
-          ))
-        )}
-      </div>
+      {!content ? (
+        <div className="trending__loading">Loading...</div>
+      ) : (
+        <Slider movies={movies} bookmarks={bookmarks} />
+      )}
     </div>
   );
 };

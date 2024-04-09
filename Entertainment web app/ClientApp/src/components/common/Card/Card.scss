@@ -71,7 +71,6 @@
 }
 
 .trending-card {
-  scroll-snap-align: center;
   position: relative;
   display: flex;
   justify-content: space-between;
@@ -82,11 +81,21 @@
   background-size: cover;
 
   @include breakpoint(mobile) {
+    max-height: 12rem;
     padding: 1rem;
   }
 
   @include breakpoint(desktop_md) {
-    scroll-snap-align: start;
+    max-height: 16rem;
+    padding: 1.5rem;
+  }
+
+  &:hover {
+      cursor: grab;
+    }
+
+  &:active {
+    cursor: grabbing;
   }
 
   &:after {
