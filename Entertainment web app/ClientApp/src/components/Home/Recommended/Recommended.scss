@@ -4,4 +4,9 @@
   @include content_container;
   
   grid-area: footer !important;
+  padding-block: 1rem 2rem;
+    
+  @include breakpoint(desktop_md) {
+    padding-block: 2rem 4rem;
+  }
 }

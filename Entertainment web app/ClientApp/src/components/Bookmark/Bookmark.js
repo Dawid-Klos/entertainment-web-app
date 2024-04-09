@@ -14,7 +14,7 @@ const Bookmark = () => {
   };
 
   return (
-    <>
+    <section class="bookmark-container">
       <section className="bookmark">
         <h1 className="bookmark__title">Bookmarked Movies</h1>
         <div className="bookmark__content">
@@ -33,7 +33,7 @@ const Bookmark = () => {
         </div>
       </section>
       <section className="bookmark-tv">
-        <h1 className="bookmark-tv__title">Bookmarked TV Series</h1>
+        <h2 className="bookmark-tv__title">Bookmarked TV Series</h2>
         <div className="bookmark-tv__content">
           {!bookmarkData ? (
             <h1>Loading...</h1>
@@ -49,7 +49,7 @@ const Bookmark = () => {
           )}
         </div>
       </section>
-    </>
+    </section>
   );
 };
 

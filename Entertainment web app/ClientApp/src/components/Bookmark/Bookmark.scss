@@ -1,13 +1,16 @@
 @import "../../styles/variables";
+.bookmark-container {
+    grid-area: main;
 
+    @include content_container;
+
+    gap: 4rem;
+    min-height: 85vh;
+}
 .bookmark {
-  grid-area: main;
-  
   @include content_container;
 }
 
 .bookmark-tv {
-  grid-area: footer !important;
-  
   @include content_container;
 }

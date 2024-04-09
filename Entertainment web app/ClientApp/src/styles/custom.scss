@@ -51,7 +51,7 @@ input, button, textarea, select, p {
               "searchBar"
               "main"
               "footer";
-  align-items: center;
+  align-items: flex-start;
   gap: 1.5rem;
   padding: 0 1rem 4rem 1rem;
   
@@ -71,10 +71,8 @@ input, button, textarea, select, p {
       column-gap: 2rem;
       grid-template-areas: 
               "aside searchBar"
-              "aside main"
-              "aside footer";
+              "aside main";
       grid-template-columns: 1fr 12fr;
-      grid-template-rows: auto minmax(0px, max-content) 1fr;
       align-items: start;
   }
   

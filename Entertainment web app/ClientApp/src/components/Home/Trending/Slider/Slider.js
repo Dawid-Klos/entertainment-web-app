@@ -49,7 +49,7 @@ const Slider = ({ movies, bookmarks }) => {
         animation: "easeInOut",
       });
     }, 2500);
-  }, [instanceRef]);
+  }, []);
 
   return (
     <div ref={sliderRef} className="keen-slider">
