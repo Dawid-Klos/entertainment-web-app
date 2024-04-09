@@ -71,11 +71,10 @@
 }
 
 .trending-card {
-  scroll-snap-align: center;
   position: relative;
   display: flex;
   justify-content: space-between;
-  max-height: 8rem;
+  min-height: 8rem;
   border-radius: 0.5rem;
   padding: 0.5rem;
   aspect-ratio: 16 / 9;
@@ -87,7 +86,8 @@
   }
 
   @include breakpoint(desktop_md) {
-    scroll-snap-align: start;
+    max-height: 16rem;
+    padding: 1.5rem;
   }
 
   &:after {
