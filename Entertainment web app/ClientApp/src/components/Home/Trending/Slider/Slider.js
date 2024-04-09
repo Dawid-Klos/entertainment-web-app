@@ -12,7 +12,7 @@ const Slider = ({ movies, bookmarks }) => {
       spacing: 20,
     },
     breakpoints: {
-      "(min-width: 768px)": {
+      "(min-width: 600px)": {
         slides: {
           perView: 2.25,
           spacing: 30,
