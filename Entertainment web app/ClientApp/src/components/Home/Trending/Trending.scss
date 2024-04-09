@@ -5,39 +5,4 @@
   
   max-width: 100%;
   overflow: hidden;
-  
-  &__content {
-    min-width: 100%;
-    display: grid;
-    grid-gap: 1rem;
-    grid-template-columns: repeat(5, 15rem);
-    overflow-x: scroll;
-    overscroll-behavior-x: contain;
-    scroll-snap-type: x mandatory;
-    
-    @include breakpoint(mobile) {
-      grid-template-columns: repeat(5, 18rem);
-    }
-
-    @include breakpoint(tablet) {
-      padding: 0 2rem;
-      margin-left: -2rem;
-      grid-template-columns: repeat(5, 20rem) 0px;
-      grid-gap: 1.5rem;
-    }
-
-    @include breakpoint(desktop_md) {
-      padding: 0;
-      margin-left: 0;
-      grid-gap: 2rem;
-    }
-
-    @include breakpoint(desktop_lg) {
-      grid-template-columns: repeat(5, 26rem) 0px;
-    }
-
-    &::-webkit-scrollbar {
-      display: none;
-    }
-  }
 }

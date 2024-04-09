@@ -75,14 +75,15 @@
   position: relative;
   display: flex;
   justify-content: space-between;
-  min-height: 8rem;
+  max-height: 8rem;
   border-radius: 0.5rem;
   padding: 0.5rem;
   aspect-ratio: 16 / 9;
   background-size: cover;
 
   @include breakpoint(mobile) {
-    padding: 1rem;
+    max-height: 12rem;
+      padding: 1rem;
   }
 
   @include breakpoint(desktop_md) {
