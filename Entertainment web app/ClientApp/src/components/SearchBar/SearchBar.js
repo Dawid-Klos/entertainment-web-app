@@ -21,6 +21,7 @@ const SearchBar = () => {
           id="search"
           name="search"
           placeholder={pageInfo.placeholder}
+          autoComplete="off"
         />
       </form>
     </div>

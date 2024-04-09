@@ -16,7 +16,7 @@
     padding: 0;
     margin-top: 3rem;
   }
-    
+
   &__icon {
     width: 1.5em;
     height: 1.5em;
@@ -27,9 +27,14 @@
   }
   
   &__search--input {
-    width: calc(100% - 2rem);
+    width: 100%;
     padding: 0 1rem;
     color: $color-white;
+    color-scheme: dark;
+    
+    @include breakpoint(desktop_md) {
+        width: 35%; 
+    }
   }
 }
 
