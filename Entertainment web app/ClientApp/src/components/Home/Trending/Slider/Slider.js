@@ -1,5 +1,3 @@
-import { useEffect } from "react";
-
 import "keen-slider/keen-slider.min.css";
 import { useKeenSlider } from "keen-slider/react";
 
@@ -8,7 +6,7 @@ import Card from "../../../common/Card/Card";
 import "./Slider.scss";
 
 const Slider = ({ movies, bookmarks }) => {
-  const [sliderRef, instanceRef] = useKeenSlider({
+  const [sliderRef] = useKeenSlider({
     slides: {
       perView: "auto",
       spacing: 20,
@@ -34,24 +32,6 @@ const Slider = ({ movies, bookmarks }) => {
       },
     },
   });
-
-  useEffect(() => {
-    // Indicate that the container is a slider to the user
-    // by manually changing the slide
-    setTimeout(() => {
-      instanceRef.current.moveToIdx(1, true, {
-        duration: 1000,
-        animation: "easeInOut",
-      });
-    }, 1000);
-
-    setTimeout(() => {
-      instanceRef.current.moveToIdx(0, true, {
-        duration: 300,
-        animation: "easeInOut",
-      });
-    }, 2500);
-  }, []);
 
   return (
     <div ref={sliderRef} className="keen-slider">
