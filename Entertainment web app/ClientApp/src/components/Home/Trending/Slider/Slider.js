@@ -5,29 +5,31 @@ import { useKeenSlider } from "keen-slider/react";
 
 import Card from "../../../common/Card/Card";
 
+import "./Slider.scss";
+
 const Slider = ({ movies, bookmarks }) => {
   const [sliderRef, instanceRef] = useKeenSlider({
     slides: {
-      perView: 1,
+      perView: "auto",
       spacing: 20,
     },
     breakpoints: {
       "(min-width: 600px)": {
         slides: {
-          perView: 2.25,
+          perView: "auto",
           spacing: 30,
         },
       },
       "(min-width: 1440px)": {
         slides: {
-          perView: 3.25,
+          perView: "auto",
           spacing: 30,
         },
       },
       "(min-width: 1920px)": {
         slides: {
-          perView: 3,
-          spacing: -80,
+          perView: "auto",
+          spacing: 30,
         },
       },
     },
