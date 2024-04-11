@@ -23,21 +23,36 @@
     }
   }
   
-  svg {
-    transform: scale(0.8);
-    
-    @include breakpoint(tablet) {
-      transform: scale(1);
-    }
-  }
-  
-  &__link--active {
-    @include transition(fill);
-    fill: $color-white;
-  }
-  
   &__link--default {
+    @include transition(fill);
+
     fill: #5A698F;
+  }
+
+  &__link--active {
+      @include transition(fill);
+
+      fill: $color-white;
+  }
+
+  &__link:hover .nav__link--default {
+    @include transition(fill);
+
+    fill: $color-red;
+  }
+  
+  &__link:hover .nav__link--active {
+    @include transition(fill);
+
+    fill: $color-red;
+  }
+
+  svg {
+      transform: scale(0.8);
+
+      @include breakpoint(tablet) {
+          transform: scale(1);
+      }
   }
 
 }
