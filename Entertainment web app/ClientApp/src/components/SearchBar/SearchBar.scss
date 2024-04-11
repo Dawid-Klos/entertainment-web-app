@@ -13,8 +13,12 @@
   
   @include breakpoint(desktop_md) {
     grid-area: searchBar;
-    padding: 0;
+    padding: 1rem 0;
     margin-top: 3rem;
+
+    &:focus-within {
+        border-bottom: 1px solid $color-greyish-blue;
+    }
   }
 
   &__icon {
@@ -31,7 +35,12 @@
     padding: 0 1rem;
     color: $color-white;
     color-scheme: dark;
-    
+    font: $medium-body-desktop; 
+
+    @include breakpoint(tablet) {
+        font: $medium-heading-desktop;
+    }
+
     @include breakpoint(desktop_md) {
         width: 35%; 
     }

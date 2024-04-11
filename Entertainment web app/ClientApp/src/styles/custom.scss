@@ -41,6 +41,10 @@ input, button, textarea, select, p {
   appearance: none;
 }
 
+input {
+  caret-color: $color-red;
+}
+
 #root {
   width: calc(100% - 2rem);
   min-height: 100dvh;
