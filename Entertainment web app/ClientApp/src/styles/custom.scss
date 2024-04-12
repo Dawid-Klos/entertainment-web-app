@@ -1,7 +1,7 @@
 // Normalize pre-default CSS values
 @import "normalize-scss/sass/normalize/import-now";
 
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;500&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;500&display=swap");
 @import "_variables.scss";
 
 body {
@@ -9,15 +9,15 @@ body {
   background-color: $color-dark-blue;
   color: $color-white;
   font: $small-body-mobile;
-  
+
   @include breakpoint(tablet) {
     font: $medium-body-mobile;
   }
-  
+
   @include breakpoint(desktop_lg) {
     font: $small-body-desktop;
   }
-  
+
   @include breakpoint(desktop_xl) {
     font: $medium-body-desktop;
   }
@@ -28,7 +28,11 @@ a {
   color: $color-red;
 }
 
-input, button, textarea, select, p {
+input,
+button,
+textarea,
+select,
+p {
   color: $color-white;
   padding: 0;
   margin: 0;
@@ -48,38 +52,39 @@ input {
 #root {
   width: calc(100% - 2rem);
   min-height: 100dvh;
-  
+
   display: grid;
-  grid-template-areas: 
-              "header"
-              "searchBar"
-              "main"
-              "footer";
+  grid-template-areas:
+    "header"
+    "searchBar"
+    "main"
+    "footer";
   align-items: flex-start;
   gap: 1.5rem;
   padding: 0 1rem 4rem 1rem;
-  
+
   @include breakpoint(mobile) {
     padding: 0 1rem;
   }
-  
+
   @include breakpoint(tablet) {
+    width: calc(100% - 4rem);
     padding: 0 2rem;
     gap: 2.5rem;
   }
-  
+
   @include breakpoint(desktop_md) {
-      width: calc(100% - 4rem);
-      min-height: 100dvh;
-      row-gap: 1rem;
-      column-gap: 2rem;
-      grid-template-areas: 
-              "aside searchBar"
-              "aside main";
-      grid-template-columns: 1fr 12fr;
-      align-items: start;
+    width: calc(100% - 4rem);
+    min-height: 100dvh;
+    row-gap: 1rem;
+    column-gap: 2rem;
+    grid-template-areas:
+      "aside searchBar"
+      "aside main";
+    grid-template-columns: 1fr 12fr;
+    align-items: start;
   }
-  
+
   @include breakpoint(desktop_lg) {
     grid-template-columns: 1fr 16fr;
     row-gap: 3rem;
@@ -95,31 +100,31 @@ h1 {
   }
 
   @include breakpoint(desktop_xl) {
-      font: $large-heading-desktop;
+    font: $large-heading-desktop;
   }
 }
 
 h2 {
   font: $small-heading-mobile;
   margin: 0 0 1rem;
-  
-    @include breakpoint(desktop_lg) {
-        font: $small-heading-desktop;
-    }
-  
-    @include breakpoint(desktop_xl) {
-        font: $medium-heading-desktop;
-    }
+
+  @include breakpoint(desktop_lg) {
+    font: $small-heading-desktop;
+  }
+
+  @include breakpoint(desktop_xl) {
+    font: $medium-heading-desktop;
+  }
 }
 
 h3 {
   font: $extra-small-heading-mobile;
-  
-    @include breakpoint(desktop_lg) {
-        font: $extra-small-heading-desktop;
-    }
-  
-    @include breakpoint(desktop_xl) {
-        font: $small-heading-desktop;
-    }
+
+  @include breakpoint(desktop_lg) {
+    font: $extra-small-heading-desktop;
+  }
+
+  @include breakpoint(desktop_xl) {
+    font: $small-heading-desktop;
+  }
 }

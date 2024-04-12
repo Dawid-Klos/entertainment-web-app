@@ -9,11 +9,23 @@
     min-height: 100%;
     flex-direction: column;
     justify-self: flex-start;
+
+    &__link:hover .nav__link--default {
+      @include transition(fill);
+
+      fill: $color-red;
+    }
+
+    &__link:hover .nav__link--active {
+      @include transition(fill);
+
+      fill: $color-red;
+    }
   }
-  
+
   &__link {
     @include transition(color);
-    
+
     display: flex;
     align-items: center;
     padding: 0.5rem;
@@ -22,37 +34,24 @@
       padding: 1rem;
     }
   }
-  
+
   &__link--default {
     @include transition(fill);
 
-    fill: #5A698F;
+    fill: #5a698f;
   }
 
   &__link--active {
-      @include transition(fill);
-
-      fill: $color-white;
-  }
-
-  &__link:hover .nav__link--default {
     @include transition(fill);
 
-    fill: $color-red;
-  }
-  
-  &__link:hover .nav__link--active {
-    @include transition(fill);
-
-    fill: $color-red;
+    fill: $color-white;
   }
 
   svg {
-      transform: scale(0.8);
+    transform: scale(0.8);
 
-      @include breakpoint(tablet) {
-          transform: scale(1);
-      }
+    @include breakpoint(tablet) {
+      transform: scale(1);
+    }
   }
-
 }
