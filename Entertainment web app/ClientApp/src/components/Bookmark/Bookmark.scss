@@ -1,11 +1,13 @@
 @import "../../styles/variables";
 .bookmark-container {
-    grid-area: main;
+  grid-area: main;
 
-    @include content_container;
+  @include content_container;
 
-    gap: 4rem;
-    min-height: 85vh;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 4rem;
+  min-height: 85vh;
 }
 .bookmark {
   @include content_container;
@@ -13,4 +15,17 @@
 
 .bookmark-tv {
   @include content_container;
+
+  &__title {
+    font: $large-heading-mobile;
+    margin: 0 0 1rem;
+
+    @include breakpoint(desktop_lg) {
+      font: $medium-heading-desktop;
+    }
+
+    @include breakpoint(desktop_xl) {
+      font: $large-heading-desktop;
+    }
+  }
 }
