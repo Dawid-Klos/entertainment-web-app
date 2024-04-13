@@ -70,7 +70,7 @@ const Card = ({ movie, bookmarks, variant }) => {
         >
           <Bookmark
             className="card-bookmark__icon"
-            variant={cardInfo.isBookmarked ? "full" : "empty"}
+            variant={cardInfo.isBookmarked ? "filled" : "outlined"}
           />
         </button>
       </div>
