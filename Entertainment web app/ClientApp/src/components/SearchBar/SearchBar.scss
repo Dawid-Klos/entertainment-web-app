@@ -42,7 +42,7 @@
     }
 
     @include breakpoint(desktop_md) {
-      width: 35%;
+      max-width: 50%;
     }
   }
 }

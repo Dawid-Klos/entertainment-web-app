@@ -22,13 +22,16 @@
     place-self: flex-start;
 
     max-width: 4rem;
-    min-height: 80dvh;
+    min-height: 90dvh;
     position: sticky;
     top: 2rem;
     left: 0;
-
     margin-left: 0;
     flex-direction: column;
+  }
+
+  @include breakpoint(desktop_lg) {
+    min-height: calc(100dvh - 5rem);
   }
 
   &__logo {

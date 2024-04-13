@@ -24,7 +24,32 @@
     height: 2rem;
     background-color: rgba(16, 20, 30, 0.5);
     border-radius: 50%;
-    margin: 0.5em;
+    margin: 0.5rem;
+    transition: background-color 0.3s;
+
+    @include breakpoint(desktop_md) {
+      width: 2.25rem;
+      height: 2.25rem;
+      marign: 0.75rem;
+    }
+  }
+
+  &__icon {
+    color: $color-white;
+    transition: color 0.3s;
+
+    @include breakpoint(desktop_md) {
+      transform: scale(1.2);
+    }
+  }
+
+  &__button:hover {
+    cursor: pointer;
+    background-color: $color-white;
+
+    & > .card-bookmark__icon {
+      color: $color-black;
+    }
   }
 }
 
@@ -126,6 +151,7 @@
   }
 
   .card-bookmark {
+    z-index: 1;
     position: absolute;
     top: 0;
     left: 0;
