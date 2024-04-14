@@ -28,14 +28,11 @@
   align-items: center;
 }
 
-
 @mixin content_container {
   width: 100%;
 
   @include breakpoint(desktop_md) {
     @include flex_column;
-    
-    grid-area: main;
   }
 
   &__content {
@@ -55,15 +52,20 @@
     }
 
     @include breakpoint(desktop_md) {
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      grid-gap: 1.5rem;
+      grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+      column-gap: 1.5rem;
       row-gap: 3rem;
     }
 
     @include breakpoint(desktop_lg) {
-      gap: 2rem;
+      column-gap: 2rem;
+      row-gap: 4rem;
+    }
+
+    @include breakpoint(desktop_xl) {
+      grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+      column-gap: 2rem;
+      row-gap: 3rem;
     }
   }
 }
-
-

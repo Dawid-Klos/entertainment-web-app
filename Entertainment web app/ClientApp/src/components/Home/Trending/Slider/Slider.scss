@@ -1,0 +1,18 @@
+@import "../../../../styles/variables";
+
+.keen-slider {
+  &__slide {
+    min-width: 16rem;
+    max-width: 16rem;
+
+    @include breakpoint(mobile) {
+      min-width: 18rem;
+      max-width: 18rem;
+    }
+
+    @include breakpoint(tablet) {
+      min-width: 29rem;
+      max-width: 29rem;
+    }
+  }
+}

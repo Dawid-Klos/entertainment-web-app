@@ -17,10 +17,11 @@ const SearchBar = () => {
         </label>
         <input
           className="searchBar__search--input"
-          type="text"
+          type="search"
           id="search"
           name="search"
           placeholder={pageInfo.placeholder}
+          autoComplete="off"
         />
       </form>
     </div>

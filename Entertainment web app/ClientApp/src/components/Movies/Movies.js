@@ -27,6 +27,7 @@ const Movies = () => {
           ))
         )}
       </div>
+      <div className="movies__empty"></div>
     </div>
   );
 };

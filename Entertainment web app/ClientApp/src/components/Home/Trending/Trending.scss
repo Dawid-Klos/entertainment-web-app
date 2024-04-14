@@ -2,7 +2,29 @@
 
 .trending {
   grid-area: main;
-  
+
   max-width: calc(100% + 2rem);
   overflow: hidden;
+
+  &__title-wrapper {
+    display: flex;
+    justify-content: flex-start;
+    gap: 0.5rem;
+    align-items: center;
+    padding: 1rem 0;
+  }
+
+  &__title {
+    margin: 0;
+  }
+
+  &__icon {
+    width: 1.5rem;
+    height: 1.5rem;
+
+    @include breakpoint(tablet) {
+      width: 2rem;
+      height: 2rem;
+    }
+  }
 }

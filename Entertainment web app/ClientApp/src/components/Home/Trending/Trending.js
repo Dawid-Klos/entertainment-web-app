@@ -1,5 +1,7 @@
 import Slider from "./Slider/Slider";
 
+import CarouselIcon from "../../../assets/icons/Carousel";
+
 import "./Trending.scss";
 
 const Trending = ({ content }) => {
@@ -8,7 +10,11 @@ const Trending = ({ content }) => {
 
   return (
     <div className="trending">
-      <h1 className="trending__title">Trending</h1>
+      <div className="trending__title-wrapper">
+        <CarouselIcon className="trending__icon" variant="horizontall" />
+        <h1 className="trending__title">Trending</h1>
+      </div>
+
       {!content ? (
         <div className="trending__loading">Loading...</div>
       ) : (

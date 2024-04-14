@@ -2,9 +2,8 @@ import { useEffect } from "react";
 
 import { useWindowSize } from "../../../hooks/useWindowSize";
 import useBookmark from "../../../hooks/useBookmark";
+import Bookmark from "../../../assets/icons/Bookmark";
 
-import emptyBookmarkIcon from "../../../assets/icon-bookmark-empty.svg";
-import fullBookmarkIcon from "../../../assets/icon-bookmark-full.svg";
 import categoryMovieIcon from "../../../assets/icon-category-movie.svg";
 import categoryTvIcon from "../../../assets/icon-category-tv.svg";
 
@@ -69,9 +68,9 @@ const Card = ({ movie, bookmarks, variant }) => {
           className="card-bookmark__button"
           aria-label="Adds a movie to bookmarks"
         >
-          <img
-            src={cardInfo.isBookmarked ? fullBookmarkIcon : emptyBookmarkIcon}
-            alt="Adds a movie to bookmarks"
+          <Bookmark
+            className="card-bookmark__icon"
+            variant={cardInfo.isBookmarked ? "filled" : "outlined"}
           />
         </button>
       </div>
