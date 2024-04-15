@@ -8,7 +8,6 @@ const TVSeries = () => {
   const tvSeriesData = useLoaderData();
 
   const tvSeries = tvSeriesData.data;
-  const bookmarks = tvSeriesData.bookmarks;
 
   return (
     <div className="TVSeries">
@@ -18,12 +17,7 @@ const TVSeries = () => {
           <h1>Loading...</h1>
         ) : (
           tvSeries.map((movie) => (
-            <Card
-              key={movie.MovieId}
-              movie={movie}
-              bookmarks={bookmarks}
-              variant="standard"
-            />
+            <Card key={movie.MovieId} movie={movie} variant="standard" />
           ))
         )}
       </div>

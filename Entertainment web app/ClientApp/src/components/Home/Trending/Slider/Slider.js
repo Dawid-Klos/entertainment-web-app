@@ -38,7 +38,7 @@ const Slider = ({ movies, bookmarks }) => {
       {movies &&
         movies.map((movie) => (
           <div className="keen-slider__slide" key={movie.MovieId}>
-            <Card movie={movie} bookmarks={bookmarks} variant="trending" />
+            <Card movie={movie} variant="trending" />
           </div>
         ))}
     </div>
