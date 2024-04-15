@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Entertainment_web_app.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,13 +20,36 @@ public class MoviesController : ControllerBase
 
     [HttpGet]
     [Route("[action]")]
-    public async Task<IActionResult> GetMovies()
+    public async Task<ActionResult<IEnumerable<MovieDto>>> GetMovies()
     {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var user = await _context.Users.FindAsync(userId);
+
+
         try
         {
             var movies = await _context.Movies
-                .FromSqlRaw($"SELECT * FROM \"Movies\" WHERE \"Category\" = 'Movies'").ToListAsync();
-            
+                .Select(m => new MovieDto
+                {
+                    MovieId = m.MovieId,
+                    Title = m.Title,
+                    Year = m.Year,
+                    Category = m.Category,
+                    Rating = m.Rating,
+                    ImgSmall = m.ImgSmall,
+                    ImgMedium = m.ImgMedium,
+                    ImgLarge = m.ImgLarge,
+                    IsBookmarked = false 
+                }).ToListAsync();
+
+            var bookmarks = await _context.Bookmarks.Where(b => b.ApplicationUserId == userId).Select(b => b.MovieId).ToListAsync();
+
+
+            foreach (var movie in movies)
+            {
+                movie.IsBookmarked = bookmarks.Contains(movie.MovieId);
+            }
+
             return new JsonResult(movies);
         }
         catch (Exception ex)
