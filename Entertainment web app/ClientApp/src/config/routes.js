@@ -1,7 +1,8 @@
 import { redirect } from "react-router-dom";
-
+import axios from "axios";
 import { fetchSearchResult, fetchContent } from "../utils/fetchContent";
 import { AuthenticateUser } from "../utils/authUser";
+import { bookmarkAction } from "../utils/actions";
 
 import Layout from "../components/Layout";
 import Movies from "../components/Movies/Movies";
@@ -36,6 +37,7 @@ const routerConfig = [
 
           return { recommended: recommended, trending: trending };
         },
+        action: bookmarkAction,
       },
       {
         path: "/Search",
@@ -52,16 +54,19 @@ const routerConfig = [
         path: "/Movies",
         element: <Movies />,
         loader: () => fetchContent("Movies/GetMovies"),
+        action: bookmarkAction,
       },
       {
         path: "/TV-series",
         element: <TVSeries />,
         loader: () => fetchContent("Movies/GetTvSeries"),
+        action: bookmarkAction,
       },
       {
         path: "/Bookmarked",
         element: <Bookmark />,
         loader: () => fetchContent("Bookmark/GetBookmarks"),
+        action: bookmarkAction,
       },
     ],
   },
