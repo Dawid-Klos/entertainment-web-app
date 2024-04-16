@@ -21,7 +21,7 @@ const context = [
   "/api/Bookmark/GetBookmarks",
   "/api/Bookmark/Add",
   "/api/Bookmark/Remove",
-  "/api/Trending/GetTrending",
+  "/api/Trending/Get",
   "/swagger/v1/swagger.json",
   "/swagger",
 ];

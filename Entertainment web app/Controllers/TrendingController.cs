@@ -1,4 +1,6 @@
+using System.Security.Claims;
 using Entertainment_web_app.Data;
+using Entertainment_web_app.Models.Content;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -20,34 +22,43 @@ public class TrendingController : ControllerBase
     
     [HttpGet]
     [Route("[action]")]
-    public async Task<IActionResult> GetTrending()
+    public async Task<ActionResult<IEnumerable<MovieDto>>> Get()
     {
-        string sqlQuery = "SELECT * FROM \"Trending\"";
-        
-        try {
-            var trendingContent = await _context.Trending
-                .FromSqlRaw(sqlQuery).ToListAsync();
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            foreach (var trending in trendingContent)
-            {
-                var movie = await _context.Movies.FindAsync(trending.MovieId);
-                
-                if (movie == null)
+        try {
+            var user = await _context.Users.FindAsync(userId); 
+
+            var trendingMovieIds = await _context.Trending
+                .Select(t => t.MovieId)
+                .ToListAsync();
+            
+            var movies = await _context.Movies
+                .Where(m => trendingMovieIds.Contains(m.MovieId))
+                .ToListAsync();
+
+            var bookmarks = await _context.Bookmarks
+                .Where(b => b.ApplicationUserId == userId)
+                .Select(b => b.MovieId)
+                .ToListAsync();
+
+            var trendingMovies = movies.Select(m => new MovieDto 
                 {
-                    return NotFound();
-                }
-                
-                trending.Movie = movie; 
-            }
+                    MovieId = m.MovieId,
+                    Title = m.Title,
+                    Year = m.Year,
+                    Category = m.Category,
+                    Rating = m.Rating,
+                    ImgSmall = m.ImgSmall,
+                    ImgMedium = m.ImgMedium,
+                    ImgLarge = m.ImgLarge,
+                    IsBookmarked = bookmarks.Contains(m.MovieId) 
+                }).ToList();
             
-            
-            return new JsonResult(trendingContent);
-            
-        } catch (Exception ex) {
-            return StatusCode(StatusCodes.Status500InternalServerError, $"An error occurred: {ex.Message}");
+            return new JsonResult(trendingMovies); 
+        } catch (Exception ex)
+        {
+             return StatusCode(StatusCodes.Status500InternalServerError, $"An error occurred: {ex.Message}");
         }
-    }
-    
-    
-    
+    } 
 }
