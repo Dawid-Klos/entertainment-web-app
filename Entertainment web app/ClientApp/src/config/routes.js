@@ -32,8 +32,8 @@ const routerConfig = [
         path: "/",
         element: <Home />,
         loader: async () => {
-          const recommended = await fetchContent("Movies/GetMovies");
-          const trending = await fetchContent("Trending/GetTrending");
+          const recommended = await fetchContent("Movies/Get");
+          const trending = await fetchContent("Trending/Get");
 
           return { recommended: recommended, trending: trending };
         },

@@ -15,24 +15,6 @@ export const fetchBookmarked = async () => {
 export const fetchContent = async (path) => {
   try {
     const contentResponse = await axios.get(`/api/${path}`);
-    console.log("contentResponse ->", contentResponse);
-
-    if (path.includes("Trending")) {
-      const tempFix = contentResponse.data.map((item) => {
-        return {
-          Title: item.Movie.Title,
-          Year: item.Movie.Year,
-          Category: item.Movie.Category,
-          Rating: item.Movie.Rating,
-          MovieId: item.Movie.MovieId,
-          IsBookmarked: item.Movie.IsBookmarked,
-          ImgSmall: item.ImgTrendingSmall,
-          ImgLarge: item.ImgTrendingLarge,
-        };
-      });
-
-      contentResponse.data = tempFix;
-    }
 
     return { data: contentResponse.data };
   } catch (error) {

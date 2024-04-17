@@ -8,20 +8,15 @@ const target = env.ASPNETCORE_HTTPS_PORT
     : "http://localhost:52438";
 
 const context = [
+  "/api/Auth",
   "/api/Movies",
-  "/api/Movies/GetTrendingMovies",
-  "/api/Movies/GetTvSeries",
-  "/api/Auth/Register",
-  "/api/Auth/Login",
-  "/api/Auth/Logout",
-  "/api/Auth/AuthenticateUser",
+  "/api/Trending",
   "/api/Search/SearchByTitle",
   "/api/Search/SearchByCategory",
   "/api/Search/SearchByCategoryAndTitle",
   "/api/Bookmark/GetBookmarks",
   "/api/Bookmark/Add",
   "/api/Bookmark/Remove",
-  "/api/Trending/Get",
   "/swagger/v1/swagger.json",
   "/swagger",
 ];
