@@ -10,6 +10,8 @@
   "profiles": {
     "Entertainment_web_app": {
       "commandName": "Project",
+      "dotnetRunMessages": true,
+      "hotReloadProfile": "aspnetcore",
       "launchBrowser": true,
       "applicationUrl": "http://localhost:5222",
       "environmentVariables": {
