@@ -10,6 +10,7 @@ namespace Entertainment_web_app.Controllers;
 [ApiController]
 [Authorize]
 [Route("api/[controller]")]
+[Produces("application/json")]
 public class TrendingController : ControllerBase
 {
 
