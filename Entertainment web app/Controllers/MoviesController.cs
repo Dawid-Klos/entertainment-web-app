@@ -31,11 +31,7 @@ public class MoviesController : ControllerBase
         try
         {
             var user = await _context.Users.FindAsync(userId);
-
-            var bookmarks = await _context.Bookmarks
-                .Where(b => b.ApplicationUserId == userId)
-                .Select(b => b.MovieId)
-                .ToListAsync();
+            var bookmarks = user?.Bookmarks.Select(b => b.MovieId).ToList();
 
             var movies = await _context.Movies
                 .Select(m => new MovieDto
@@ -48,14 +44,15 @@ public class MoviesController : ControllerBase
                     ImgSmall = m.ImgSmall,
                     ImgMedium = m.ImgMedium,
                     ImgLarge = m.ImgLarge,
-                    IsBookmarked = bookmarks.Contains(m.MovieId)
+                    IsBookmarked = bookmarks!.Contains(m.MovieId)
                 }).ToListAsync();
 
-            return new JsonResult(movies);
+
+            return new JsonResult(new { status = "success", statusCode = StatusCodes.Status200OK, data = movies });
         }
         catch (Exception ex)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, $"An error occurred: {ex.Message}");
+            return new JsonResult(new { status = "error", error = $"Internal Server Error, {ex}", statusCode = StatusCodes.Status500InternalServerError });
         }
     }
 
@@ -94,14 +91,14 @@ public class MoviesController : ControllerBase
 
             if (movie == null)
             {
-                return NotFound(new JsonResult(movieId));
+                return new JsonResult(new { status = "error", error = "Movie with this Id does not exist in the database", statusCode = StatusCodes.Status404NotFound });
             }
 
-            return new JsonResult(movie);
+            return new JsonResult(new { status = "success", statusCode = StatusCodes.Status200OK, data = movie });
         }
         catch (Exception ex)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, $"An error occurred: {ex.Message}");
+            return new JsonResult(new { status = "error", error = $"Internal Server Error, {ex}", statusCode = StatusCodes.Status500InternalServerError });
         }
     }
 
@@ -118,16 +115,16 @@ public class MoviesController : ControllerBase
 
             if (movie == null)
             {
-                return NotFound(movieId);
+                return new JsonResult(new { status = "error", error = "Movie with this Id does not exist in the database", statusCode = StatusCodes.Status404NotFound });
             }
             // TODO: Implement soft delete instead of hard delete
             // _context.Movies.Remove(movie);
             // await _context.SaveChangesAsync();
-            return Ok(movieId);
+            return new JsonResult(new { status = "success", statusCode = StatusCodes.Status200OK, data = movie.MovieId });
         }
         catch (Exception ex)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, $"An error occurred: {ex.Message}");
+            return new JsonResult(new { status = "error", error = $"Internal Server Error, {ex}", statusCode = StatusCodes.Status500InternalServerError });
         }
     }
 
@@ -154,11 +151,11 @@ public class MoviesController : ControllerBase
             _context.Movies.Add(movie);
             await _context.SaveChangesAsync();
 
-            return Ok(movie);
+            return new JsonResult(new { status = "success", statusCode = StatusCodes.Status200OK, data = movie });
         }
         catch (Exception ex)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, $"An error occurred: {ex.Message}");
+            return new JsonResult(new { status = "error", error = $"Internal Server Error, {ex}", statusCode = StatusCodes.Status500InternalServerError });
         }
     }
 
@@ -180,24 +177,25 @@ public class MoviesController : ControllerBase
 
             if (movie == null)
             {
-                return NotFound(updatedMovie.MovieId);
+                return new JsonResult(new { status = "error", error = "Movie with this Id cannot be updated because does not exist in the database", statusCode = StatusCodes.Status404NotFound });
             }
 
-            movie.Title = movie.Title;
-            movie.Year = movie.Year;
-            movie.Category = movie.Category;
-            movie.Rating = movie.Rating;
-            movie.ImgSmall = movie.ImgSmall;
-            movie.ImgMedium = movie.ImgMedium;
-            movie.ImgLarge = movie.ImgLarge;
+            movie.Title = updatedMovie.Title;
+            movie.Year = updatedMovie.Year;
+            movie.Category = updatedMovie.Category;
+            movie.Rating = updatedMovie.Rating;
+            movie.ImgSmall = updatedMovie.ImgSmall;
+            movie.ImgMedium = updatedMovie.ImgMedium;
+            movie.ImgLarge = updatedMovie.ImgLarge;
 
+            _context.Movies.Update(movie);
             await _context.SaveChangesAsync();
 
-            return Ok(movie);
+            return new JsonResult(new { status = "success", statusCode = StatusCodes.Status200OK, data = movie });
         }
         catch (Exception ex)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, $"An error occurred: {ex.Message}");
+            return new JsonResult(new { status = "error", error = $"Internal Server Error, {ex}", statusCode = StatusCodes.Status500InternalServerError });
         }
     }
 }
