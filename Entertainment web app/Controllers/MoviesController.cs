@@ -31,7 +31,11 @@ public class MoviesController : ControllerBase
         try
         {
             var user = await _context.Users.FindAsync(userId);
-            var bookmarks = user?.Bookmarks.Select(b => b.MovieId).ToList();
+
+            var bookmarks = await _context.Bookmarks
+                .Where(b => b.ApplicationUserId == userId)
+                .Select(b => b.MovieId)
+                .ToListAsync();
 
             var movies = await _context.Movies
                 .Select(m => new MovieDto
