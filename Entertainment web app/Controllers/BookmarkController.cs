@@ -10,6 +10,7 @@ namespace Entertainment_web_app.Controllers;
 [ApiController]
 [Authorize]
 [Route("api/[controller]")]
+[Produces("application/json")]
 public class BookmarkController : ControllerBase
 {
     private readonly NetwixDbContext _context;
@@ -18,112 +19,139 @@ public class BookmarkController : ControllerBase
     {
         _context = context;
     }
-    
+
     [HttpGet]
-    [Route("[action]")]
-    public async Task<IActionResult> GetBookmarks()
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> Get()
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var user = await _context.Users.FindAsync(userId);
-        
-        if (user == null)
-        {
-            return NotFound("User not found.");
-        }
-        
-        var bookmarks = await _context.Bookmarks.Where(b => b.ApplicationUserId == userId).ToListAsync();
 
-        if (bookmarks.Count <= 0)
+        try
         {
-            return NoContent();
-        }
-        
-        var bookmarkedContent = new List<Movie>();
-        
-        foreach (var bookmark in bookmarks)
-        {
-            var movie = await _context.Movies.AsNoTracking().FirstOrDefaultAsync(m => m.MovieId == bookmark.MovieId);
-            
-            if (movie != null)
+            var bookmarks = await _context.Bookmarks.Where(b => b.ApplicationUserId == userId).ToListAsync();
+
+            if (bookmarks.Count <= 0)
             {
-                bookmarkedContent.Add(movie);
+                return new JsonResult(new { status = "success", statusCode = StatusCodes.Status204NoContent, error = "No bookmarks found." });
             }
+
+            var bookmarkedMovies = bookmarks.Select(b => b.MovieId).ToList();
+
+            return new JsonResult(new { status = "success", statusCode = StatusCodes.Status200OK, data = bookmarkedMovies });
+
         }
-        
-        return new JsonResult(bookmarkedContent);
+        catch (Exception ex)
+        {
+            return new JsonResult(new { status = "error", error = $"Internal Server Error, {ex}", statusCode = StatusCodes.Status500InternalServerError });
+        }
     }
-    
-    [HttpPost]
-    [Route("[action]")]
-    public async Task<IActionResult> Add([FromQuery] int movieId)
+
+    [HttpGet("{movieId}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> Get(int movieId)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
         var user = await _context.Users.FindAsync(userId);
-        
-        if (user == null)
-        {
-            return NotFound("User not found.");
-        }
 
-        var movie = await _context.Movies.AsNoTracking().FirstOrDefaultAsync(m => m.MovieId == movieId);
-        
-        if (movie == null)
+        try
         {
-            return NotFound("Movie not found.");
-        }
-        
-        var newBookmark = new Bookmark {
-            ApplicationUserId = userId,
-            MovieId = movieId
-        };
+            var bookmark = await _context.Bookmarks
+                .Where(b => b.ApplicationUserId == userId && b.MovieId == movieId)
+                .FirstOrDefaultAsync();
 
-        try {
+            if (bookmark == null)
+            {
+                return new JsonResult(new { status = "error", error = "Bookmark does not exist.", statusCode = StatusCodes.Status404NotFound });
+            }
+
+            return new JsonResult(new { status = "success", statusCode = StatusCodes.Status200OK, data = bookmark.MovieId });
+        }
+        catch (Exception ex)
+        {
+            return new JsonResult(new { status = "error", error = $"Internal Server Error, {ex}", statusCode = StatusCodes.Status500InternalServerError });
+        }
+    }
+
+    [HttpPost("{movieId}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> Post(int movieId)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var user = await _context.Users.FindAsync(userId);
+
+        try
+        {
+            var movie = await _context.Movies.FindAsync(movieId);
+
+            if (movie == null)
+            {
+                return new JsonResult(new { status = "error", error = "Movie cannot be bookmarked because does not exist.", statusCode = StatusCodes.Status404NotFound });
+            }
+
+            var bookmark = await _context.Bookmarks
+                .Where(b => b.ApplicationUserId == userId && b.MovieId == movieId)
+                .FirstOrDefaultAsync();
+
+            if (bookmark != null)
+            {
+                return new JsonResult(new { status = "error", error = "Movie is already bookmarked.", statusCode = StatusCodes.Status400BadRequest });
+            }
+
+            var newBookmark = new Bookmark
+            {
+                ApplicationUserId = userId,
+                MovieId = movieId
+            };
+
             _context.Bookmarks.Add(newBookmark);
-            await _context.SaveChangesAsync();  
-        } catch (Exception e) {
-            Console.WriteLine(e);
-            return BadRequest("Bookmark already exists.");
+            await _context.SaveChangesAsync();
+
+            return new JsonResult(new { status = "success", statusCode = StatusCodes.Status200OK, data = movie.MovieId });
         }
-        
-        return new JsonResult(movie.Title + " added to bookmarks.");
+        catch (Exception ex)
+        {
+            return new JsonResult(new { status = "error", error = $"Internal Server Error, {ex.Message}", statusCode = StatusCodes.Status500InternalServerError });
+        }
     }
-    
-    [HttpDelete]
-    [Route("[action]")]
-    public async Task<IActionResult> Remove([FromQuery] int movieId)
+
+    [HttpDelete("{movieId}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> Delete(int movieId)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
         var user = await _context.Users.FindAsync(userId);
-        
-        if (user == null)
-        {
-            return NotFound("User not found.");
-        }
 
-        var movie = await _context.Movies.AsNoTracking().FirstOrDefaultAsync(m => m.MovieId == movieId);
-        
-        if (movie == null)
+        try
         {
-            return NotFound("Movie not found.");
-        }
-        
-        var bookmark = await _context.Bookmarks.FirstOrDefaultAsync(b => b.ApplicationUserId == userId && b.MovieId == movieId);
+            var bookmark = await _context.Bookmarks
+                .Where(b => b.ApplicationUserId == userId && b.MovieId == movieId)
+                .FirstOrDefaultAsync();
 
-        if (bookmark == null)
-        {
-            return NotFound("Bookmark not found.");
-        }
+            if (bookmark == null)
+            {
+                return new JsonResult(new { status = "error", error = "Bookmark does not exist.", statusCode = StatusCodes.Status404NotFound });
+            }
 
-        try {
             _context.Bookmarks.Remove(bookmark);
-            await _context.SaveChangesAsync();  
-        } catch (Exception e) {
-            Console.WriteLine(e);
-            return BadRequest("Bookmark could not be removed.");
+            await _context.SaveChangesAsync();
+
+            return new JsonResult(new { status = "success", statusCode = StatusCodes.Status200OK, data = movieId });
         }
-        
-        return new JsonResult(movie.Title + " removed from bookmarks.");
+        catch (Exception ex)
+        {
+            return new JsonResult(new { status = "error", error = $"Internal Server Error, {ex}", statusCode = StatusCodes.Status500InternalServerError });
+        }
     }
 }
