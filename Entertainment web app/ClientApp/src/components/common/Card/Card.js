@@ -1,56 +1,16 @@
-import { useEffect } from "react";
+import { Form } from "react-router-dom";
 
 import { useWindowSize } from "../../../hooks/useWindowSize";
-import useBookmark from "../../../hooks/useBookmark";
-import Bookmark from "../../../assets/icons/Bookmark";
+import BookmarkIcon from "../../../assets/icons/Bookmark";
 
 import categoryMovieIcon from "../../../assets/icon-category-movie.svg";
 import categoryTvIcon from "../../../assets/icon-category-tv.svg";
 
 import "./Card.scss";
 
-const Card = ({ movie, bookmarks, variant }) => {
+const Card = ({ movie, variant }) => {
   const { isMobile } = useWindowSize();
-  const { cardInfo, setCardInfo, handleBookmark } = useBookmark();
-
-  useEffect(() => {
-    if (!movie || !bookmarks) {
-      return;
-    }
-
-    if (variant === "trending") {
-      const { ImgTrendingSmall, ImgTrendingLarge, Movie } = movie;
-
-      setCardInfo({
-        id: Movie.MovieId,
-        title: Movie.Title,
-        year: Movie.Year,
-        category: Movie.Category,
-        rating: Movie.Rating,
-        imgSmall: ImgTrendingSmall,
-        imgLarge: ImgTrendingLarge,
-        isBookmarked: bookmarks.includes(Movie.MovieId),
-      });
-    }
-
-    if (variant === "standard") {
-      const { MovieId, ImgSmall, ImgLarge, Title, Category, Year, Rating } =
-        movie;
-
-      setCardInfo({
-        id: MovieId,
-        title: Title,
-        year: Year,
-        category: Category,
-        rating: Rating,
-        imgSmall: ImgSmall,
-        imgLarge: ImgLarge,
-        isBookmarked: bookmarks.includes(MovieId),
-      });
-    }
-  }, [movie, bookmarks]);
-
-  const backgroundImg = isMobile ? cardInfo.imgSmall : cardInfo.imgLarge;
+  const backgroundImg = isMobile ? movie.ImgSmall : movie.ImgLarge;
 
   return (
     <div className={`${variant === "trending" ? "trending-card" : "card"}`}>
@@ -63,36 +23,37 @@ const Card = ({ movie, bookmarks, variant }) => {
           backgroundRepeat: "no-repeat",
         }}
       >
-        <button
-          onClick={handleBookmark}
-          className="card-bookmark__button"
-          aria-label="Adds a movie to bookmarks"
-        >
-          <Bookmark
-            className="card-bookmark__icon"
-            variant={cardInfo.isBookmarked ? "filled" : "outlined"}
-          />
-        </button>
+        <Form className="card-bookmark__form" method="post">
+          <input type="hidden" name="movieId" value={movie.MovieId} />
+          <input type="hidden" name="isBookmarked" value={movie.IsBookmarked} />
+          <button
+            className="card-bookmark__button"
+            aria-label="Adds a movie to bookmarks"
+          >
+            <BookmarkIcon
+              className="card-bookmark__icon"
+              variant={movie.IsBookmarked ? "filled" : "outlined"}
+            />
+          </button>
+        </Form>
       </div>
       <div className="card-bottom">
         <div className="card-info">
-          <p>{cardInfo.year}</p>
+          <p>{movie.Year}</p>
           <span className="card-info__separator"></span>
           <p className="card-info__category">
             <img
               src={
-                cardInfo.category === "Movie"
-                  ? categoryMovieIcon
-                  : categoryTvIcon
+                movie.Category === "Movie" ? categoryMovieIcon : categoryTvIcon
               }
-              alt={cardInfo.category === "Movie" ? "Movie" : "TV Series"}
+              alt={movie.Category === "Movie" ? "Movie" : "TV Series"}
             />
-            {cardInfo.category}
+            {movie.Category}
           </p>
           <span className="card-info__separator"></span>
-          <p>{cardInfo.rating}</p>
+          <p>{movie.Rating}</p>
         </div>
-        <h2 className="card-bottom__title">{cardInfo.title}</h2>
+        <h2 className="card-bottom__title">{movie.Title}</h2>
       </div>
     </div>
   );

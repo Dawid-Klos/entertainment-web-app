@@ -11,11 +11,11 @@ namespace Entertainment_web_app.Controllers;
 [Authorize]
 [Route("api/[controller]")]
 [Produces("application/json")]
-public class MoviesController : ControllerBase
+public class TVSeriesController : ControllerBase
 {
     private readonly NetwixDbContext _context;
 
-    public MoviesController(NetwixDbContext context)
+    public TVSeriesController(NetwixDbContext context)
     {
         _context = context;
     }

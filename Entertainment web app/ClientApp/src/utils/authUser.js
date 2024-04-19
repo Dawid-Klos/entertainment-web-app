@@ -1,17 +1,21 @@
 import axios from "axios";
 export const AuthenticateUser = async () => {
-  let error = false;
+  const headers = {
+    "Content-Type": "application/json",
+  };
 
-  const response = await axios
-    .get("/api/Auth/AuthenticateUser")
-    .catch((err) => {
-      error = true;
-      console.log("The problem is: ", err);
-    });
+  try {
+    const response = await axios.get("/api/Auth/Auth", { headers });
 
-  if (!error) {
-    return response.data && response.status === 200;
+    if (
+      response.data.statusCode === 200 &&
+      response.data.status === "success"
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    return null;
   }
-
-  return null;
 };

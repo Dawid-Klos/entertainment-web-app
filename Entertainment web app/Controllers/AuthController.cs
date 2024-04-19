@@ -9,6 +9,7 @@ namespace Entertainment_web_app.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Produces("application/json")]
 public class AuthController : ControllerBase
 {
     private IUserService _userService;
@@ -23,16 +24,25 @@ public class AuthController : ControllerBase
     [HttpGet]
     [Authorize]
     [Route("[action]")]
-    public Boolean AuthenticateUserAsync()
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public JsonResult Auth()
     {
-        var authStatus = _httpContextAccessor.HttpContext.User.Identity.IsAuthenticated;
-        
-        return authStatus;
+        var authStatus = _httpContextAccessor.HttpContext!.User.Identity!.IsAuthenticated;
+
+        if (authStatus)
+        {
+            return new JsonResult(new { status = "success", statusCode = StatusCodes.Status200OK, data = "User is authenticated" });
+        }
+
+        return new JsonResult(new { status = "error", statusCode = StatusCodes.Status401Unauthorized, error = "User is not authenticated" });
     }
-    
+
     [HttpPost]
     [Route("[action]")]
-    public async Task<IActionResult> RegisterAsync([FromBody]RegisterViewModel model)
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> RegisterAsync([FromBody] RegisterViewModel model)
     {
         if (ModelState.IsValid)
         {
@@ -40,57 +50,62 @@ public class AuthController : ControllerBase
 
             if (result.isSuccess)
             {
-                return Ok(result);
+                return new JsonResult(new { status = "success", statusCode = StatusCodes.Status200OK, data = result });
             }
-            
+
             if (!result.isSuccess)
             {
-                return BadRequest(result);
+                return new JsonResult(new { status = "error", statusCode = StatusCodes.Status400BadRequest, error = result });
             }
         }
-        return BadRequest("Some properties are not valid");
+
+        return new JsonResult(new { status = "error", statusCode = StatusCodes.Status400BadRequest, error = "Something went wrong." });
     }
 
     [HttpPost]
     [Route("[action]")]
-    public async Task<IActionResult> LoginAsync([FromBody]LoginViewModel model)
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> LoginAsync([FromBody] LoginViewModel model)
     {
         if (ModelState.IsValid)
         {
             var result = await _userService.LoginUserAsync(model);
-            
+
             if (result.isSuccess)
             {
-                return Ok(result);
+                return new JsonResult(new { status = "success", statusCode = StatusCodes.Status200OK, data = result });
             }
 
             if (!result.isSuccess)
             {
-                return BadRequest(result);
+                return new JsonResult(new { status = "error", statusCode = StatusCodes.Status400BadRequest, error = result });
             }
         }
 
-        return BadRequest("Please provide a valid email and password");
+        return new JsonResult(new { status = "error", statusCode = StatusCodes.Status400BadRequest, error = "Some of the credentials does not match." });
     }
-    
+
     [HttpPost]
     [Authorize]
     [Route("[action]")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> LogoutAsync()
     {
         var result = await _userService.LogoutUserAsync();
-        
+
         if (result.isSuccess)
         {
-            return Ok(result);
+            return new JsonResult(new { status = "success", statusCode = StatusCodes.Status200OK, data = result });
         }
 
         if (!result.isSuccess)
         {
-            return BadRequest(result);
+            return new JsonResult(new { status = "error", statusCode = StatusCodes.Status400BadRequest, error = result });
         }
 
-        return BadRequest("An error occurred, user could not be logged out");
+        return new JsonResult(new { status = "error", statusCode = StatusCodes.Status400BadRequest, error = "Something went wrong, user not logged out." });
     }
 
 }

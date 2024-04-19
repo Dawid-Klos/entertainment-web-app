@@ -1,7 +1,7 @@
 import { redirect } from "react-router-dom";
-
 import { fetchSearchResult, fetchContent } from "../utils/fetchContent";
 import { AuthenticateUser } from "../utils/authUser";
+import { bookmarkAction } from "../utils/actions";
 
 import Layout from "../components/Layout";
 import Movies from "../components/Movies/Movies";
@@ -31,11 +31,12 @@ const routerConfig = [
         path: "/",
         element: <Home />,
         loader: async () => {
-          const recommended = await fetchContent("Movies/GetMovies");
-          const trending = await fetchContent("Trending/GetTrending");
+          const recommended = await fetchContent("Movies");
+          const trending = await fetchContent("Trending");
 
           return { recommended: recommended, trending: trending };
         },
+        action: bookmarkAction,
       },
       {
         path: "/Search",
@@ -51,17 +52,20 @@ const routerConfig = [
       {
         path: "/Movies",
         element: <Movies />,
-        loader: () => fetchContent("Movies/GetMovies"),
+        loader: () => fetchContent("Movies"),
+        action: bookmarkAction,
       },
       {
         path: "/TV-series",
         element: <TVSeries />,
-        loader: () => fetchContent("Movies/GetTvSeries"),
+        loader: () => fetchContent("Movies"),
+        action: bookmarkAction,
       },
       {
         path: "/Bookmarked",
         element: <Bookmark />,
-        loader: () => fetchContent("Bookmark/GetBookmarks"),
+        loader: () => fetchContent("Bookmark"),
+        action: bookmarkAction,
       },
     ],
   },

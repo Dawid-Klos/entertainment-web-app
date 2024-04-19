@@ -3,6 +3,7 @@ using System;
 using Entertainment_web_app.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Entertainmentwebapp.Migrations
 {
     [DbContext(typeof(NetwixDbContext))]
-    partial class NetwixDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240419082532_FixBookmarkEntity")]
+    partial class FixBookmarkEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
