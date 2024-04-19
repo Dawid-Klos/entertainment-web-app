@@ -13,5 +13,5 @@ public class ApplicationUser : IdentityUser
     [Required]
     [StringLength(20)]
     public string? Lastname { get; set; }
-    public ICollection<Movie> Bookmarks { get; } = new List<Movie>();
+    public ICollection<Bookmark> Bookmarks { get; } = new List<Bookmark>();
 }
