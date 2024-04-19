@@ -17,7 +17,9 @@ export const useAuth = () => {
         withCredentials: true,
       });
 
-      if (login.status === 200 && login.data.isSuccess) {
+      console.log(login);
+
+      if (login.data.statusCode === 200 && login.data.status === "success") {
         setTimeout(() => {
           setSubmission({
             ...submission,

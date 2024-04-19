@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const fetchBookmarked = async () => {
   try {
-    const bookmarksResponse = await axios.get("/api/Bookmark/GetBookmarks");
+    const bookmarksResponse = await axios.get("/api/Bookmark");
 
     return bookmarksResponse.data.map((bookmark) => bookmark.MovieId);
   } catch (error) {
@@ -16,7 +16,7 @@ export const fetchContent = async (path) => {
   try {
     const contentResponse = await axios.get(`/api/${path}`);
 
-    return { data: contentResponse.data };
+    return { data: contentResponse.data.data };
   } catch (error) {
     throw new Error(
       "Failed to download content, please check your internet connection or try later.",
