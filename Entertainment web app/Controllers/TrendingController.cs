@@ -42,7 +42,7 @@ public class TrendingController : ControllerBase
                 .ToListAsync();
 
             var bookmarks = await _context.Bookmarks
-                .Where(b => b.ApplicationUserId == userId)
+                .Where(b => b.UserId == userId)
                .Select(b => b.MovieId)
                 .ToListAsync();
 
@@ -91,7 +91,7 @@ public class TrendingController : ControllerBase
                 .FirstOrDefaultAsync();
 
             var bookmark = await _context.Bookmarks
-                .Where(b => b.ApplicationUserId == userId && b.MovieId == movie!.MovieId)
+                .Where(b => b.UserId == userId && b.MovieId == movie!.MovieId)
                 .FirstOrDefaultAsync();
 
             var movieDto = new MovieDto

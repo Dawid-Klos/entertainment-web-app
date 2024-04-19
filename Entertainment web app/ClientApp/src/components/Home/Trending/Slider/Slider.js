@@ -5,7 +5,7 @@ import Card from "../../../common/Card/Card";
 
 import "./Slider.scss";
 
-const Slider = ({ movies, bookmarks }) => {
+const Slider = ({ movies }) => {
   const [sliderRef] = useKeenSlider({
     slides: {
       perView: "auto",

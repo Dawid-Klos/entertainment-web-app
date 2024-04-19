@@ -31,7 +31,7 @@ public class BookmarkController : ControllerBase
 
         try
         {
-            var bookmarks = await _context.Bookmarks.Where(b => b.ApplicationUserId == userId).ToListAsync();
+            var bookmarks = await _context.Bookmarks.Where(b => b.UserId == userId).ToListAsync();
 
             if (bookmarks.Count <= 0)
             {
@@ -62,7 +62,7 @@ public class BookmarkController : ControllerBase
         try
         {
             var bookmark = await _context.Bookmarks
-                .Where(b => b.ApplicationUserId == userId && b.MovieId == movieId)
+                .Where(b => b.UserId == userId && b.MovieId == movieId)
                 .FirstOrDefaultAsync();
 
             if (bookmark == null)
@@ -98,7 +98,7 @@ public class BookmarkController : ControllerBase
             }
 
             var bookmark = await _context.Bookmarks
-                .Where(b => b.ApplicationUserId == userId && b.MovieId == movieId)
+                .Where(b => b.UserId == userId && b.MovieId == movieId)
                 .FirstOrDefaultAsync();
 
             if (bookmark != null)
@@ -108,7 +108,7 @@ public class BookmarkController : ControllerBase
 
             var newBookmark = new Bookmark
             {
-                ApplicationUserId = userId,
+                UserId = userId,
                 MovieId = movieId
             };
 
@@ -136,7 +136,7 @@ public class BookmarkController : ControllerBase
         try
         {
             var bookmark = await _context.Bookmarks
-                .Where(b => b.ApplicationUserId == userId && b.MovieId == movieId)
+                .Where(b => b.UserId == userId && b.MovieId == movieId)
                 .FirstOrDefaultAsync();
 
             if (bookmark == null)

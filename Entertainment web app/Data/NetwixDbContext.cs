@@ -15,10 +15,19 @@ public class NetwixDbContext : IdentityDbContext<ApplicationUser>
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<ApplicationUser>()
-            .HasMany(e => e.Bookmarks)
-            .WithMany(e => e.Users)
-            .UsingEntity<Bookmark>();
+
+        modelBuilder.Entity<Bookmark>()
+            .HasKey(b => new { b.UserId, b.MovieId });
+
+        modelBuilder.Entity<Bookmark>()
+            .HasOne(b => b.User)
+            .WithMany(u => u.Bookmarks)
+            .HasForeignKey(b => b.UserId);
+
+        modelBuilder.Entity<Bookmark>()
+            .HasOne(b => b.Movie)
+            .WithMany()
+            .HasForeignKey(b => b.MovieId);
 
         base.OnModelCreating(modelBuilder);
     }

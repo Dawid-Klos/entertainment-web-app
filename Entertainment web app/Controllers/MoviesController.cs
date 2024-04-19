@@ -33,7 +33,7 @@ public class MoviesController : ControllerBase
             var user = await _context.Users.FindAsync(userId);
 
             var bookmarks = await _context.Bookmarks
-                .Where(b => b.ApplicationUserId == userId)
+                .Where(b => b.UserId == userId)
                 .Select(b => b.MovieId)
                 .ToListAsync();
 
@@ -74,7 +74,7 @@ public class MoviesController : ControllerBase
         {
 
             var bookmarks = await _context.Bookmarks
-                .Where(b => b.ApplicationUserId == userId)
+                .Where(b => b.UserId == userId)
                 .Select(b => b.MovieId)
                 .ToListAsync();
 

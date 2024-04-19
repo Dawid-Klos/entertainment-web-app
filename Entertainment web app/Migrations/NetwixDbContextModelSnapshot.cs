@@ -22,15 +22,15 @@ namespace Entertainmentwebapp.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Entertainment_web_app.Data.Bookmark", b =>
+            modelBuilder.Entity("Entertainment_web_app.Models.Content.Bookmark", b =>
                 {
-                    b.Property<string>("ApplicationUserId")
+                    b.Property<string>("UserId")
                         .HasColumnType("text");
 
                     b.Property<int>("MovieId")
                         .HasColumnType("integer");
 
-                    b.HasKey("ApplicationUserId", "MovieId");
+                    b.HasKey("UserId", "MovieId");
 
                     b.HasIndex("MovieId");
 
@@ -317,19 +317,23 @@ namespace Entertainmentwebapp.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Entertainment_web_app.Data.Bookmark", b =>
+            modelBuilder.Entity("Entertainment_web_app.Models.Content.Bookmark", b =>
                 {
-                    b.HasOne("Entertainment_web_app.Models.User.ApplicationUser", null)
-                        .WithMany()
-                        .HasForeignKey("ApplicationUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Entertainment_web_app.Models.Content.Movie", null)
+                    b.HasOne("Entertainment_web_app.Models.Content.Movie", "Movie")
                         .WithMany()
                         .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Entertainment_web_app.Models.User.ApplicationUser", "User")
+                        .WithMany("Bookmarks")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Movie");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Entertainment_web_app.Models.Content.Trending", b =>
@@ -392,6 +396,11 @@ namespace Entertainmentwebapp.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Entertainment_web_app.Models.User.ApplicationUser", b =>
+                {
+                    b.Navigation("Bookmarks");
                 });
 #pragma warning restore 612, 618
         }
