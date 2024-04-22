@@ -20,6 +20,11 @@ public class MovieRepository : IMovieRepository
         return await _context.Movies.ToListAsync();
     }
 
+    public async Task<IEnumerable<Movie>> GetByCategory(string category)
+    {
+        return await _context.Movies.Where(m => m.Category == category).ToListAsync();
+    }
+
     public async Task<Movie> GetById(int movieId)
     {
         var movie = await _context.Movies.FindAsync(movieId);
