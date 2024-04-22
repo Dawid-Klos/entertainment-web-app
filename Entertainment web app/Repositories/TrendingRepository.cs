@@ -5,7 +5,7 @@ using Entertainment_web_app.Data;
 
 namespace Entertainment_web_app.Repositories;
 
-public class TrendingRepository
+public class TrendingRepository : ITrendingRepository
 {
 
     private readonly NetwixDbContext _context;
@@ -15,7 +15,7 @@ public class TrendingRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<Trending>> GetAllAsync()
+    public async Task<IEnumerable<Trending>> GetAll()
     {
         return await _context.Trending.ToListAsync();
     }
