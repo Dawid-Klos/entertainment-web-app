@@ -5,7 +5,7 @@ using Entertainment_web_app.Data;
 
 namespace Entertainment_web_app.Repositories;
 
-public class MovieRepository
+public class MovieRepository : IMovieRepository
 {
 
     private readonly NetwixDbContext _context;
@@ -15,7 +15,7 @@ public class MovieRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<Movie>> GetAllAsync()
+    public async Task<IEnumerable<Movie>> GetAll()
     {
         return await _context.Movies.ToListAsync();
     }
