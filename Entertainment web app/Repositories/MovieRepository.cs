@@ -112,4 +112,9 @@ public class MovieRepository : IMovieRepository
             throw new Exception($"Error deleting movie: {ex.Message}");
         }
     }
+
+    public async Task<int> CountAll()
+    {
+        return await _context.Movies.CountAsync();
+    }
 }
