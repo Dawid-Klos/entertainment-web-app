@@ -117,4 +117,9 @@ public class MovieRepository : IMovieRepository
     {
         return await _context.Movies.CountAsync();
     }
+
+    public async Task<int> CountByCategory(string category)
+    {
+        return await _context.Movies.Where(m => m.Category == category).CountAsync();
+    }
 }

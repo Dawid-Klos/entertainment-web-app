@@ -12,4 +12,5 @@ public interface IMovieRepository
     void Update(Movie movie);
     void Delete(int movieId);
     int CountAll();
+    int CountByCategory(string category);
 }
