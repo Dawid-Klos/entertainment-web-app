@@ -28,7 +28,7 @@ public class MovieService : IMovieService
 
     public async Task<PagedResponse<Movie>> GetAllPaginated(int pageNumber, int pageSize)
     {
-        var totalMovies = _movieRepository.CountAll();
+        var totalMovies = await _movieRepository.CountAll();
         var totalPages = (int)Math.Ceiling(totalMovies / (double)pageSize);
 
         if (pageNumber < 1 || pageNumber > totalPages)
@@ -49,7 +49,7 @@ public class MovieService : IMovieService
 
     public async Task<PagedResponse<Movie>> GetByCategoryPaginated(string category, int pageNumber, int pageSize)
     {
-        var totalMovies = _movieRepository.CountByCategory(category);
+        var totalMovies = await _movieRepository.CountByCategory(category);
         var totalPages = (int)Math.Ceiling(totalMovies / (double)pageSize);
 
         if (pageNumber < 1 || pageNumber > totalPages)
