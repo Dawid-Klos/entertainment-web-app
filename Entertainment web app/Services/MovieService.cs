@@ -47,27 +47,6 @@ public class MovieService : IMovieService
         };
     }
 
-    public async Task<PagedResponse<Movie>> GetByCategoryPaginated(string category, int pageNumber, int pageSize)
-    {
-        var totalMovies = await _movieRepository.CountByCategory(category);
-        var totalPages = (int)Math.Ceiling(totalMovies / (double)pageSize);
-
-        if (pageNumber < 1 || pageNumber > totalPages)
-        {
-            throw new Exception("Invalid page number");
-        }
-
-        var movies = await _movieRepository.GetByCategoryPaginated(category, pageNumber, pageSize);
-
-        return new PagedResponse<Movie>
-        {
-            Data = movies.ToList(),
-            PageNumber = pageNumber,
-            PageSize = pageSize,
-            TotalPages = totalPages
-        };
-    }
-
     public async Task<Movie> GetById(int movieId)
     {
         try
