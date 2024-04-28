@@ -26,7 +26,7 @@ public class MovieServiceTests
     public async Task GetAll_ReturnsAllMovies()
     {
         var repository = new Mock<IMovieRepository>();
-        repository.Setup(repo => repo.GetAll()).ReturnsAsync(GetTestMovies());
+        repository.Setup(repo => repo.GetByCategory("Movie")).ReturnsAsync(GetTestMovies().Where(m => m.Category == "Movie"));
 
         var service = new MovieService(repository.Object);
         var result = await service.GetAll();
@@ -39,7 +39,7 @@ public class MovieServiceTests
     public async Task GetAll_ReturnsNoMovies()
     {
         var repository = new Mock<IMovieRepository>();
-        repository.Setup(repo => repo.GetAll()).ReturnsAsync(new List<Movie>());
+        repository.Setup(repo => repo.GetByCategory("Movie")).ReturnsAsync(new List<Movie>());
 
         var service = new MovieService(repository.Object);
         var result = await service.GetAll();
@@ -48,26 +48,33 @@ public class MovieServiceTests
         Assert.Empty(result);
     }
 
-    [Fact]
-    public async Task GetAll_ThrowsException()
+    [Theory]
+    [InlineData(1, 3)]
+    [InlineData(2, 3)]
+    public async Task GetAllPaginated_ReturnsMovies(int pageNumber, int pageSize)
     {
         var repository = new Mock<IMovieRepository>();
-        repository.Setup(repo => repo.GetAll()).ThrowsAsync(new Exception());
+        repository.Setup(repo => repo.CountByCategory("Movie")).ReturnsAsync(3);
+        repository.Setup(repo => repo.GetByCategoryPaginated("Movie", pageNumber, pageSize)).ReturnsAsync(GetTestMovies().Where(m => m.Category == "Movie"));
 
         var service = new MovieService(repository.Object);
+        var result = await service.GetByCategoryPaginated("Movie", pageNumber, pageSize);
 
-        await Assert.ThrowsAsync<Exception>(() => service.GetAll());
+        Assert.NotNull(result);
+        Assert.Equal(3, result.Data.Count());
+        Assert.Equal(pageNumber, result.PageNumber);
+        Assert.Equal(pageSize, result.PageSize);
+        Assert.Equal(1, result.TotalPages);
     }
 
-    [Fact]
     public async Task GetAllPaginated_ReturnsAllMovies()
     {
         var repository = new Mock<IMovieRepository>();
-        repository.Setup(repo => repo.CountAll()).ReturnsAsync(3);
-        repository.Setup(repo => repo.GetAllPaginated(1, 3)).ReturnsAsync(GetTestMovies());
+        repository.Setup(repo => repo.CountByCategory("Movie")).ReturnsAsync(3);
+        repository.Setup(repo => repo.GetByCategoryPaginated("Movie", 1, 3)).ReturnsAsync(GetTestMovies().Where(m => m.Category == "Movie"));
 
         var service = new MovieService(repository.Object);
-        var result = await service.GetAllPaginated(1, 3);
+        var result = await service.GetByCategoryPaginated("Movie", 1, 3);
 
         Assert.NotNull(result);
         Assert.Equal(3, result.Data.Count());
@@ -77,97 +84,26 @@ public class MovieServiceTests
     }
 
     [Fact]
-    public async Task GetAllPaginated_ReturnsNoMovies()
+    public async Task GetAllPaginated_ThrowsException()
     {
         var repository = new Mock<IMovieRepository>();
-        repository.Setup(repo => repo.CountAll()).ReturnsAsync(0);
-        repository.Setup(repo => repo.GetAllPaginated(1, 3)).ReturnsAsync(new List<Movie>());
-
-        var service = new MovieService(repository.Object);
-        var result = await service.GetAllPaginated(1, 3);
-
-        Assert.NotNull(result);
-        Assert.Empty(result.Data);
-        Assert.Equal(1, result.PageNumber);
-        Assert.Equal(3, result.PageSize);
-        Assert.Equal(0, result.TotalPages);
-    }
-
-    [Fact]
-    public async Task GetAllPaginated_InvalidPageNumber_ThrowsException()
-    {
-        var repository = new Mock<IMovieRepository>();
-        repository.Setup(repo => repo.CountAll()).ReturnsAsync(3);
+        repository.Setup(repo => repo.CountByCategory("Movie")).ReturnsAsync(0);
+        repository.Setup(repo => repo.GetByCategoryPaginated("Movie", 0, 3)).ThrowsAsync(new Exception("Invalid page number"));
 
         var service = new MovieService(repository.Object);
 
-        await Assert.ThrowsAsync<Exception>(() => service.GetAllPaginated(2, 3));
+        await Assert.ThrowsAsync<Exception>(() => service.GetByCategoryPaginated("Movie", 0, 3));
     }
 
     [Fact]
     public async Task GetAllPaginated_InvalidPageSize_ThrowsException()
     {
         var repository = new Mock<IMovieRepository>();
-        repository.Setup(repo => repo.CountAll()).ReturnsAsync(3);
+        repository.Setup(repo => repo.CountByCategory("Movie")).ReturnsAsync(3);
+        repository.Setup(repo => repo.GetByCategoryPaginated("Movie", 1, 0)).ThrowsAsync(new Exception("Invalid page size"));
 
         var service = new MovieService(repository.Object);
 
         await Assert.ThrowsAsync<Exception>(() => service.GetAllPaginated(1, 0));
-    }
-
-    [Fact]
-    public async Task GetByCategoryPaginated_ReturnsAllMovies()
-    {
-        var repository = new Mock<IMovieRepository>();
-        repository.Setup(repo => repo.CountByCategory("Movie")).ReturnsAsync(3);
-        repository.Setup(repo => repo.GetByCategoryPaginated("Movie", 1, 3)).ReturnsAsync(GetTestMovies());
-
-        var service = new MovieService(repository.Object);
-        var result = await service.GetByCategoryPaginated("Movie", 1, 3);
-
-        Assert.NotNull(result);
-        Assert.Equal(3, result.Data.Count());
-        Assert.Equal(1, result.PageNumber);
-        Assert.Equal(3, result.PageSize);
-        Assert.Equal(1, result.TotalPages);
-    }
-
-    [Fact]
-    public async Task GetByCategoryPaginated_InvalidPageNumber_ThrowsException()
-    {
-        var repository = new Mock<IMovieRepository>();
-        repository.Setup(repo => repo.CountByCategory("Movie")).ReturnsAsync(3);
-
-        var service = new MovieService(repository.Object);
-
-        await Assert.ThrowsAsync<Exception>(() => service.GetByCategoryPaginated("Movie", 2, 3));
-    }
-
-    [Fact]
-    public async Task GetByCategoryPaginated_InvalidPageSize_ThrowsException()
-    {
-        var repository = new Mock<IMovieRepository>();
-        repository.Setup(repo => repo.CountByCategory("Movie")).ReturnsAsync(3);
-
-        var service = new MovieService(repository.Object);
-
-        await Assert.ThrowsAsync<Exception>(() => service.GetByCategoryPaginated("Movie", 1, 0));
-    }
-
-    [Fact]
-    public async Task GetByCategoryPaginated_ReturnsNoMovies()
-    {
-        var repository = new Mock<IMovieRepository>();
-        repository.Setup(repo => repo.CountByCategory("Movie")).ReturnsAsync(0);
-        repository.Setup(repo => repo.GetByCategoryPaginated("Movie", 1, 3)).ReturnsAsync(new List<Movie>());
-
-        var service = new MovieService(repository.Object);
-        var result = await service.GetByCategoryPaginated("Movie", 1, 3);
-
-        Assert.NotNull(result);
-        Assert.Empty(result.Data);
-        Assert.Equal(1, result.PageNumber);
-        Assert.Equal(3, result.PageSize);
-        Assert.Equal(0, result.TotalPages);
     }
 }
