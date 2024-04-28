@@ -16,7 +16,7 @@ public class MovieService : IMovieService
     {
         try
         {
-            var movies = await _movieRepository.GetAll();
+            var movies = await _movieRepository.GetByCategory("Movie");
 
             return movies;
         }
@@ -28,7 +28,7 @@ public class MovieService : IMovieService
 
     public async Task<PagedResponse<Movie>> GetAllPaginated(int pageNumber, int pageSize)
     {
-        var totalMovies = await _movieRepository.CountAll();
+        var totalMovies = await _movieRepository.CountByCategory("Movie");
         var totalPages = (int)Math.Ceiling(totalMovies / (double)pageSize);
 
         if (pageNumber < 1 || pageNumber > totalPages)
@@ -36,7 +36,7 @@ public class MovieService : IMovieService
             throw new Exception("Invalid page number");
         }
 
-        var movies = await _movieRepository.GetAllPaginated(pageNumber, pageSize);
+        var movies = await _movieRepository.GetByCategoryPaginated("Movie", pageNumber, pageSize);
 
         return new PagedResponse<Movie>
         {
