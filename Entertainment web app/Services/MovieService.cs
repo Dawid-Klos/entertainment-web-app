@@ -16,7 +16,7 @@ public class MovieService : IMovieService
     {
         try
         {
-            var movies = await _movieRepository.GetByCategory("Movie");
+            var movies = await _movieRepository.GetByCategory("Movies");
 
             return movies.Select(m => new MovieDto
             {
@@ -38,7 +38,7 @@ public class MovieService : IMovieService
 
     public async Task<PagedResponse<MovieDto>> GetAllPaginated(int pageNumber, int pageSize)
     {
-        var totalMovies = await _movieRepository.CountByCategory("Movie");
+        var totalMovies = await _movieRepository.CountByCategory("Movies");
         var totalPages = (int)Math.Ceiling(totalMovies / (double)pageSize);
 
         if (pageNumber < 1 || pageNumber > totalPages)
@@ -46,7 +46,7 @@ public class MovieService : IMovieService
             throw new ArgumentException("Invalid page number");
         }
 
-        var movies = await _movieRepository.GetByCategoryPaginated("Movie", pageNumber, pageSize);
+        var movies = await _movieRepository.GetByCategoryPaginated("Movies", pageNumber, pageSize);
 
         var movieDtos = movies.Select(m => new MovieDto
         {
@@ -75,7 +75,7 @@ public class MovieService : IMovieService
         {
             var movie = await _movieRepository.GetById(movieId);
 
-            if (movie.Category != "Movie" || movie == null)
+            if (movie.Category != "Movies" || movie == null)
             {
                 throw new ArgumentException($"Movie with ID = {movieId} does not exist");
             }
@@ -111,7 +111,7 @@ public class MovieService : IMovieService
                 throw new Exception("Movie already exists");
             }
 
-            if (movie.Category != "Movie")
+            if (movie.Category != "Movies")
             {
                 throw new ArgumentException("Invalid category");
             }
