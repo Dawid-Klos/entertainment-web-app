@@ -12,13 +12,23 @@ public class MovieService : IMovieService
         _movieRepository = movieRepository;
     }
 
-    public async Task<IEnumerable<Movie>> GetAll()
+    public async Task<IEnumerable<MovieDto>> GetAll()
     {
         try
         {
             var movies = await _movieRepository.GetByCategory("Movie");
 
-            return movies;
+            return movies.Select(m => new MovieDto
+            {
+                MovieId = m.MovieId,
+                Title = m.Title,
+                Year = m.Year,
+                Category = m.Category,
+                Rating = m.Rating,
+                ImgSmall = m.ImgSmall,
+                ImgMedium = m.ImgMedium,
+                ImgLarge = m.ImgLarge
+            });
         }
         catch (Exception)
         {
@@ -26,7 +36,7 @@ public class MovieService : IMovieService
         }
     }
 
-    public async Task<PagedResponse<Movie>> GetAllPaginated(int pageNumber, int pageSize)
+    public async Task<PagedResponse<MovieDto>> GetAllPaginated(int pageNumber, int pageSize)
     {
         var totalMovies = await _movieRepository.CountByCategory("Movie");
         var totalPages = (int)Math.Ceiling(totalMovies / (double)pageSize);
@@ -38,16 +48,28 @@ public class MovieService : IMovieService
 
         var movies = await _movieRepository.GetByCategoryPaginated("Movie", pageNumber, pageSize);
 
-        return new PagedResponse<Movie>
+        var movieDtos = movies.Select(m => new MovieDto
         {
-            Data = movies.ToList(),
+            MovieId = m.MovieId,
+            Title = m.Title,
+            Year = m.Year,
+            Category = m.Category,
+            Rating = m.Rating,
+            ImgSmall = m.ImgSmall,
+            ImgMedium = m.ImgMedium,
+            ImgLarge = m.ImgLarge
+        }).ToList();
+
+        return new PagedResponse<MovieDto>
+        {
+            Data = movieDtos,
             PageNumber = pageNumber,
             PageSize = pageSize,
             TotalPages = totalPages
         };
     }
 
-    public async Task<Movie> GetById(int movieId)
+    public async Task<MovieDto> GetById(int movieId)
     {
         try
         {
@@ -58,7 +80,19 @@ public class MovieService : IMovieService
                 throw new ArgumentException($"Movie with ID = {movieId} does not exist");
             }
 
-            return movie;
+            var movieDto = new MovieDto
+            {
+                MovieId = movie.MovieId,
+                Title = movie.Title,
+                Year = movie.Year,
+                Category = movie.Category,
+                Rating = movie.Rating,
+                ImgSmall = movie.ImgSmall,
+                ImgMedium = movie.ImgMedium,
+                ImgLarge = movie.ImgLarge
+            };
+
+            return movieDto;
         }
         catch (Exception ex)
         {
