@@ -33,7 +33,7 @@ public class MovieService : IMovieService
 
         if (pageNumber < 1 || pageNumber > totalPages)
         {
-            throw new Exception("Invalid page number");
+            throw new ArgumentException("Invalid page number");
         }
 
         var movies = await _movieRepository.GetByCategoryPaginated("Movie", pageNumber, pageSize);
@@ -53,11 +53,16 @@ public class MovieService : IMovieService
         {
             var movie = await _movieRepository.GetById(movieId);
 
+            if (movie.Category != "Movie" || movie == null)
+            {
+                throw new ArgumentException($"Movie with ID = {movieId} does not exist");
+            }
+
             return movie;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            throw new Exception("Movie not found");
+            throw new ArgumentException(ex.Message);
         }
     }
 
@@ -72,11 +77,16 @@ public class MovieService : IMovieService
                 throw new Exception("Movie already exists");
             }
 
+            if (movie.Category != "Movie")
+            {
+                throw new ArgumentException("Invalid category");
+            }
+
             _movieRepository.Add(movie);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            throw new Exception("Movie already exists");
+            throw new Exception(ex.Message);
         }
     }
 
