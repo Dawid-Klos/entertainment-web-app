@@ -6,10 +6,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.HttpOverrides;
 
 using Entertainment_web_app.Data;
 using Entertainment_web_app.Models.User;
-using Microsoft.AspNetCore.HttpOverrides;
+using Entertainment_web_app.Repositories;
+using Entertainment_web_app.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -61,7 +63,12 @@ builder.Services.AddAuthorization(options =>
         .Build();
 });
 
+// Repositories
+builder.Services.AddScoped<IMovieRepository, MovieRepository>();
+
+// Services
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IMovieService, MovieService>();
 
 builder.Services.AddCors(options =>
 {

@@ -16,7 +16,7 @@ public class MovieService : IMovieService
     {
         try
         {
-            var movies = await _movieRepository.GetAll();
+            var movies = await _movieRepository.GetByCategory("Movie");
 
             return movies;
         }
@@ -28,36 +28,15 @@ public class MovieService : IMovieService
 
     public async Task<PagedResponse<Movie>> GetAllPaginated(int pageNumber, int pageSize)
     {
-        var totalMovies = _movieRepository.CountAll();
+        var totalMovies = await _movieRepository.CountByCategory("Movie");
         var totalPages = (int)Math.Ceiling(totalMovies / (double)pageSize);
 
         if (pageNumber < 1 || pageNumber > totalPages)
         {
-            throw new Exception("Invalid page number");
+            throw new ArgumentException("Invalid page number");
         }
 
-        var movies = await _movieRepository.GetAllPaginated(pageNumber, pageSize);
-
-        return new PagedResponse<Movie>
-        {
-            Data = movies.ToList(),
-            PageNumber = pageNumber,
-            PageSize = pageSize,
-            TotalPages = totalPages
-        };
-    }
-
-    public async Task<PagedResponse<Movie>> GetByCategoryPaginated(string category, int pageNumber, int pageSize)
-    {
-        var totalMovies = _movieRepository.CountByCategory(category);
-        var totalPages = (int)Math.Ceiling(totalMovies / (double)pageSize);
-
-        if (pageNumber < 1 || pageNumber > totalPages)
-        {
-            throw new Exception("Invalid page number");
-        }
-
-        var movies = await _movieRepository.GetByCategoryPaginated(category, pageNumber, pageSize);
+        var movies = await _movieRepository.GetByCategoryPaginated("Movie", pageNumber, pageSize);
 
         return new PagedResponse<Movie>
         {
@@ -74,11 +53,16 @@ public class MovieService : IMovieService
         {
             var movie = await _movieRepository.GetById(movieId);
 
+            if (movie.Category != "Movie" || movie == null)
+            {
+                throw new ArgumentException($"Movie with ID = {movieId} does not exist");
+            }
+
             return movie;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            throw new Exception("Movie not found");
+            throw new ArgumentException(ex.Message);
         }
     }
 
@@ -93,11 +77,16 @@ public class MovieService : IMovieService
                 throw new Exception("Movie already exists");
             }
 
+            if (movie.Category != "Movie")
+            {
+                throw new ArgumentException("Invalid category");
+            }
+
             _movieRepository.Add(movie);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            throw new Exception("Movie already exists");
+            throw new Exception(ex.Message);
         }
     }
 

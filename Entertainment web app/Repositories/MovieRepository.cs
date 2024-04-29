@@ -28,6 +28,11 @@ public class MovieRepository : IMovieRepository
           .ToListAsync();
     }
 
+    public async Task<IEnumerable<Movie>> GetByCategory(string category)
+    {
+        return await _context.Movies.Where(m => m.Category == category).ToListAsync();
+    }
+
     public async Task<IEnumerable<Movie>> GetByCategoryPaginated(string category, int pageNumber, int pageSize)
     {
         return await _context.Movies.Where(m => m.Category == category)
