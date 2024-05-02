@@ -28,7 +28,7 @@ public class MoviesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<IEnumerable<MovieDto>>> Get()
+    public async Task<ActionResult<PagedResponse<MovieDto>>> Get([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -41,9 +41,13 @@ public class MoviesController : ControllerBase
                 .Select(b => b.MovieId)
                 .ToListAsync();
 
-            var movies = await _movieService.GetAll();
+            var movies = await _movieService.GetAllPaginated(pageNumber, pageSize);
 
             return new JsonResult(new { status = "success", statusCode = StatusCodes.Status200OK, data = movies });
+        }
+        catch (ArgumentException ex)
+        {
+            return new JsonResult(new { status = "error", error = ex.Message, statusCode = StatusCodes.Status400BadRequest });
         }
         catch (Exception)
         {
