@@ -70,7 +70,8 @@ public class MovieService : IMovieService
             Data = movieDtos,
             PageNumber = pageNumber,
             PageSize = pageSize,
-            TotalPages = totalPages
+            TotalPages = totalPages,
+            TotalRecords = totalMovies
         };
     }
 
