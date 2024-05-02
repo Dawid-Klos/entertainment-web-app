@@ -1,9 +1,6 @@
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
-using Entertainment_web_app.Data;
 using Entertainment_web_app.Models.Content;
 using Entertainment_web_app.Services;
 
@@ -15,12 +12,10 @@ namespace Entertainment_web_app.Controllers;
 [Produces("application/json")]
 public class MoviesController : ControllerBase
 {
-    private readonly NetwixDbContext _context;
     private readonly IMovieService _movieService;
 
-    public MoviesController(NetwixDbContext context, IMovieService movieService)
+    public MoviesController(IMovieService movieService)
     {
-        _context = context;
         _movieService = movieService;
     }
 
@@ -30,17 +25,8 @@ public class MoviesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<PagedResponse<MovieDto>>> Get([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
         try
         {
-            var user = await _context.Users.FindAsync(userId);
-
-            var bookmarks = await _context.Bookmarks
-                .Where(b => b.UserId == userId)
-                .Select(b => b.MovieId)
-                .ToListAsync();
-
             var movies = await _movieService.GetAllPaginated(pageNumber, pageSize);
 
             return new JsonResult(new { status = "success", statusCode = StatusCodes.Status200OK, data = movies });
@@ -62,17 +48,8 @@ public class MoviesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<MovieDto>> Get(int movieId)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
         try
         {
-            var user = await _context.Users.FindAsync(userId);
-
-            var bookmarks = await _context.Bookmarks
-                .Where(b => b.UserId == userId)
-                .Select(b => b.MovieId)
-                .ToListAsync();
-
             var movie = await _movieService.GetById(movieId);
 
             return new JsonResult(new { status = "success", statusCode = StatusCodes.Status200OK, data = movie });
@@ -92,11 +69,11 @@ public class MoviesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> Delete(int movieId)
+    public async Task<JsonResult> Delete(int movieId)
     {
         try
         {
-            var movie = await _context.Movies.FindAsync(movieId);
+            var movie = await _movieService.GetById(movieId);
 
             // TODO: Implement soft delete instead of hard delete
             // _movieService.Delete(movieId);
