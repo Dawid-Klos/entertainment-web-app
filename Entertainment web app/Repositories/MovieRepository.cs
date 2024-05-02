@@ -41,19 +41,12 @@ public class MovieRepository : IMovieRepository
           .ToListAsync();
     }
 
-    public async Task<Movie> GetById(int movieId)
+    public async Task<Movie?> GetById(int movieId)
     {
-        var movie = await _context.Movies.FindAsync(movieId);
-
-        if (movie == null)
-        {
-            throw new Exception($"Movie with ID {movieId} not found");
-        }
-
-        return movie;
+        return await _context.Movies.AsNoTracking().FirstOrDefaultAsync(m => m.MovieId == movieId);
     }
 
-    public async void Add(Movie movie)
+    public async Task Add(Movie movie)
     {
         using var transaction = _context.Database.BeginTransaction();
 
@@ -63,17 +56,15 @@ public class MovieRepository : IMovieRepository
 
             await _context.SaveChangesAsync();
             await transaction.CommitAsync();
-
         }
         catch (Exception ex)
         {
             await transaction.RollbackAsync();
-
             throw new Exception($"Error adding movie: {ex.Message}");
         }
     }
 
-    public async void Update(Movie movie)
+    public async Task Update(Movie movie)
     {
         using var transaction = _context.Database.BeginTransaction();
 
@@ -87,25 +78,19 @@ public class MovieRepository : IMovieRepository
         catch (Exception ex)
         {
             await transaction.RollbackAsync();
-
             throw new Exception($"Error updating movie: {ex.Message}");
         }
     }
 
-    public async void Delete(int movieId)
+    public async Task Delete(int movieId)
     {
         var movie = await _context.Movies.FindAsync(movieId);
-
-        if (movie == null)
-        {
-            throw new Exception($"Movie with ID {movieId} not found");
-        }
 
         using var transaction = _context.Database.BeginTransaction();
 
         try
         {
-            _context.Movies.Remove(movie);
+            _context.Movies.Remove(movie!);
 
             await _context.SaveChangesAsync();
             await transaction.CommitAsync();
