@@ -23,6 +23,7 @@ public class MovieRepository : IMovieRepository
     public async Task<IEnumerable<Movie>> GetAllPaginated(int pageNumber, int pageSize)
     {
         return await _context.Movies
+          .OrderBy(m => m.MovieId)
           .Skip((pageNumber - 1) * pageSize)
           .Take(pageSize)
           .ToListAsync();
@@ -36,6 +37,7 @@ public class MovieRepository : IMovieRepository
     public async Task<IEnumerable<Movie>> GetByCategoryPaginated(string category, int pageNumber, int pageSize)
     {
         return await _context.Movies.Where(m => m.Category == category)
+          .OrderBy(m => m.MovieId)
           .Skip((pageNumber - 1) * pageSize)
           .Take(pageSize)
           .ToListAsync();
