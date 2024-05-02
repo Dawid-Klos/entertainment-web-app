@@ -30,9 +30,9 @@ public class MovieService : IMovieService
                 ImgLarge = m.ImgLarge
             });
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            throw new Exception("No movies found");
+            throw new Exception("Internal Server Error, " + ex.Message);
         }
     }
 
@@ -44,6 +44,11 @@ public class MovieService : IMovieService
         if (pageNumber < 1 || pageNumber > totalPages)
         {
             throw new ArgumentException("Invalid page number");
+        }
+
+        if (pageSize < 1 || pageSize > 20)
+        {
+            throw new ArgumentException("Invalid page size");
         }
 
         var movies = await _movieRepository.GetByCategoryPaginated("Movies", pageNumber, pageSize);
@@ -75,7 +80,7 @@ public class MovieService : IMovieService
         {
             var movie = await _movieRepository.GetById(movieId);
 
-            if (movie.Category != "Movies" || movie == null)
+            if (movie == null || movie.Category != "Movies")
             {
                 throw new ArgumentException($"Movie with ID = {movieId} does not exist");
             }
@@ -94,13 +99,13 @@ public class MovieService : IMovieService
 
             return movieDto;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            throw new ArgumentException(ex.Message);
+            throw;
         }
     }
 
-    public async void Add(Movie movie)
+    public async Task Add(Movie movie)
     {
         try
         {
@@ -108,7 +113,7 @@ public class MovieService : IMovieService
 
             if (movieExists != null)
             {
-                throw new Exception("Movie already exists");
+                throw new ArgumentException("Movie already exists");
             }
 
             if (movie.Category != "Movies")
@@ -116,15 +121,15 @@ public class MovieService : IMovieService
                 throw new ArgumentException("Invalid category");
             }
 
-            _movieRepository.Add(movie);
+            await _movieRepository.Add(movie);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            throw new Exception(ex.Message);
+            throw;
         }
     }
 
-    public async void Update(Movie movie)
+    public async Task Update(Movie movie)
     {
         try
         {
@@ -132,18 +137,23 @@ public class MovieService : IMovieService
 
             if (movieExists == null)
             {
-                throw new Exception("Movie not found");
+                throw new ArgumentException("Movie not found");
             }
 
-            _movieRepository.Update(movie);
+            if (movie.Category != "Movies")
+            {
+                throw new ArgumentException("Invalid category");
+            }
+
+            await _movieRepository.Update(movie);
         }
         catch (Exception)
         {
-            throw new Exception("Movie does not exist");
+            throw;
         }
     }
 
-    public async void Delete(int movieId)
+    public async Task Delete(int movieId)
     {
         try
         {
@@ -151,14 +161,14 @@ public class MovieService : IMovieService
 
             if (movieExists == null)
             {
-                throw new Exception("Movie not found");
+                throw new ArgumentException("Movie not found");
             }
 
-            _movieRepository.Delete(movieId);
+            await _movieRepository.Delete(movieId);
         }
         catch (Exception)
         {
-            throw new Exception("Movie does not exist");
+            throw;
         }
     }
 }
