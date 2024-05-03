@@ -29,15 +29,40 @@ public class MoviesController : ControllerBase
         {
             var movies = await _movieService.GetAllPaginated(pageNumber, pageSize);
 
-            return new JsonResult(new { status = "success", statusCode = StatusCodes.Status200OK, data = movies });
+            var response = new PagedResponse<MovieDto>
+            {
+                Status = "success",
+                StatusCode = StatusCodes.Status200OK,
+                PageNumber = movies.PageNumber,
+                PageSize = movies.PageSize,
+                TotalPages = movies.TotalPages,
+                TotalRecords = movies.TotalRecords,
+                Data = movies.Data,
+            };
+
+            return new JsonResult(response);
         }
         catch (ArgumentException ex)
         {
-            return new JsonResult(new { status = "error", error = ex.Message, statusCode = StatusCodes.Status400BadRequest });
+            var response = new PagedResponse<MovieDto>
+            {
+                Status = "error",
+                Error = ex.Message,
+                StatusCode = StatusCodes.Status400BadRequest,
+            };
+
+            return new JsonResult(response);
         }
         catch (Exception)
         {
-            return new JsonResult(new { status = "error", error = "Internal Server Error", statusCode = StatusCodes.Status500InternalServerError });
+            var response = new PagedResponse<MovieDto>
+            {
+                Status = "error",
+                Error = "Internal Server Error",
+                StatusCode = StatusCodes.Status500InternalServerError,
+            };
+
+            return new JsonResult(response);
         }
     }
 
