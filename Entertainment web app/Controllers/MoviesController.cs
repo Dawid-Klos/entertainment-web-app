@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using Entertainment_web_app.Models.Content;
+using Entertainment_web_app.Models.Responses;
 using Entertainment_web_app.Services;
 
 namespace Entertainment_web_app.Controllers;
@@ -44,7 +45,7 @@ public class MoviesController : ControllerBase
         }
         catch (ArgumentException ex)
         {
-            var response = new PagedResponse<MovieDto>
+            var response = new Response<MovieDto>
             {
                 Status = "error",
                 Error = ex.Message,
@@ -55,7 +56,7 @@ public class MoviesController : ControllerBase
         }
         catch (Exception)
         {
-            var response = new PagedResponse<MovieDto>
+            var response = new Response<MovieDto>
             {
                 Status = "error",
                 Error = "Internal Server Error",
@@ -77,15 +78,36 @@ public class MoviesController : ControllerBase
         {
             var movie = await _movieService.GetById(movieId);
 
-            return new JsonResult(new { status = "success", statusCode = StatusCodes.Status200OK, data = movie });
+            var response = new Response<MovieDto>
+            {
+                Status = "success",
+                StatusCode = StatusCodes.Status200OK,
+                Data = new List<MovieDto> { movie },
+            };
+
+            return new JsonResult(response);
         }
         catch (ArgumentException ex)
         {
-            return new JsonResult(new { status = "error", error = ex.Message, statusCode = StatusCodes.Status404NotFound });
+            var response = new Response<MovieDto>
+            {
+                Status = "error",
+                Error = ex.Message,
+                StatusCode = StatusCodes.Status404NotFound,
+            };
+
+            return new JsonResult(response);
         }
         catch (Exception)
         {
-            return new JsonResult(new { status = "error", error = "Internal Server Error", statusCode = StatusCodes.Status500InternalServerError });
+            var response = new Response<MovieDto>
+            {
+                Status = "error",
+                Error = "Internal Server Error",
+                StatusCode = StatusCodes.Status500InternalServerError,
+            };
+
+            return new JsonResult(response);
         }
     }
 
@@ -103,15 +125,36 @@ public class MoviesController : ControllerBase
             // TODO: Implement soft delete instead of hard delete
             // _movieService.Delete(movieId);
 
-            return new JsonResult(new { status = "success", statusCode = StatusCodes.Status200OK });
+            var response = new Response<MovieDto>
+            {
+                Status = "success",
+                StatusCode = StatusCodes.Status200OK,
+                Data = new List<MovieDto> { movie },
+            };
+
+            return new JsonResult(response);
         }
         catch (ArgumentException ex)
         {
-            return new JsonResult(new { status = "error", error = ex.Message, statusCode = StatusCodes.Status404NotFound });
+            var response = new Response<MovieDto>
+            {
+                Status = "error",
+                Error = ex.Message,
+                StatusCode = StatusCodes.Status404NotFound,
+            };
+
+            return new JsonResult(response);
         }
         catch (Exception)
         {
-            return new JsonResult(new { status = "error", error = "Internal Server Error", statusCode = StatusCodes.Status500InternalServerError });
+            var response = new Response<MovieDto>
+            {
+                Status = "error",
+                Error = "Internal Server Error",
+                StatusCode = StatusCodes.Status500InternalServerError,
+            };
+
+            return new JsonResult(response);
         }
     }
 
@@ -126,15 +169,36 @@ public class MoviesController : ControllerBase
         {
             await _movieService.Add(newMovie);
 
-            return new JsonResult(new { status = "success", statusCode = StatusCodes.Status200OK });
+            var response = new Response<Movie>
+            {
+                Status = "success",
+                StatusCode = StatusCodes.Status200OK,
+                Data = new List<Movie> { newMovie },
+            };
+
+            return new JsonResult(response);
         }
         catch (ArgumentException ex)
         {
-            return new JsonResult(new { status = "error", error = ex.Message, statusCode = StatusCodes.Status400BadRequest });
+            var response = new Response<Movie>
+            {
+                Status = "error",
+                Error = ex.Message,
+                StatusCode = StatusCodes.Status400BadRequest,
+            };
+
+            return new JsonResult(response);
         }
         catch (Exception)
         {
-            return new JsonResult(new { status = "error", error = "Internal Server Error", statusCode = StatusCodes.Status500InternalServerError });
+            var response = new Response<Movie>
+            {
+                Status = "error",
+                Error = "Internal Server Error",
+                StatusCode = StatusCodes.Status500InternalServerError,
+            };
+
+            return new JsonResult(response);
         }
     }
 
@@ -149,16 +213,36 @@ public class MoviesController : ControllerBase
         {
             await _movieService.Update(updatedMovie);
 
-            return new JsonResult(new { status = "success", statusCode = StatusCodes.Status200OK });
+            var response = new Response<Movie>
+            {
+                Status = "success",
+                StatusCode = StatusCodes.Status200OK,
+                Data = new List<Movie> { updatedMovie },
+            };
+
+            return new JsonResult(response);
         }
         catch (ArgumentException ex)
         {
-            return new JsonResult(new { status = "error", error = ex.Message, statusCode = StatusCodes.Status404NotFound });
+            var response = new Response<Movie>
+            {
+                Status = "error",
+                Error = ex.Message,
+                StatusCode = StatusCodes.Status404NotFound,
+            };
+
+            return new JsonResult(response);
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error: {ex.Message}");
-            return new JsonResult(new { status = "error", error = "Internal Server Error", statusCode = StatusCodes.Status500InternalServerError });
+            var response = new Response<Movie>
+            {
+                Status = "error",
+                Error = ex.Message,
+                StatusCode = StatusCodes.Status500InternalServerError,
+            };
+
+            return new JsonResult(response);
         }
     }
 }
