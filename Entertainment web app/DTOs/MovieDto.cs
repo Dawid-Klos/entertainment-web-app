@@ -10,6 +10,6 @@ public class MovieDto
     public string ImgSmall { get; set; } = null!;
     public string ImgMedium { get; set; } = null!;
     public string ImgLarge { get; set; } = null!;
-    public bool IsBookmarked { get; set; }
+    public bool? IsBookmarked { get; set; }
 }
 
