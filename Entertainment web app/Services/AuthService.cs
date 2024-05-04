@@ -109,7 +109,7 @@ public class AuthService : IAuthService
             return new Response<ApplicationUser>
             {
                 Status = "error",
-                Error = "User creation failed!",
+                Error = $"{result.Errors.First().Description}",
             };
         }
 
