@@ -1,9 +1,10 @@
-using Entertainment_web_app.Models.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+using Entertainment_web_app.Services;
 using Entertainment_web_app.Models.User;
-
+using Entertainment_web_app.Models.Auth;
+using Entertainment_web_app.Models.Responses;
 
 namespace Entertainment_web_app.Controllers;
 
@@ -12,100 +13,184 @@ namespace Entertainment_web_app.Controllers;
 [Produces("application/json")]
 public class AuthController : ControllerBase
 {
-    private IUserService _userService;
-    private IHttpContextAccessor _httpContextAccessor;
+    private readonly IAuthService _authService;
 
-    public AuthController(IUserService userService, IHttpContextAccessor httpContextAccessor)
+    public AuthController(IAuthService authService)
     {
-        _userService = userService;
-        _httpContextAccessor = httpContextAccessor;
+        _authService = authService;
     }
 
-    [HttpGet]
+    [HttpPost]
     [Authorize]
-    [Route("[action]")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public JsonResult Auth()
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<Response<ApplicationUser>> Auth()
     {
-        var authStatus = _httpContextAccessor.HttpContext!.User.Identity!.IsAuthenticated;
-
-        if (authStatus)
+        try
         {
-            return new JsonResult(new { status = "success", statusCode = StatusCodes.Status200OK, data = "User is authenticated" });
+            var authStatus = await _authService.AuthenticateUserAsync();
+
+            if (authStatus.Status == "success")
+            {
+                return new Response<ApplicationUser>
+                {
+                    Status = "success",
+                    StatusCode = StatusCodes.Status200OK,
+                    Data = authStatus.Data
+                };
+            }
+        }
+        catch (Exception ex)
+        {
+            return new Response<ApplicationUser>
+            {
+                Status = "error",
+                StatusCode = StatusCodes.Status500InternalServerError,
+                Error = ex.Message
+            };
         }
 
-        return new JsonResult(new { status = "error", statusCode = StatusCodes.Status401Unauthorized, error = "User is not authenticated" });
+        return new Response<ApplicationUser>
+        {
+            Status = "error",
+            StatusCode = StatusCodes.Status401Unauthorized,
+            Error = "User is not authenticated"
+        };
     }
 
-    [HttpPost]
-    [Route("[action]")]
+    [HttpPost("register")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> RegisterAsync([FromBody] RegisterViewModel model)
+    public async Task<Response<ApplicationUser>> RegisterAsync([FromBody] RegisterViewModel model)
     {
-        if (ModelState.IsValid)
+        if (!ModelState.IsValid)
         {
-            var result = await _userService.RegisterUserAsync(model);
-
-            if (result.isSuccess)
+            return new Response<ApplicationUser>
             {
-                return new JsonResult(new { status = "success", statusCode = StatusCodes.Status200OK, data = result });
-            }
-
-            if (!result.isSuccess)
-            {
-                return new JsonResult(new { status = "error", statusCode = StatusCodes.Status400BadRequest, error = result });
-            }
+                Status = "error",
+                StatusCode = StatusCodes.Status400BadRequest,
+                Error = "Something went wrong."
+            };
         }
 
-        return new JsonResult(new { status = "error", statusCode = StatusCodes.Status400BadRequest, error = "Something went wrong." });
+        try
+        {
+            var result = await _authService.RegisterUserAsync(model);
+
+            if (result.Status != "success")
+            {
+                return new Response<ApplicationUser>
+                {
+                    Status = "error",
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Error = result.Error
+                };
+            }
+
+            return new Response<ApplicationUser>
+            {
+                Status = "success",
+                StatusCode = StatusCodes.Status200OK,
+                Data = result.Data
+            };
+        }
+        catch (Exception ex)
+        {
+            return new Response<ApplicationUser>
+            {
+                Status = "error",
+                StatusCode = StatusCodes.Status500InternalServerError,
+                Error = ex.Message
+            };
+        }
     }
 
-    [HttpPost]
-    [Route("[action]")]
+    [HttpPost("login")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> LoginAsync([FromBody] LoginViewModel model)
+    public async Task<Response<ApplicationUser>> LoginAsync([FromBody] LoginViewModel model)
     {
-        if (ModelState.IsValid)
+        if (!ModelState.IsValid)
         {
-            var result = await _userService.LoginUserAsync(model);
-
-            if (result.isSuccess)
+            return new Response<ApplicationUser>
             {
-                return new JsonResult(new { status = "success", statusCode = StatusCodes.Status200OK, data = result });
-            }
-
-            if (!result.isSuccess)
-            {
-                return new JsonResult(new { status = "error", statusCode = StatusCodes.Status400BadRequest, error = result });
-            }
+                Status = "error",
+                StatusCode = StatusCodes.Status400BadRequest,
+                Error = "Something went wrong."
+            };
         }
 
-        return new JsonResult(new { status = "error", statusCode = StatusCodes.Status400BadRequest, error = "Some of the credentials does not match." });
+        try
+        {
+            var result = await _authService.LoginUserAsync(model);
+
+            if (result.Status != "success")
+            {
+                return new Response<ApplicationUser>
+                {
+                    Status = "error",
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Error = result.Error
+                };
+            }
+
+            return new Response<ApplicationUser>
+            {
+                Status = "success",
+                StatusCode = StatusCodes.Status200OK,
+                Data = result.Data
+            };
+        }
+        catch (Exception ex)
+        {
+            return new Response<ApplicationUser>
+            {
+                Status = "error",
+                StatusCode = StatusCodes.Status500InternalServerError,
+                Error = ex.Message
+            };
+        }
     }
 
-    [HttpPost]
+    [HttpPost("logout")]
     [Authorize]
-    [Route("[action]")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> LogoutAsync()
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<Response<ApplicationUser>> LogoutAsync()
     {
-        var result = await _userService.LogoutUserAsync();
 
-        if (result.isSuccess)
+        try
         {
-            return new JsonResult(new { status = "success", statusCode = StatusCodes.Status200OK, data = result });
-        }
+            var result = await _authService.LogoutUserAsync();
 
-        if (!result.isSuccess)
+            if (result.Status != "success")
+            {
+                return new Response<ApplicationUser>
+                {
+                    Status = "error",
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Error = result.Error
+                };
+            }
+
+            return new Response<ApplicationUser>
+            {
+                Status = "success",
+                StatusCode = StatusCodes.Status200OK,
+                Data = result.Data
+            };
+        }
+        catch (Exception ex)
         {
-            return new JsonResult(new { status = "error", statusCode = StatusCodes.Status400BadRequest, error = result });
+            return new Response<ApplicationUser>
+            {
+                Status = "error",
+                StatusCode = StatusCodes.Status500InternalServerError,
+                Error = ex.Message
+            };
         }
-
-        return new JsonResult(new { status = "error", statusCode = StatusCodes.Status400BadRequest, error = "Something went wrong, user not logged out." });
     }
 
 }
