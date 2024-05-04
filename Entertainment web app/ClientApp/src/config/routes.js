@@ -31,8 +31,8 @@ const routerConfig = [
         path: "/",
         element: <Home />,
         loader: async () => {
-          const recommended = await fetchContent("Movies");
-          const trending = await fetchContent("Trending");
+          const recommended = await fetchContent("movies");
+          const trending = await fetchContent("trending");
 
           return { recommended: recommended, trending: trending };
         },
@@ -52,13 +52,13 @@ const routerConfig = [
       {
         path: "/Movies",
         element: <Movies />,
-        loader: () => fetchContent("Movies"),
+        loader: () => fetchContent("movies"),
         action: bookmarkAction,
       },
       {
         path: "/TV-series",
         element: <TVSeries />,
-        loader: () => fetchContent("Movies"),
+        loader: () => fetchContent("movies"),
         action: bookmarkAction,
       },
       {

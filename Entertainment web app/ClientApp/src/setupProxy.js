@@ -8,13 +8,14 @@ const target = env.ASPNETCORE_HTTPS_PORT
     : "http://localhost:52438";
 
 const context = [
-  "/api/Auth/Auth",
-  "/api/Auth/Login",
-  "/api/Auth/Logout",
-  "/api/Auth/Register",
-  "/api/Movies",
-  "/api/Trending",
-  "/api/Bookmark",
+  "/api/auth",
+  "/api/auth/login",
+  "/api/auth/logout",
+  "/api/auth/register",
+  "/api/movies",
+  "/api/tv-series",
+  "/api/trending",
+  "/api/bookmarks",
   "/api/Search/SearchByTitle",
   "/api/Search/SearchByCategory",
   "/api/Search/SearchByCategoryAndTitle",
