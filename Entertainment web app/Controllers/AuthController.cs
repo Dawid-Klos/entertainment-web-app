@@ -9,7 +9,7 @@ using Entertainment_web_app.Models.Responses;
 namespace Entertainment_web_app.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/auth")]
 [Produces("application/json")]
 public class AuthController : ControllerBase
 {
@@ -25,11 +25,11 @@ public class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<Response<ApplicationUser>> Auth()
+    public Response<ApplicationUser> Auth()
     {
         try
         {
-            var authStatus = await _authService.AuthenticateUserAsync();
+            var authStatus = _authService.AuthenticateUserAsync();
 
             if (authStatus.Status == "success")
             {

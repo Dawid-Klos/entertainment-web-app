@@ -9,7 +9,7 @@ namespace Entertainment_web_app.Controllers;
 
 [ApiController]
 [Authorize]
-[Route("api/[controller]")]
+[Route("api/movies")]
 [Produces("application/json")]
 public class MoviesController : ControllerBase
 {
