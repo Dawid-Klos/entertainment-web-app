@@ -80,35 +80,6 @@ public class AuthService : IAuthService
         };
     }
 
-    public Task<Response<ApplicationUser>> LogoutUserAsync()
-    {
-
-        if (_httpContextAccessor.HttpContext?.User.Identity == null)
-        {
-            return Task.FromResult(new Response<ApplicationUser>
-            {
-                Status = "error",
-                Error = "HttpContext is null"
-            });
-        }
-
-        if (!_httpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
-        {
-
-            return Task.FromResult(new Response<ApplicationUser>
-            {
-                Status = "error",
-                Error = "User is not authenticated"
-            });
-        }
-
-        _httpContextAccessor.HttpContext?.Response.Cookies.Delete("_auth");
-
-        return Task.FromResult(new Response<ApplicationUser>
-        {
-            Status = "success",
-        });
-    }
 
     public async Task<Response<ApplicationUser>> LoginUserAsync(LoginViewModel model)
     {
@@ -136,9 +107,9 @@ public class AuthService : IAuthService
 
         var claims = new[]
         {
-            new Claim("Email", model.Email),
+        new Claim("Email", model.Email),
             new Claim(ClaimTypes.NameIdentifier, user.Id)
-        };
+      };
 
         var keyString = _configuration["AuthSettings:Key"];
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(keyString!));
@@ -175,4 +146,69 @@ public class AuthService : IAuthService
             Data = new List<ApplicationUser>() { user }
         };
     }
+
+    public Task<Response<ApplicationUser>> LogoutUserAsync()
+    {
+
+        if (_httpContextAccessor.HttpContext?.User.Identity == null)
+        {
+            return Task.FromResult(new Response<ApplicationUser>
+            {
+                Status = "error",
+                Error = "HttpContext is null"
+            });
+        }
+
+        if (!_httpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
+        {
+
+            return Task.FromResult(new Response<ApplicationUser>
+            {
+                Status = "error",
+                Error = "User is not authenticated"
+            });
+        }
+
+        _httpContextAccessor.HttpContext?.Response.Cookies.Delete("_auth");
+
+        return Task.FromResult(new Response<ApplicationUser>
+        {
+            Status = "success",
+        });
+    }
+
+    public Task<Response<ApplicationUser>> UpdateUserAsync(ApplicationUser user)
+    {
+        var userToUpdate = _userManager.FindByIdAsync(user.Id).Result;
+
+        if (userToUpdate == null)
+        {
+            return Task.FromResult(new Response<ApplicationUser>
+            {
+                Status = "error",
+                Error = "User not found"
+            });
+        }
+
+        userToUpdate.Firstname = user.Firstname;
+        userToUpdate.Lastname = user.Lastname;
+
+        var result = _userManager.UpdateAsync(userToUpdate).Result;
+
+        if (!result.Succeeded)
+        {
+            return Task.FromResult(new Response<ApplicationUser>
+            {
+                Status = "error",
+                Error = "User update failed"
+            });
+        }
+
+        return Task.FromResult(new Response<ApplicationUser>
+        {
+            Status = "success",
+            Data = new List<ApplicationUser>() { userToUpdate }
+        });
+    }
+
 }
