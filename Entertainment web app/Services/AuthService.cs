@@ -25,6 +25,58 @@ public class AuthService : IAuthService
         _httpContextAccessor = httpContextAccessor;
     }
 
+    public async Task<Response<ApplicationUser>> AuthenticateUserAsync()
+    {
+        if (_httpContextAccessor.HttpContext?.User.Identity == null)
+        {
+            return new Response<ApplicationUser>
+            {
+                Status = "error",
+                Error = "HttpContext is null"
+            };
+        }
+
+        var user = await _userManager.FindByEmailAsync(_httpContextAccessor.HttpContext.User.Identity.Name);
+
+        if (user == null)
+        {
+            return new Response<ApplicationUser>
+            {
+                Status = "error",
+                Error = "User not found"
+            };
+        }
+
+        var userToken = _httpContextAccessor.HttpContext.Request.Cookies["_auth"];
+        var tokenHandler = new JwtSecurityTokenHandler();
+
+        tokenHandler.ValidateToken(userToken, new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidAudience = _configuration["AuthSettings:Audience"],
+            ValidIssuer = _configuration["AuthSettings:Issuer"],
+            RequireExpirationTime = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["AuthSettings:Key"]!)),
+            ValidateIssuerSigningKey = true
+        }, out SecurityToken validatedToken);
+
+        if (validatedToken == null)
+        {
+            return new Response<ApplicationUser>
+            {
+                Status = "error",
+                Error = "Invalid token"
+            };
+        }
+
+        return new Response<ApplicationUser>
+        {
+            Status = "success",
+            Data = new List<ApplicationUser>() { user }
+        };
+    }
+
     public async Task<Response<ApplicationUser>> RegisterUserAsync(RegisterViewModel model)
     {
         if (model == null)
