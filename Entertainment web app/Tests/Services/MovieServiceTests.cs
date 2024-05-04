@@ -13,9 +13,9 @@ public class MovieServiceTests
     {
         return new List<Movie>
       {
-        new Movie { MovieId = 1, Title = "Movie 1", Category = "Movie", Rating = "PG", Year = 1998, ImgSmall = "/images/movie1.jpg", ImgMedium = "/images/movie1.jpg", ImgLarge = "/images/movie1.jpg" },
-        new Movie { MovieId = 2, Title = "Movie 2", Category = "Movie", Rating = "PG", Year = 2020, ImgSmall = "/images/movie2.jpg", ImgMedium = "/images/movie2.jpg", ImgLarge = "/images/movie2.jpg" },
-        new Movie { MovieId = 3, Title = "Movie 3", Category = "Movie", Rating = "PG", Year = 2021, ImgSmall = "/images/movie3.jpg", ImgMedium = "/images/movie3.jpg", ImgLarge = "/images/movie3.jpg" },
+        new Movie { MovieId = 1, Title = "Movie 1", Category = "Movies", Rating = "PG", Year = 1998, ImgSmall = "/images/movie1.jpg", ImgMedium = "/images/movie1.jpg", ImgLarge = "/images/movie1.jpg" },
+        new Movie { MovieId = 2, Title = "Movie 2", Category = "Movies", Rating = "PG", Year = 2020, ImgSmall = "/images/movie2.jpg", ImgMedium = "/images/movie2.jpg", ImgLarge = "/images/movie2.jpg" },
+        new Movie { MovieId = 3, Title = "Movie 3", Category = "Movies", Rating = "PG", Year = 2021, ImgSmall = "/images/movie3.jpg", ImgMedium = "/images/movie3.jpg", ImgLarge = "/images/movie3.jpg" },
         new Movie { MovieId = 4, Title = "Movie 4", Category = "TV Series", Rating = "PG", Year = 2018, ImgSmall = "/images/movie4.jpg", ImgMedium = "/images/movie4.jpg", ImgLarge = "/images/movie4.jpg" },
         new Movie { MovieId = 5, Title = "Movie 5", Category = "TV Series", Rating = "PG", Year = 2019, ImgSmall = "/images/movie5.jpg", ImgMedium = "/images/movie5.jpg", ImgLarge = "/images/movie5.jpg" },
         new Movie { MovieId = 6, Title = "Movie 6", Category = "TV Series", Rating = "PG", Year = 2020, ImgSmall = "/images/movie6.jpg", ImgMedium = "/images/movie6.jpg", ImgLarge = "/images/movie6.jpg" }
@@ -26,7 +26,7 @@ public class MovieServiceTests
     public async Task GetAll_ReturnsAllMovies()
     {
         var repository = new Mock<IMovieRepository>();
-        repository.Setup(repo => repo.GetByCategory("Movie")).ReturnsAsync(GetTestMovies().Where(m => m.Category == "Movie"));
+        repository.Setup(repo => repo.GetByCategory("Movies")).ReturnsAsync(GetTestMovies().Where(m => m.Category == "Movies"));
 
         var service = new MovieService(repository.Object);
         var result = await service.GetAll();
@@ -39,7 +39,7 @@ public class MovieServiceTests
     public async Task GetAll_ReturnsNoMovies()
     {
         var repository = new Mock<IMovieRepository>();
-        repository.Setup(repo => repo.GetByCategory("Movie")).ReturnsAsync(new List<Movie>());
+        repository.Setup(repo => repo.GetByCategory("Movies")).ReturnsAsync(new List<Movie>());
 
         var service = new MovieService(repository.Object);
         var result = await service.GetAll();
@@ -52,7 +52,7 @@ public class MovieServiceTests
     public async Task GetAll_ThrowsException()
     {
         var repository = new Mock<IMovieRepository>();
-        repository.Setup(repo => repo.GetByCategory("Movie")).ThrowsAsync(new Exception("No movies found"));
+        repository.Setup(repo => repo.GetByCategory("Movies")).ThrowsAsync(new Exception("No movies found"));
 
         var service = new MovieService(repository.Object);
 
@@ -66,8 +66,8 @@ public class MovieServiceTests
     public async Task GetAllPaginated_ReturnsMovies(int pageNumber, int pageSize)
     {
         var repository = new Mock<IMovieRepository>();
-        repository.Setup(repo => repo.CountByCategory("Movie")).ReturnsAsync(3);
-        repository.Setup(repo => repo.GetByCategoryPaginated("Movie", pageNumber, pageSize)).ReturnsAsync(GetTestMovies().Where(m => m.Category == "Movie"));
+        repository.Setup(repo => repo.CountByCategory("Movies")).ReturnsAsync(3);
+        repository.Setup(repo => repo.GetByCategoryPaginated("Movies", pageNumber, pageSize)).ReturnsAsync(GetTestMovies().Where(m => m.Category == "Movies"));
 
         var service = new MovieService(repository.Object);
         var result = await service.GetAllPaginated(pageNumber, pageSize);
@@ -85,8 +85,8 @@ public class MovieServiceTests
     public async Task GetAllPaginated_InvalidPageNumber_ThrowsException(int pageNumber, int pageSize)
     {
         var repository = new Mock<IMovieRepository>();
-        repository.Setup(repo => repo.CountByCategory("Movie")).ReturnsAsync(0);
-        repository.Setup(repo => repo.GetByCategoryPaginated("Movie", pageNumber, pageSize)).ThrowsAsync(new ArgumentException("Invalid page number"));
+        repository.Setup(repo => repo.CountByCategory("Movies")).ReturnsAsync(0);
+        repository.Setup(repo => repo.GetByCategoryPaginated("Movies", pageNumber, pageSize)).ThrowsAsync(new ArgumentException("Invalid page number"));
 
         var service = new MovieService(repository.Object);
 
@@ -100,8 +100,8 @@ public class MovieServiceTests
     public async Task GetAllPaginated_InvalidPageSize_ThrowsException(int pageNumber, int pageSize)
     {
         var repository = new Mock<IMovieRepository>();
-        repository.Setup(repo => repo.CountByCategory("Movie")).ReturnsAsync(3);
-        repository.Setup(repo => repo.GetByCategoryPaginated("Movie", pageNumber, pageSize)).ThrowsAsync(new ArgumentException("Invalid page size"));
+        repository.Setup(repo => repo.CountByCategory("Movies")).ReturnsAsync(3);
+        repository.Setup(repo => repo.GetByCategoryPaginated("Movies", pageNumber, pageSize)).ThrowsAsync(new ArgumentException("Invalid page size"));
 
         var service = new MovieService(repository.Object);
 
@@ -160,7 +160,7 @@ public class MovieServiceTests
     public void Add_AddsMovie()
     {
         var repository = new Mock<IMovieRepository>();
-        var movie = new Movie { MovieId = 7, Title = "Movie 7", Category = "Movie", Rating = "PG", Year = 2022, ImgSmall = "/images/movie7.jpg", ImgMedium = "/images/movie7.jpg", ImgLarge = "/images/movie7.jpg" };
+        var movie = new Movie { MovieId = 7, Title = "Movie 7", Category = "Movies", Rating = "PG", Year = 2022, ImgSmall = "/images/movie7.jpg", ImgMedium = "/images/movie7.jpg", ImgLarge = "/images/movie7.jpg" };
 
         var service = new MovieService(repository.Object);
         service.Add(movie);
@@ -172,7 +172,7 @@ public class MovieServiceTests
     [Fact]
     public async void Add_MovieAlreadyExists_ThrowsException()
     {
-        var movie = new Movie { MovieId = 1, Title = "Movie 1", Category = "Movie", Rating = "PG", Year = 1998, ImgSmall = "/images/movie1.jpg", ImgMedium = "/images/movie1.jpg", ImgLarge = "/images/movie1.jpg" };
+        var movie = new Movie { MovieId = 1, Title = "Movie 1", Category = "Movies", Rating = "PG", Year = 1998, ImgSmall = "/images/movie1.jpg", ImgMedium = "/images/movie1.jpg", ImgLarge = "/images/movie1.jpg" };
 
         var repository = new Mock<IMovieRepository>();
         repository.Setup(repo => repo.GetById(movie.MovieId))
@@ -186,7 +186,7 @@ public class MovieServiceTests
     [Fact]
     public void Update_UpdatesMovie()
     {
-        var movie = new Movie { MovieId = 1, Title = "Updated", Category = "Movie", Rating = "PG", Year = 1998, ImgSmall = "/images/movie1.jpg", ImgMedium = "/images/movie1.jpg", ImgLarge = "/images/movie1.jpg" };
+        var movie = new Movie { MovieId = 1, Title = "Updated", Category = "Movies", Rating = "PG", Year = 1998, ImgSmall = "/images/movie1.jpg", ImgMedium = "/images/movie1.jpg", ImgLarge = "/images/movie1.jpg" };
         var repository = new Mock<IMovieRepository>();
         repository.Setup(repo => repo.GetById(movie.MovieId)).ReturnsAsync(movie);
 
@@ -201,7 +201,7 @@ public class MovieServiceTests
     [Fact]
     public async void Update_MovieDoesNotExist_ThrowsException()
     {
-        var movie = new Movie { MovieId = 7, Title = "Movie 7", Category = "Movie", Rating = "PG", Year = 2022, ImgSmall = "/images/movie7.jpg", ImgMedium = "/images/movie7.jpg", ImgLarge = "/images/movie7.jpg" };
+        var movie = new Movie { MovieId = 7, Title = "Movie 7", Category = "Movies", Rating = "PG", Year = 2022, ImgSmall = "/images/movie7.jpg", ImgMedium = "/images/movie7.jpg", ImgLarge = "/images/movie7.jpg" };
 
         var repository = new Mock<IMovieRepository>();
         repository.Setup(repo => repo.GetById(movie.MovieId))

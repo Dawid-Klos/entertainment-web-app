@@ -1,4 +1,5 @@
 using Entertainment_web_app.Models.Content;
+using Entertainment_web_app.Models.Responses;
 using Entertainment_web_app.Repositories;
 
 namespace Entertainment_web_app.Services;
@@ -12,23 +13,33 @@ public class MovieService : IMovieService
         _movieRepository = movieRepository;
     }
 
-    public async Task<IEnumerable<Movie>> GetAll()
+    public async Task<IEnumerable<MovieDto>> GetAll()
     {
         try
         {
-            var movies = await _movieRepository.GetByCategory("Movie");
+            var movies = await _movieRepository.GetByCategory("Movies");
 
-            return movies;
+            return movies.Select(m => new MovieDto
+            {
+                MovieId = m.MovieId,
+                Title = m.Title,
+                Year = m.Year,
+                Category = m.Category,
+                Rating = m.Rating,
+                ImgSmall = m.ImgSmall,
+                ImgMedium = m.ImgMedium,
+                ImgLarge = m.ImgLarge
+            });
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            throw new Exception("No movies found");
+            throw new Exception("Internal Server Error, " + ex.Message);
         }
     }
 
-    public async Task<PagedResponse<Movie>> GetAllPaginated(int pageNumber, int pageSize)
+    public async Task<PagedResponse<MovieDto>> GetAllPaginated(int pageNumber, int pageSize)
     {
-        var totalMovies = await _movieRepository.CountByCategory("Movie");
+        var totalMovies = await _movieRepository.CountByCategory("Movies");
         var totalPages = (int)Math.Ceiling(totalMovies / (double)pageSize);
 
         if (pageNumber < 1 || pageNumber > totalPages)
@@ -36,37 +47,67 @@ public class MovieService : IMovieService
             throw new ArgumentException("Invalid page number");
         }
 
-        var movies = await _movieRepository.GetByCategoryPaginated("Movie", pageNumber, pageSize);
-
-        return new PagedResponse<Movie>
+        if (pageSize < 1 || pageSize > 20)
         {
-            Data = movies.ToList(),
+            throw new ArgumentException("Invalid page size");
+        }
+
+        var movies = await _movieRepository.GetByCategoryPaginated("Movies", pageNumber, pageSize);
+
+        var movieDtos = movies.Select(m => new MovieDto
+        {
+            MovieId = m.MovieId,
+            Title = m.Title,
+            Year = m.Year,
+            Category = m.Category,
+            Rating = m.Rating,
+            ImgSmall = m.ImgSmall,
+            ImgMedium = m.ImgMedium,
+            ImgLarge = m.ImgLarge
+        }).ToList();
+
+        return new PagedResponse<MovieDto>
+        {
+            Data = movieDtos,
             PageNumber = pageNumber,
             PageSize = pageSize,
-            TotalPages = totalPages
+            TotalPages = totalPages,
+            TotalRecords = totalMovies
         };
     }
 
-    public async Task<Movie> GetById(int movieId)
+    public async Task<MovieDto> GetById(int movieId)
     {
         try
         {
             var movie = await _movieRepository.GetById(movieId);
 
-            if (movie.Category != "Movie" || movie == null)
+            if (movie == null || movie.Category != "Movies")
             {
                 throw new ArgumentException($"Movie with ID = {movieId} does not exist");
             }
 
-            return movie;
+            var movieDto = new MovieDto
+            {
+                MovieId = movie.MovieId,
+                Title = movie.Title,
+                Year = movie.Year,
+                Category = movie.Category,
+                Rating = movie.Rating,
+                ImgSmall = movie.ImgSmall,
+                ImgMedium = movie.ImgMedium,
+                ImgLarge = movie.ImgLarge
+            };
+
+            return movieDto;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            throw new ArgumentException(ex.Message);
+            throw;
         }
     }
 
-    public async void Add(Movie movie)
+    public async Task Add(Movie movie)
     {
         try
         {
@@ -74,23 +115,23 @@ public class MovieService : IMovieService
 
             if (movieExists != null)
             {
-                throw new Exception("Movie already exists");
+                throw new ArgumentException("Movie already exists");
             }
 
-            if (movie.Category != "Movie")
+            if (movie.Category != "Movies")
             {
                 throw new ArgumentException("Invalid category");
             }
 
-            _movieRepository.Add(movie);
+            await _movieRepository.Add(movie);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            throw new Exception(ex.Message);
+            throw;
         }
     }
 
-    public async void Update(Movie movie)
+    public async Task Update(Movie movie)
     {
         try
         {
@@ -98,18 +139,23 @@ public class MovieService : IMovieService
 
             if (movieExists == null)
             {
-                throw new Exception("Movie not found");
+                throw new ArgumentException("Movie not found");
             }
 
-            _movieRepository.Update(movie);
+            if (movie.Category != "Movies")
+            {
+                throw new ArgumentException("Invalid category");
+            }
+
+            await _movieRepository.Update(movie);
         }
         catch (Exception)
         {
-            throw new Exception("Movie does not exist");
+            throw;
         }
     }
 
-    public async void Delete(int movieId)
+    public async Task Delete(int movieId)
     {
         try
         {
@@ -117,14 +163,14 @@ public class MovieService : IMovieService
 
             if (movieExists == null)
             {
-                throw new Exception("Movie not found");
+                throw new ArgumentException("Movie not found");
             }
 
-            _movieRepository.Delete(movieId);
+            await _movieRepository.Delete(movieId);
         }
         catch (Exception)
         {
-            throw new Exception("Movie does not exist");
+            throw;
         }
     }
 }

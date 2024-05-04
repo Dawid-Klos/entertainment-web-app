@@ -1,9 +1,9 @@
-using System.Security.Claims;
-using Entertainment_web_app.Data;
-using Entertainment_web_app.Models.Content;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+
+using Entertainment_web_app.Models.Content;
+using Entertainment_web_app.Models.Responses;
+using Entertainment_web_app.Services;
 
 namespace Entertainment_web_app.Controllers;
 
@@ -13,50 +13,57 @@ namespace Entertainment_web_app.Controllers;
 [Produces("application/json")]
 public class MoviesController : ControllerBase
 {
-    private readonly NetwixDbContext _context;
+    private readonly IMovieService _movieService;
 
-    public MoviesController(NetwixDbContext context)
+    public MoviesController(IMovieService movieService)
     {
-        _context = context;
+        _movieService = movieService;
     }
 
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<IEnumerable<MovieDto>>> Get()
+    public async Task<ActionResult<PagedResponse<MovieDto>>> Get([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
         try
         {
-            var user = await _context.Users.FindAsync(userId);
+            var movies = await _movieService.GetAllPaginated(pageNumber, pageSize);
 
-            var bookmarks = await _context.Bookmarks
-                .Where(b => b.UserId == userId)
-                .Select(b => b.MovieId)
-                .ToListAsync();
+            var response = new PagedResponse<MovieDto>
+            {
+                Status = "success",
+                StatusCode = StatusCodes.Status200OK,
+                PageNumber = movies.PageNumber,
+                PageSize = movies.PageSize,
+                TotalPages = movies.TotalPages,
+                TotalRecords = movies.TotalRecords,
+                Data = movies.Data,
+            };
 
-            var movies = await _context.Movies
-                .Select(m => new MovieDto
-                {
-                    MovieId = m.MovieId,
-                    Title = m.Title,
-                    Year = m.Year,
-                    Category = m.Category,
-                    Rating = m.Rating,
-                    ImgSmall = m.ImgSmall,
-                    ImgMedium = m.ImgMedium,
-                    ImgLarge = m.ImgLarge,
-                    IsBookmarked = bookmarks!.Contains(m.MovieId)
-                }).ToListAsync();
-
-
-            return new JsonResult(new { status = "success", statusCode = StatusCodes.Status200OK, data = movies });
+            return new JsonResult(response);
         }
-        catch (Exception ex)
+        catch (ArgumentException ex)
         {
-            return new JsonResult(new { status = "error", error = $"Internal Server Error, {ex}", statusCode = StatusCodes.Status500InternalServerError });
+            var response = new Response<MovieDto>
+            {
+                Status = "error",
+                Error = ex.Message,
+                StatusCode = StatusCodes.Status400BadRequest,
+            };
+
+            return new JsonResult(response);
+        }
+        catch (Exception)
+        {
+            var response = new Response<MovieDto>
+            {
+                Status = "error",
+                Error = "Internal Server Error",
+                StatusCode = StatusCodes.Status500InternalServerError,
+            };
+
+            return new JsonResult(response);
         }
     }
 
@@ -67,42 +74,40 @@ public class MoviesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<MovieDto>> Get(int movieId)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var user = await _context.Users.FindAsync(userId);
-
         try
         {
+            var movie = await _movieService.GetById(movieId);
 
-            var bookmarks = await _context.Bookmarks
-                .Where(b => b.UserId == userId)
-                .Select(b => b.MovieId)
-                .ToListAsync();
-
-            var movie = await _context.Movies
-                .Where(m => m.MovieId == movieId)
-                .Select(m => new MovieDto
-                {
-                    MovieId = m.MovieId,
-                    Title = m.Title,
-                    Year = m.Year,
-                    Category = m.Category,
-                    Rating = m.Rating,
-                    ImgSmall = m.ImgSmall,
-                    ImgMedium = m.ImgMedium,
-                    ImgLarge = m.ImgLarge,
-                    IsBookmarked = bookmarks.Contains(m.MovieId)
-                }).FirstOrDefaultAsync();
-
-            if (movie == null)
+            var response = new Response<MovieDto>
             {
-                return new JsonResult(new { status = "error", error = "Movie with this Id does not exist in the database", statusCode = StatusCodes.Status404NotFound });
-            }
+                Status = "success",
+                StatusCode = StatusCodes.Status200OK,
+                Data = new List<MovieDto> { movie },
+            };
 
-            return new JsonResult(new { status = "success", statusCode = StatusCodes.Status200OK, data = movie });
+            return new JsonResult(response);
         }
-        catch (Exception ex)
+        catch (ArgumentException ex)
         {
-            return new JsonResult(new { status = "error", error = $"Internal Server Error, {ex}", statusCode = StatusCodes.Status500InternalServerError });
+            var response = new Response<MovieDto>
+            {
+                Status = "error",
+                Error = ex.Message,
+                StatusCode = StatusCodes.Status404NotFound,
+            };
+
+            return new JsonResult(response);
+        }
+        catch (Exception)
+        {
+            var response = new Response<MovieDto>
+            {
+                Status = "error",
+                Error = "Internal Server Error",
+                StatusCode = StatusCodes.Status500InternalServerError,
+            };
+
+            return new JsonResult(response);
         }
     }
 
@@ -111,95 +116,133 @@ public class MoviesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> Delete(int movieId)
+    public async Task<JsonResult> Delete(int movieId)
     {
         try
         {
-            var movie = await _context.Movies.FindAsync(movieId);
+            var movie = await _movieService.GetById(movieId);
 
-            if (movie == null)
-            {
-                return new JsonResult(new { status = "error", error = "Movie with this Id does not exist in the database", statusCode = StatusCodes.Status404NotFound });
-            }
             // TODO: Implement soft delete instead of hard delete
-            // _context.Movies.Remove(movie);
-            // await _context.SaveChangesAsync();
-            return new JsonResult(new { status = "success", statusCode = StatusCodes.Status200OK, data = movie.MovieId });
+            // _movieService.Delete(movieId);
+
+            var response = new Response<MovieDto>
+            {
+                Status = "success",
+                StatusCode = StatusCodes.Status200OK,
+                Data = new List<MovieDto> { movie },
+            };
+
+            return new JsonResult(response);
         }
-        catch (Exception ex)
+        catch (ArgumentException ex)
         {
-            return new JsonResult(new { status = "error", error = $"Internal Server Error, {ex}", statusCode = StatusCodes.Status500InternalServerError });
+            var response = new Response<MovieDto>
+            {
+                Status = "error",
+                Error = ex.Message,
+                StatusCode = StatusCodes.Status404NotFound,
+            };
+
+            return new JsonResult(response);
+        }
+        catch (Exception)
+        {
+            var response = new Response<MovieDto>
+            {
+                Status = "error",
+                Error = "Internal Server Error",
+                StatusCode = StatusCodes.Status500InternalServerError,
+            };
+
+            return new JsonResult(response);
         }
     }
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> Post([FromBody] Movie newMovie)
+    public async Task<JsonResult> Post([FromBody] Movie newMovie)
     {
         try
         {
-            var movie = new Movie
+            await _movieService.Add(newMovie);
+
+            var response = new Response<Movie>
             {
-                Title = newMovie.Title,
-                Year = newMovie.Year,
-                Category = newMovie.Category,
-                Rating = newMovie.Rating,
-                ImgSmall = newMovie.ImgSmall,
-                ImgMedium = newMovie.ImgMedium,
-                ImgLarge = newMovie.ImgLarge
+                Status = "success",
+                StatusCode = StatusCodes.Status200OK,
+                Data = new List<Movie> { newMovie },
             };
 
-            _context.Movies.Add(movie);
-            await _context.SaveChangesAsync();
-
-            return new JsonResult(new { status = "success", statusCode = StatusCodes.Status200OK, data = movie });
+            return new JsonResult(response);
         }
-        catch (Exception ex)
+        catch (ArgumentException ex)
         {
-            return new JsonResult(new { status = "error", error = $"Internal Server Error, {ex}", statusCode = StatusCodes.Status500InternalServerError });
+            var response = new Response<Movie>
+            {
+                Status = "error",
+                Error = ex.Message,
+                StatusCode = StatusCodes.Status400BadRequest,
+            };
+
+            return new JsonResult(response);
+        }
+        catch (Exception)
+        {
+            var response = new Response<Movie>
+            {
+                Status = "error",
+                Error = "Internal Server Error",
+                StatusCode = StatusCodes.Status500InternalServerError,
+            };
+
+            return new JsonResult(response);
         }
     }
-
-
 
     [HttpPut]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> Put([FromBody] Movie updatedMovie)
+    public async Task<JsonResult> Put([FromBody] Movie updatedMovie)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var user = await _context.Users.FindAsync(userId);
-
         try
         {
-            var movie = await _context.Movies.FindAsync(updatedMovie.MovieId);
+            await _movieService.Update(updatedMovie);
 
-            if (movie == null)
+            var response = new Response<Movie>
             {
-                return new JsonResult(new { status = "error", error = "Movie with this Id cannot be updated because does not exist in the database", statusCode = StatusCodes.Status404NotFound });
-            }
+                Status = "success",
+                StatusCode = StatusCodes.Status200OK,
+                Data = new List<Movie> { updatedMovie },
+            };
 
-            movie.Title = updatedMovie.Title;
-            movie.Year = updatedMovie.Year;
-            movie.Category = updatedMovie.Category;
-            movie.Rating = updatedMovie.Rating;
-            movie.ImgSmall = updatedMovie.ImgSmall;
-            movie.ImgMedium = updatedMovie.ImgMedium;
-            movie.ImgLarge = updatedMovie.ImgLarge;
+            return new JsonResult(response);
+        }
+        catch (ArgumentException ex)
+        {
+            var response = new Response<Movie>
+            {
+                Status = "error",
+                Error = ex.Message,
+                StatusCode = StatusCodes.Status404NotFound,
+            };
 
-            _context.Movies.Update(movie);
-            await _context.SaveChangesAsync();
-
-            return new JsonResult(new { status = "success", statusCode = StatusCodes.Status200OK, data = movie });
+            return new JsonResult(response);
         }
         catch (Exception ex)
         {
-            return new JsonResult(new { status = "error", error = $"Internal Server Error, {ex}", statusCode = StatusCodes.Status500InternalServerError });
+            var response = new Response<Movie>
+            {
+                Status = "error",
+                Error = ex.Message,
+                StatusCode = StatusCodes.Status500InternalServerError,
+            };
+
+            return new JsonResult(response);
         }
     }
 }

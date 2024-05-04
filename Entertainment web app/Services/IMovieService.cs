@@ -1,13 +1,14 @@
 using Entertainment_web_app.Models.Content;
+using Entertainment_web_app.Models.Responses;
 
 namespace Entertainment_web_app.Services;
 
 public interface IMovieService
 {
-    Task<IEnumerable<Movie>> GetAll();
-    Task<PagedResponse<Movie>> GetAllPaginated(int pageNumber, int pageSize);
-    Task<Movie> GetById(int movieId);
-    void Add(Movie movie);
-    void Update(Movie movie);
-    void Delete(int movieId);
+    Task<IEnumerable<MovieDto>> GetAll();
+    Task<PagedResponse<MovieDto>> GetAllPaginated(int pageNumber, int pageSize);
+    Task<MovieDto> GetById(int movieId);
+    Task Add(Movie movie);
+    Task Update(Movie movie);
+    Task Delete(int movieId);
 }
