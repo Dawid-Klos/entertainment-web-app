@@ -211,4 +211,34 @@ public class AuthService : IAuthService
         });
     }
 
+    public Task<Response<ApplicationUser>> DeleteUserAsync(string userId)
+    {
+        var user = _userManager.FindByIdAsync(userId).Result;
+
+        if (user == null)
+        {
+            return Task.FromResult(new Response<ApplicationUser>
+            {
+                Status = "error",
+                Error = "User not found"
+            });
+        }
+
+        var result = _userManager.DeleteAsync(user).Result;
+
+        if (!result.Succeeded)
+        {
+            return Task.FromResult(new Response<ApplicationUser>
+            {
+                Status = "error",
+                Error = "User deletion failed"
+            });
+        }
+
+        return Task.FromResult(new Response<ApplicationUser>
+        {
+            Status = "success",
+        });
+    }
+
 }

@@ -10,4 +10,5 @@ public interface IAuthService
     Task<Response<ApplicationUser>> LoginUserAsync(LoginViewModel model);
     Task<Response<ApplicationUser>> LogoutUserAsync();
     Task<Response<ApplicationUser>> UpdateUserAsync(ApplicationUser user);
+    Task<Response<ApplicationUser>> DeleteUserAsync(string userId);
 }
