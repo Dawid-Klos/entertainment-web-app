@@ -10,7 +10,7 @@ public class UserRepository : IUserRepository
 
     private readonly NetwixDbContext _context;
 
-    public ApplicationUserRepository(NetwixDbContext context)
+    public UserRepository(NetwixDbContext context)
     {
         _context = context;
     }
