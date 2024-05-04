@@ -25,7 +25,7 @@ public class AuthService : IAuthService
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public async Task<Response<ApplicationUser>> AuthenticateUserAsync()
+    public Response<ApplicationUser> AuthenticateUserAsync()
     {
         if (_httpContextAccessor.HttpContext?.User.Identity == null)
         {
@@ -33,17 +33,6 @@ public class AuthService : IAuthService
             {
                 Status = "error",
                 Error = "HttpContext is null"
-            };
-        }
-
-        var user = await _userManager.FindByEmailAsync(_httpContextAccessor.HttpContext.User.Identity.Name);
-
-        if (user == null)
-        {
-            return new Response<ApplicationUser>
-            {
-                Status = "error",
-                Error = "User not found"
             };
         }
 
@@ -73,7 +62,6 @@ public class AuthService : IAuthService
         return new Response<ApplicationUser>
         {
             Status = "success",
-            Data = new List<ApplicationUser>() { user }
         };
     }
 
@@ -128,7 +116,6 @@ public class AuthService : IAuthService
         return new Response<ApplicationUser>
         {
             Status = "success",
-            Data = new List<ApplicationUser>() { applicationUser }
         };
     }
 
@@ -195,7 +182,6 @@ public class AuthService : IAuthService
         return new Response<ApplicationUser>
         {
             Status = "success",
-            Data = new List<ApplicationUser>() { user }
         };
     }
 
@@ -292,5 +278,4 @@ public class AuthService : IAuthService
             Status = "success",
         });
     }
-
 }
