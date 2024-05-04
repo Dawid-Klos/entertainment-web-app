@@ -5,7 +5,7 @@ using Entertainment_web_app.Models.User;
 
 namespace Entertainment_web_app.Repositories;
 
-public class ApplicationUserRepository : IApplicationUserRepository
+public class UserRepository : IUserRepository
 {
 
     private readonly NetwixDbContext _context;
