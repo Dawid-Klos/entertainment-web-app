@@ -9,13 +9,13 @@ namespace Entertainment_web_app.Controllers;
 
 [ApiController]
 [Authorize]
-[Route("api/[controller]")]
+[Route("api/bookmarks")]
 [Produces("application/json")]
-public class BookmarkController : ControllerBase
+public class BookmarksController : ControllerBase
 {
     private readonly NetwixDbContext _context;
 
-    public BookmarkController(NetwixDbContext context)
+    public BookmarksController(NetwixDbContext context)
     {
         _context = context;
     }

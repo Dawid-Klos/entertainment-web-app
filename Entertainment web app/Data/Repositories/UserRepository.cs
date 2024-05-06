@@ -5,11 +5,12 @@ using Entertainment_web_app.Models.User;
 
 namespace Entertainment_web_app.Repositories;
 
-public class ApplicationUserRepository : IApplicationUserRepository
+public class UserRepository : IUserRepository
 {
+
     private readonly NetwixDbContext _context;
 
-    public ApplicationUserRepository(NetwixDbContext context)
+    public UserRepository(NetwixDbContext context)
     {
         _context = context;
     }
@@ -19,16 +20,9 @@ public class ApplicationUserRepository : IApplicationUserRepository
         return await _context.Users.ToListAsync();
     }
 
-    public async Task<ApplicationUser> GetById(string id)
+    public async Task<ApplicationUser?> GetById(string userId)
     {
-        var user = await _context.Users.FindAsync(id);
-
-        if (user == null)
-        {
-            throw new Exception($"ApplicationUser with ID = {id} not found");
-        }
-
-        return user;
+        return await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId);
     }
 
     public async void Add(ApplicationUser user)

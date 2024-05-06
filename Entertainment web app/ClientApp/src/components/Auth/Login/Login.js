@@ -19,7 +19,7 @@ const Login = () => {
       Password: password.current.value,
     };
 
-    await handleSubmit(e, body, "/api/Auth/Login");
+    await handleSubmit(e, body, "/api/auth/login");
   };
 
   return (

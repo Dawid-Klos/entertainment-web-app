@@ -5,7 +5,9 @@ export const AuthenticateUser = async () => {
   };
 
   try {
-    const response = await axios.get("/api/Auth/Auth", { headers });
+    const response = await axios.post("/api/auth", { headers });
+
+    console.log(response.data);
 
     if (
       response.data.statusCode === 200 &&
