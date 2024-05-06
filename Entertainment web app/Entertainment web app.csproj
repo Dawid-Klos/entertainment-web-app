@@ -30,14 +30,10 @@
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
-        <PackageReference Include="Moq" Version="4.20.70" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.0-rc.2" />
         <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.4.0" />
         <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.4.0" />
         <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.4.0" />
-        <PackageReference Include="xunit" Version="2.7.1" />
-        <PackageReference Include="xunit.runner.visualstudio" Version="2.5.8" />
     </ItemGroup>
 
     <ItemGroup>
