@@ -9,6 +9,7 @@ using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.HttpOverrides;
 
+using Entertainment_web_app.Helpers;
 using Entertainment_web_app.Data;
 using Entertainment_web_app.Models.User;
 using Entertainment_web_app.Repositories;
@@ -16,8 +17,19 @@ using Entertainment_web_app.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Load environment variables
+var root = builder.Environment.ContentRootPath;
+var dotEnv = Path.Combine(root, ".env");
+DotEnvHelper.Load(dotEnv);
+builder.Configuration.AddEnvironmentVariables();
+
 // Connection string with DbContext
-var connectionString = builder.Configuration.GetConnectionString("NetwixDbContext");
+var dbHost = builder.Configuration["DB_HOST"];
+var dbName = builder.Configuration["DB_NAME"];
+var dbUser = builder.Configuration["DB_USER"];
+var dbPassword = builder.Configuration["DB_PASSWORD"];
+var connectionString = $"Host={dbHost};Database={dbName};Username={dbUser};Password={dbPassword}";
+
 builder.Services.AddDbContext<NetwixDbContext>(options =>
     options.UseNpgsql(connectionString));
 
@@ -39,11 +51,11 @@ builder.Services.AddAuthentication(auth =>
     {
         ValidateIssuer = true,
         ValidateAudience = true,
-        ValidAudience = builder.Configuration["AuthSettings:Audience"],
-        ValidIssuer = builder.Configuration["AuthSettings:Issuer"],
         RequireExpirationTime = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["AuthSettings:Key"])),
-        ValidateIssuerSigningKey = true
+        ValidateIssuerSigningKey = true,
+        ValidAudience = builder.Configuration["JWT_AUDIENCE"],
+        ValidIssuer = builder.Configuration["JWT_ISSUER"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT_SECRET_KEY"])),
     };
     options.Events = new JwtBearerEvents
     {

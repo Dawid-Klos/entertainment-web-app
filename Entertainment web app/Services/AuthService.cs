@@ -43,11 +43,11 @@ public class AuthService : IAuthService
         {
             ValidateIssuer = true,
             ValidateAudience = true,
-            ValidAudience = _configuration["AuthSettings:Audience"],
-            ValidIssuer = _configuration["AuthSettings:Issuer"],
             RequireExpirationTime = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["AuthSettings:Key"]!)),
-            ValidateIssuerSigningKey = true
+            ValidateIssuerSigningKey = true,
+            ValidAudience = _configuration["JWT_AUDIENCE"],
+            ValidIssuer = _configuration["JWT_ISSUER"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT_SECRET_KEY"]!)),
         }, out SecurityToken validatedToken);
 
         if (validatedToken == null)
@@ -150,12 +150,12 @@ public class AuthService : IAuthService
             new Claim(ClaimTypes.NameIdentifier, user.Id)
       };
 
-        var keyString = _configuration["AuthSettings:Key"];
+        var keyString = _configuration["JWT_SECRET_KEY"];
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(keyString!));
 
         var token = new JwtSecurityToken(
-            issuer: _configuration["AuthSettings:Issuer"],
-            audience: _configuration["AuthSettings:Audience"],
+            issuer: _configuration["JWT_ISSUER"],
+            audience: _configuration["JWT_AUDIENCE"],
             claims: claims,
             expires: DateTime.Now.AddDays(1),
             signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256));
