@@ -40,23 +40,24 @@ public class AuthController : ControllerBase
                     Data = authStatus.Data
                 };
             }
+
+
+            return new Response<ApplicationUser>
+            {
+                Status = "error",
+                StatusCode = StatusCodes.Status401Unauthorized,
+                Error = new Error("Unauthorized", "User is not authenticated")
+            };
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return new Response<ApplicationUser>
             {
                 Status = "error",
                 StatusCode = StatusCodes.Status500InternalServerError,
-                Error = ex.Message
+                Error = new Error("InternalServerError", "An error occurred while processing the request")
             };
         }
-
-        return new Response<ApplicationUser>
-        {
-            Status = "error",
-            StatusCode = StatusCodes.Status401Unauthorized,
-            Error = "User is not authenticated"
-        };
     }
 
     [HttpPost("register")]
@@ -70,7 +71,7 @@ public class AuthController : ControllerBase
             {
                 Status = "error",
                 StatusCode = StatusCodes.Status400BadRequest,
-                Error = "Something went wrong."
+                Error = new Error("BadRequest", "Invalid model state")
             };
         }
 
@@ -95,13 +96,13 @@ public class AuthController : ControllerBase
                 Data = result.Data
             };
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return new Response<ApplicationUser>
             {
                 Status = "error",
                 StatusCode = StatusCodes.Status500InternalServerError,
-                Error = ex.Message
+                Error = new Error("InternalServerError", "An error occurred while processing the request")
             };
         }
     }
@@ -117,7 +118,7 @@ public class AuthController : ControllerBase
             {
                 Status = "error",
                 StatusCode = StatusCodes.Status400BadRequest,
-                Error = "Something went wrong."
+                Error = new Error("BadRequest", "Invalid model state")
             };
         }
 
@@ -142,13 +143,13 @@ public class AuthController : ControllerBase
                 Data = result.Data
             };
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return new Response<ApplicationUser>
             {
                 Status = "error",
                 StatusCode = StatusCodes.Status500InternalServerError,
-                Error = ex.Message
+                Error = new Error("InternalServerError", "An error occurred while processing the request")
             };
         }
     }
@@ -182,13 +183,13 @@ public class AuthController : ControllerBase
                 Data = result.Data
             };
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return new Response<ApplicationUser>
             {
                 Status = "error",
                 StatusCode = StatusCodes.Status500InternalServerError,
-                Error = ex.Message
+                Error = new Error("InternalServerError", "An error occurred while processing the request")
             };
         }
     }

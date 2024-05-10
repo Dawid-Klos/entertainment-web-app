@@ -32,7 +32,7 @@ public class AuthService : IAuthService
             return new Response<ApplicationUser>
             {
                 Status = "error",
-                Error = "HttpContext is null"
+                Error = new Error("Unauthorized", "User is not authenticated")
             };
         }
 
@@ -55,7 +55,7 @@ public class AuthService : IAuthService
             return new Response<ApplicationUser>
             {
                 Status = "error",
-                Error = "Invalid token"
+                Error = new Error("Unauthorized", "Invalid token")
             };
         }
 
@@ -72,7 +72,7 @@ public class AuthService : IAuthService
             return new Response<ApplicationUser>
             {
                 Status = "error",
-                Error = "Register model is null",
+                Error = new Error("BadRequest", "Model is null")
             };
         }
 
@@ -81,7 +81,7 @@ public class AuthService : IAuthService
             return new Response<ApplicationUser>
             {
                 Status = "error",
-                Error = "Confirm password doesn't match the password",
+                Error = new Error("BadRequest", "Passwords do not match")
             };
         }
 
@@ -90,7 +90,7 @@ public class AuthService : IAuthService
             return new Response<ApplicationUser>
             {
                 Status = "error",
-                Error = "User with that email address already exists",
+                Error = new Error("BadRequest", "User with that email address already exists")
             };
         }
 
@@ -109,7 +109,7 @@ public class AuthService : IAuthService
             return new Response<ApplicationUser>
             {
                 Status = "error",
-                Error = $"{result.Errors.First().Description}",
+                Error = new Error("BadRequest", "User creation failed")
             };
         }
 
@@ -129,7 +129,7 @@ public class AuthService : IAuthService
             return new Response<ApplicationUser>
             {
                 Status = "error",
-                Error = "User with that email address does not exist",
+                Error = new Error("BadRequest", "User not found")
             };
         }
 
@@ -140,7 +140,7 @@ public class AuthService : IAuthService
             return new Response<ApplicationUser>
             {
                 Status = "error",
-                Error = "Invalid password",
+                Error = new Error("BadRequest", "Invalid password")
             };
         }
 
@@ -173,7 +173,7 @@ public class AuthService : IAuthService
             return new Response<ApplicationUser>
             {
                 Status = "error",
-                Error = "HttpContext is null"
+                Error = new Error("InternalError", "An error occurred while processing your request.")
             };
         }
 
@@ -193,7 +193,7 @@ public class AuthService : IAuthService
             return Task.FromResult(new Response<ApplicationUser>
             {
                 Status = "error",
-                Error = "HttpContext is null"
+                Error = new Error("InternalError", "An error occurred while processing your request.")
             });
         }
 
@@ -203,7 +203,7 @@ public class AuthService : IAuthService
             return Task.FromResult(new Response<ApplicationUser>
             {
                 Status = "error",
-                Error = "User is not authenticated"
+                Error = new Error("Unauthorized", "User is not authenticated")
             });
         }
 
@@ -224,7 +224,7 @@ public class AuthService : IAuthService
             return Task.FromResult(new Response<ApplicationUser>
             {
                 Status = "error",
-                Error = "User not found"
+                Error = new Error("NotFound", "User not found")
             });
         }
 
@@ -238,7 +238,7 @@ public class AuthService : IAuthService
             return Task.FromResult(new Response<ApplicationUser>
             {
                 Status = "error",
-                Error = "User update failed"
+                Error = new Error("BadRequest", "User update failed")
             });
         }
 
@@ -258,7 +258,7 @@ public class AuthService : IAuthService
             return Task.FromResult(new Response<ApplicationUser>
             {
                 Status = "error",
-                Error = "User not found"
+                Error = new Error("NotFound", "User not found")
             });
         }
 
@@ -269,7 +269,7 @@ public class AuthService : IAuthService
             return Task.FromResult(new Response<ApplicationUser>
             {
                 Status = "error",
-                Error = "User deletion failed"
+                Error = new Error("BadRequest", "User deletion failed")
             });
         }
 
