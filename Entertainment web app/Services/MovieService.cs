@@ -39,17 +39,17 @@ public class MovieService : IMovieService
 
     public async Task<Result<PagedResponse<MovieDto>>> GetAllPaginated(int pageNumber, int pageSize)
     {
+        if (pageSize < 1 || pageSize > 20)
+        {
+            return Result<PagedResponse<MovieDto>>.Failure(new Error("InvalidPageSize", "The page size is out of range"));
+        }
+
         var totalMovies = await _movieRepository.CountByCategory("Movies");
         var totalPages = (int)Math.Ceiling(totalMovies / (double)pageSize);
 
         if (pageNumber < 1 || pageNumber > totalPages)
         {
             return Result<PagedResponse<MovieDto>>.Failure(new Error("InvalidPageNumber", "The page number is out of range"));
-        }
-
-        if (pageSize < 1 || pageSize > 20)
-        {
-            return Result<PagedResponse<MovieDto>>.Failure(new Error("InvalidPageSize", "The page size is out of range"));
         }
 
         var movies = await _movieRepository.GetByCategoryPaginated("Movies", pageNumber, pageSize);
