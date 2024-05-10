@@ -17,7 +17,7 @@ public class MovieService : IMovieService
     {
         var movies = await _movieRepository.GetByCategory("Movies");
 
-        if (movies == null)
+        if (movies == null || !movies.Any())
         {
             return Result<IEnumerable<MovieDto>>.Failure(new Error("NotFound", "No movies found"));
         }
