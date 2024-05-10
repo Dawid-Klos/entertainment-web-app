@@ -23,26 +23,33 @@ public class MovieServiceTests
     public async Task GetAll_ReturnsAllMovies()
     {
         var repository = new Mock<IMovieRepository>();
-        repository.Setup(repo => repo.GetByCategory("Movies")).ReturnsAsync(GetTestMovies().Where(m => m.Category == "Movies"));
+        repository
+          .Setup(repo => repo.GetByCategory("Movies"))
+          .ReturnsAsync(GetTestMovies().Where(m => m.Category == "Movies"));
 
         var service = new MovieService(repository.Object);
         var result = await service.GetAll();
 
         Assert.NotNull(result);
-        Assert.Equal(3, result.Count());
+        Assert.True(result.IsSuccess);
+        Assert.Equal(3, result.Data?.Count());
     }
 
     [Fact]
     public async Task GetAll_ReturnsNoMovies()
     {
         var repository = new Mock<IMovieRepository>();
-        repository.Setup(repo => repo.GetByCategory("Movies")).ReturnsAsync(new List<Movie>());
+        repository
+          .Setup(repo => repo.GetByCategory("Movies"))
+          .ReturnsAsync(new List<Movie>());
 
         var service = new MovieService(repository.Object);
         var result = await service.GetAll();
 
         Assert.NotNull(result);
-        Assert.Empty(result);
+        Assert.False(result.IsSuccess);
+        Assert.Matches("NotFound", result.Error.Code);
+        Assert.Null(result.Data);
     }
 
     [Fact]
@@ -70,39 +77,58 @@ public class MovieServiceTests
         var result = await service.GetAllPaginated(pageNumber, pageSize);
 
         Assert.NotNull(result);
-        Assert.Equal(pageNumber, result.PageNumber);
-        Assert.Equal(pageSize, result.PageSize);
-        Assert.Equal(3, result.TotalPages);
+        Assert.True(result.IsSuccess);
+        Assert.Equal(pageNumber, result.Data?.PageNumber);
+        Assert.Equal(pageSize, result.Data?.PageSize);
+        Assert.Equal(3, result.Data?.TotalPages);
     }
 
     [Theory]
     [InlineData(-1, 3)]
     [InlineData(0, 3)]
     [InlineData(4, 3)]
-    public async Task GetAllPaginated_InvalidPageNumber_ThrowsException(int pageNumber, int pageSize)
+    public async Task GetAllPaginated_InvalidPageNumber_ReturnsErrorResult(int pageNumber, int pageSize)
     {
         var repository = new Mock<IMovieRepository>();
-        repository.Setup(repo => repo.CountByCategory("Movies")).ReturnsAsync(0);
-        repository.Setup(repo => repo.GetByCategoryPaginated("Movies", pageNumber, pageSize)).ThrowsAsync(new ArgumentException("Invalid page number"));
+        repository
+          .Setup(repo => repo.CountByCategory("Movies"))
+          .ReturnsAsync(3);
+
+        repository
+          .Setup(repo => repo.GetByCategoryPaginated("Movies", pageNumber, pageSize))
+          .ReturnsAsync(new List<Movie>());
 
         var service = new MovieService(repository.Object);
+        var result = await service.GetAllPaginated(pageNumber, pageSize);
 
-        await Assert.ThrowsAsync<ArgumentException>(() => service.GetAllPaginated(pageNumber, pageSize));
+        Assert.NotNull(result);
+        Assert.False(result.IsSuccess);
+        Assert.Matches("InvalidPageNumber", result.Error.Code);
+        Assert.Null(result.Data);
     }
 
     [Theory]
     [InlineData(1, 0)]
-    [InlineData(2, 0)]
-    [InlineData(3, 0)]
-    public async Task GetAllPaginated_InvalidPageSize_ThrowsException(int pageNumber, int pageSize)
+    [InlineData(1, -1)]
+    [InlineData(1, 21)]
+    public async Task GetAllPaginated_InvalidPageSize_ReturnsErrorResult(int pageNumber, int pageSize)
     {
         var repository = new Mock<IMovieRepository>();
-        repository.Setup(repo => repo.CountByCategory("Movies")).ReturnsAsync(3);
-        repository.Setup(repo => repo.GetByCategoryPaginated("Movies", pageNumber, pageSize)).ThrowsAsync(new ArgumentException("Invalid page size"));
+        repository
+          .Setup(repo => repo.CountByCategory("Movies"))
+          .ReturnsAsync(3);
+
+        repository
+          .Setup(repo => repo.GetByCategoryPaginated("Movies", pageNumber, pageSize))
+          .ReturnsAsync(new List<Movie>());
 
         var service = new MovieService(repository.Object);
+        var result = await service.GetAllPaginated(pageNumber, pageSize);
 
-        await Assert.ThrowsAsync<ArgumentException>(() => service.GetAllPaginated(pageNumber, pageSize));
+        Assert.NotNull(result);
+        Assert.False(result.IsSuccess);
+        Assert.Matches("InvalidPageSize", result.Error.Code);
+        Assert.Null(result.Data);
     }
 
     [Theory]
@@ -112,28 +138,37 @@ public class MovieServiceTests
     public async Task GetById_ReturnsMovie(int movieId)
     {
         var repository = new Mock<IMovieRepository>();
-        repository.Setup(repo => repo.GetById(movieId))
+        repository
+          .Setup(repo => repo
+          .GetById(movieId))
           .ReturnsAsync(GetTestMovies().FirstOrDefault(m => m.MovieId == movieId)!);
 
         var service = new MovieService(repository.Object);
         var result = await service.GetById(movieId);
 
         Assert.NotNull(result);
-        Assert.Equal(movieId, result.MovieId);
+        Assert.True(result.IsSuccess);
+        Assert.Equal(movieId, result.Data?.MovieId);
     }
 
     [Theory]
     [InlineData(4)]
     [InlineData(5)]
     [InlineData(6)]
-    public async Task GetById_NotAMovie_ThrowsException(int movieId)
+    public async Task GetById_NotAMovie_ReturnsErrorResult(int movieId)
     {
         var repository = new Mock<IMovieRepository>();
-        repository.Setup(repo => repo.GetById(movieId))
-          .ThrowsAsync(new ArgumentException($"Movie with ID = {movieId} does not exist"));
-        var service = new MovieService(repository.Object);
+        repository
+          .Setup(repo => repo.GetById(movieId))
+          .ReturnsAsync(GetTestMovies().Where(m => m.MovieId == movieId).FirstOrDefault());
 
-        await Assert.ThrowsAsync<ArgumentException>(() => service.GetById(movieId));
+        var service = new MovieService(repository.Object);
+        var result = await service.GetById(movieId);
+
+        Assert.NotNull(result);
+        Assert.False(result.IsSuccess);
+        Assert.Matches("NotFound", result.Error.Code);
+        Assert.Null(result.Data);
     }
 
     [Theory]
@@ -142,87 +177,157 @@ public class MovieServiceTests
     [InlineData(-2)]
     [InlineData(7)]
     [InlineData(8)]
-    public async Task GetById_InvalidMovieId_ThrowsException(int movieId)
+    public async Task GetById_InvalidMovieId_ReturnsErrorResult(int movieId)
     {
         var repository = new Mock<IMovieRepository>();
-        repository.Setup(repo => repo.GetById(movieId))
-          .ThrowsAsync(new ArgumentException($"Movie with ID = {movieId} does not exist"));
+        repository
+          .Setup(repo => repo.GetById(movieId))
+          .ReturnsAsync(GetTestMovies().Where(m => m.MovieId == movieId).FirstOrDefault());
 
         var service = new MovieService(repository.Object);
+        var result = await service.GetById(movieId);
 
-        await Assert.ThrowsAsync<ArgumentException>(() => service.GetById(movieId));
+        Assert.NotNull(result);
+        Assert.False(result.IsSuccess);
+        Assert.Matches("NotFound", result.Error.Code);
+        Assert.Null(result.Data);
     }
 
     [Fact]
-    public void Add_AddsMovie()
+    public async Task Add_AddsMovie()
     {
         var repository = new Mock<IMovieRepository>();
         var movie = new Movie { MovieId = 7, Title = "Movie 7", Category = "Movies", Rating = "PG", Year = 2022, ImgSmall = "/images/movie7.jpg", ImgMedium = "/images/movie7.jpg", ImgLarge = "/images/movie7.jpg" };
 
         var service = new MovieService(repository.Object);
-        service.Add(movie);
+        var result = await service.Add(movie);
 
-        repository.Verify(repo => repo.Add(movie), Times.Once);
-        repository.Verify(repo => repo.GetById(movie.MovieId), Times.Once);
-    }
-
-    [Fact]
-    public async void Add_MovieAlreadyExists_ThrowsException()
-    {
-        var movie = new Movie { MovieId = 1, Title = "Movie 1", Category = "Movies", Rating = "PG", Year = 1998, ImgSmall = "/images/movie1.jpg", ImgMedium = "/images/movie1.jpg", ImgLarge = "/images/movie1.jpg" };
-
-        var repository = new Mock<IMovieRepository>();
-        repository.Setup(repo => repo.GetById(movie.MovieId))
-          .ThrowsAsync(new ArgumentException("Movie already exists"));
-
-        var service = new MovieService(repository.Object);
-
-        await Assert.ThrowsAsync<ArgumentException>(() => service.GetById(movie.MovieId));
-    }
-
-    [Fact]
-    public void Update_UpdatesMovie()
-    {
-        var movie = new Movie { MovieId = 1, Title = "Updated", Category = "Movies", Rating = "PG", Year = 1998, ImgSmall = "/images/movie1.jpg", ImgMedium = "/images/movie1.jpg", ImgLarge = "/images/movie1.jpg" };
-        var repository = new Mock<IMovieRepository>();
-        repository.Setup(repo => repo.GetById(movie.MovieId)).ReturnsAsync(movie);
-
-        var service = new MovieService(repository.Object);
-        service.Update(movie);
-
-        repository.Verify(repo => repo.Update(movie), Times.Once);
-        repository.Verify(repo => repo.GetById(movie.MovieId), Times.Once);
-        Assert.Equal("Updated", movie.Title);
-    }
-
-    [Fact]
-    public async void Update_MovieDoesNotExist_ThrowsException()
-    {
-        var movie = new Movie { MovieId = 7, Title = "Movie 7", Category = "Movies", Rating = "PG", Year = 2022, ImgSmall = "/images/movie7.jpg", ImgMedium = "/images/movie7.jpg", ImgLarge = "/images/movie7.jpg" };
-
-        var repository = new Mock<IMovieRepository>();
-        repository.Setup(repo => repo.GetById(movie.MovieId))
-          .ThrowsAsync(new ArgumentException("Movie does not exist"));
-
-        var service = new MovieService(repository.Object);
-
-        await Assert.ThrowsAsync<ArgumentException>(() => service.GetById(movie.MovieId));
+        Assert.NotNull(result);
+        Assert.True(result.IsSuccess);
     }
 
     [Theory]
     [InlineData(1)]
     [InlineData(2)]
     [InlineData(3)]
-    public void Delete_DeletesMovie(int movieId)
+    public async void Add_MovieAlreadyExists_ReturnsErrorResult(int movieId)
     {
+        var movie = new Movie { MovieId = movieId, Title = "Movie", Category = "Movies", Rating = "PG", Year = 1998, ImgSmall = "/images/movie1.jpg", ImgMedium = "/images/movie1.jpg", ImgLarge = "/images/movie1.jpg" };
+
         var repository = new Mock<IMovieRepository>();
-        repository.Setup(repo => repo.GetById(movieId)).ReturnsAsync(GetTestMovies().FirstOrDefault(m => m.MovieId == movieId)!);
+        repository
+          .Setup(repo => repo.GetById(movie.MovieId))
+          .ReturnsAsync(GetTestMovies().FirstOrDefault(m => m.MovieId == movieId));
 
         var service = new MovieService(repository.Object);
-        service.Delete(movieId);
+        var result = await service.Add(movie);
 
-        repository.Verify(repo => repo.Delete(movieId), Times.Once);
-        repository.Verify(repo => repo.GetById(movieId), Times.Once);
+        Assert.NotNull(result);
+        Assert.False(result.IsSuccess);
+        Assert.Matches("AlreadyExists", result.Error.Code);
+    }
+
+    [Theory]
+    [InlineData("TV Series")]
+    [InlineData("TV Shows")]
+    [InlineData("Documentaries")]
+    public async void Add_InvalidCategory_ReturnsErrorResult(string category)
+    {
+        var movie = new Movie { MovieId = 10, Title = "TV Series", Category = category, Rating = "PG", Year = 1998, ImgSmall = "/images/movie1.jpg", ImgMedium = "/images/movie1.jpg", ImgLarge = "/images/movie1.jpg" };
+
+        var repository = new Mock<IMovieRepository>();
+        repository
+          .Setup(repo => repo.GetById(movie.MovieId))
+          .ReturnsAsync(GetTestMovies().FirstOrDefault(m => m.MovieId == movie.MovieId));
+
+        var service = new MovieService(repository.Object);
+        var result = await service.Add(movie);
+
+        Assert.NotNull(result);
+        Assert.False(result.IsSuccess);
+        Assert.Matches("InvalidCategory", result.Error.Code);
+    }
+
+    [Theory]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
+    public async Task Update_UpdatesMovie(int movieId)
+    {
+        var movie = new Movie { MovieId = movieId, Title = "Updated", Category = "Movies", Rating = "PG", Year = 1998, ImgSmall = "/images/movie1.jpg", ImgMedium = "/images/movie1.jpg", ImgLarge = "/images/movie1.jpg" };
+
+        var repository = new Mock<IMovieRepository>();
+        repository
+          .Setup(repo => repo.GetById(movie.MovieId))
+          .ReturnsAsync(GetTestMovies().FirstOrDefault(m => m.MovieId == movieId));
+
+        var service = new MovieService(repository.Object);
+        var result = await service.Update(movie);
+
+        Assert.NotNull(result);
+        Assert.True(result.IsSuccess);
+        Assert.Matches("Updated", movie.Title);
+    }
+
+    [Theory]
+    [InlineData("TV Series")]
+    [InlineData("TV Shows")]
+    [InlineData("Documentaries")]
+    public async Task Update_InvalidCategory_ReturnsErrorResult(string category)
+    {
+        var movie = new Movie { MovieId = 1, Title = "Movie", Category = category, Rating = "PG", Year = 2022, ImgSmall = "/images/movie7.jpg", ImgMedium = "/images/movie7.jpg", ImgLarge = "/images/movie7.jpg" };
+
+        var repository = new Mock<IMovieRepository>();
+        repository
+          .Setup(repo => repo.GetById(movie.MovieId))
+          .ReturnsAsync(GetTestMovies().FirstOrDefault(m => m.MovieId == movie.MovieId));
+
+        var service = new MovieService(repository.Object);
+        var result = await service.Update(movie);
+
+        Assert.NotNull(result);
+        Assert.False(result.IsSuccess);
+        Assert.Matches("InvalidCategory", result.Error.Code);
+    }
+
+    [Theory]
+    [InlineData(7)]
+    [InlineData(8)]
+    [InlineData(-1)]
+    public async Task Update_DoesNotExist_ReturnsErrorResult(int movieId)
+    {
+        var movie = new Movie { MovieId = movieId, Title = "Movie", Category = "Movies", Rating = "PG", Year = 2022, ImgSmall = "/images/movie7.jpg", ImgMedium = "/images/movie7.jpg", ImgLarge = "/images/movie7.jpg" };
+
+        var repository = new Mock<IMovieRepository>();
+        repository
+          .Setup(repo => repo.GetById(movie.MovieId))
+          .ReturnsAsync(GetTestMovies().FirstOrDefault(m => m.MovieId == movieId));
+
+        var service = new MovieService(repository.Object);
+        var result = await service.Update(movie);
+
+        Assert.NotNull(result);
+        Assert.False(result.IsSuccess);
+        Assert.Matches("NotFound", result.Error.Code);
+    }
+
+
+    [Theory]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
+    public async Task Delete_DeletesMovie(int movieId)
+    {
+        var repository = new Mock<IMovieRepository>();
+        repository
+          .Setup(repo => repo.GetById(movieId))
+          .ReturnsAsync(GetTestMovies().FirstOrDefault(m => m.MovieId == movieId));
+
+        var service = new MovieService(repository.Object);
+        var result = await service.Delete(movieId);
+
+        Assert.NotNull(result);
+        Assert.True(result.IsSuccess);
     }
 
     [Theory]
@@ -232,11 +337,15 @@ public class MovieServiceTests
     public async void Delete_MovieDoesNotExist_ThrowsException(int movieId)
     {
         var repository = new Mock<IMovieRepository>();
-        repository.Setup(repo => repo.GetById(movieId))
-          .ThrowsAsync(new ArgumentException("Movie does not exist"));
+        repository
+          .Setup(repo => repo.GetById(movieId))
+          .ReturnsAsync(GetTestMovies().FirstOrDefault(m => m.MovieId == movieId));
 
         var service = new MovieService(repository.Object);
+        var result = await service.Delete(movieId);
 
-        await Assert.ThrowsAsync<ArgumentException>(() => service.GetById(movieId));
+        Assert.NotNull(result);
+        Assert.False(result.IsSuccess);
+        Assert.Matches("NotFound", result.Error.Code);
     }
 }
