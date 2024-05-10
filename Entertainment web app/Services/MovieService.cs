@@ -13,46 +13,51 @@ public class MovieService : IMovieService
         _movieRepository = movieRepository;
     }
 
-    public async Task<IEnumerable<MovieDto>> GetAll()
+    public async Task<Result<IEnumerable<MovieDto>>> GetAll()
     {
-        try
-        {
-            var movies = await _movieRepository.GetByCategory("Movies");
+        var movies = await _movieRepository.GetByCategory("Movies");
 
-            return movies.Select(m => new MovieDto
-            {
-                MovieId = m.MovieId,
-                Title = m.Title,
-                Year = m.Year,
-                Category = m.Category,
-                Rating = m.Rating,
-                ImgSmall = m.ImgSmall,
-                ImgMedium = m.ImgMedium,
-                ImgLarge = m.ImgLarge
-            });
-        }
-        catch (Exception ex)
+        if (movies == null)
         {
-            throw new Exception("Internal Server Error, " + ex.Message);
+            return Result<IEnumerable<MovieDto>>.Failure(new Error("NotFound", "No movies found"));
         }
+
+        var data = movies.Select(m => new MovieDto
+        {
+            MovieId = m.MovieId,
+            Title = m.Title,
+            Year = m.Year,
+            Category = m.Category,
+            Rating = m.Rating,
+            ImgSmall = m.ImgSmall,
+            ImgMedium = m.ImgMedium,
+            ImgLarge = m.ImgLarge
+        });
+
+        return Result<IEnumerable<MovieDto>>.Success(data);
     }
 
-    public async Task<PagedResponse<MovieDto>> GetAllPaginated(int pageNumber, int pageSize)
+    public async Task<Result<PagedResponse<MovieDto>>> GetAllPaginated(int pageNumber, int pageSize)
     {
         var totalMovies = await _movieRepository.CountByCategory("Movies");
         var totalPages = (int)Math.Ceiling(totalMovies / (double)pageSize);
 
         if (pageNumber < 1 || pageNumber > totalPages)
         {
-            throw new ArgumentException("Invalid page number");
+            return Result<PagedResponse<MovieDto>>.Failure(new Error("InvalidPageNumber", "The page number is out of range"));
         }
 
         if (pageSize < 1 || pageSize > 20)
         {
-            throw new ArgumentException("Invalid page size");
+            return Result<PagedResponse<MovieDto>>.Failure(new Error("InvalidPageSize", "The page size is out of range"));
         }
 
         var movies = await _movieRepository.GetByCategoryPaginated("Movies", pageNumber, pageSize);
+
+        if (movies == null)
+        {
+            return Result<PagedResponse<MovieDto>>.Failure(new Error("NotFound", "No movies found"));
+        }
 
         var movieDtos = movies.Select(m => new MovieDto
         {
@@ -66,7 +71,7 @@ public class MovieService : IMovieService
             ImgLarge = m.ImgLarge
         }).ToList();
 
-        return new PagedResponse<MovieDto>
+        var pagedResponse = new PagedResponse<MovieDto>
         {
             Data = movieDtos,
             PageNumber = pageNumber,
@@ -74,103 +79,83 @@ public class MovieService : IMovieService
             TotalPages = totalPages,
             TotalRecords = totalMovies
         };
+
+        return Result<PagedResponse<MovieDto>>.Success(pagedResponse);
     }
 
-    public async Task<MovieDto> GetById(int movieId)
+    public async Task<Result<MovieDto>> GetById(int movieId)
     {
-        try
+        var movie = await _movieRepository.GetById(movieId);
+
+        if (movie == null || movie.Category != "Movies")
         {
-            var movie = await _movieRepository.GetById(movieId);
-
-            if (movie == null || movie.Category != "Movies")
-            {
-                throw new ArgumentException($"Movie with ID = {movieId} does not exist");
-            }
-
-            var movieDto = new MovieDto
-            {
-                MovieId = movie.MovieId,
-                Title = movie.Title,
-                Year = movie.Year,
-                Category = movie.Category,
-                Rating = movie.Rating,
-                ImgSmall = movie.ImgSmall,
-                ImgMedium = movie.ImgMedium,
-                ImgLarge = movie.ImgLarge
-            };
-
-            return movieDto;
+            return Result<MovieDto>.Failure(new Error("NotFound", $"Movie with ID = {movieId} does not exist"));
         }
-        catch (Exception)
+
+        var movieDto = new MovieDto
         {
-            throw;
-        }
+            MovieId = movie.MovieId,
+            Title = movie.Title,
+            Year = movie.Year,
+            Category = movie.Category,
+            Rating = movie.Rating,
+            ImgSmall = movie.ImgSmall,
+            ImgMedium = movie.ImgMedium,
+            ImgLarge = movie.ImgLarge
+        };
+
+        return Result<MovieDto>.Success(movieDto);
     }
 
-    public async Task Add(Movie movie)
+    public async Task<Result> Add(Movie movie)
     {
-        try
+        var movieExists = await _movieRepository.GetById(movie.MovieId);
+
+        if (movieExists != null)
         {
-            var movieExists = await _movieRepository.GetById(movie.MovieId);
-
-            if (movieExists != null)
-            {
-                throw new ArgumentException("Movie already exists");
-            }
-
-            if (movie.Category != "Movies")
-            {
-                throw new ArgumentException("Invalid category");
-            }
-
-            await _movieRepository.Add(movie);
+            return Result.Failure(new Error("AlreadyExists", "Movie with the same ID already exists"));
         }
-        catch (Exception)
+
+        if (movie.Category != "Movies")
         {
-            throw;
+            return Result.Failure(new Error("InvalidCategory", "Category must be 'Movies'"));
         }
+
+        await _movieRepository.Add(movie);
+
+        return Result.Success();
     }
 
-    public async Task Update(Movie movie)
+    public async Task<Result> Update(Movie movie)
     {
-        try
+        var movieExists = await _movieRepository.GetById(movie.MovieId);
+
+        if (movieExists == null)
         {
-            var movieExists = await _movieRepository.GetById(movie.MovieId);
-
-            if (movieExists == null)
-            {
-                throw new ArgumentException("Movie not found");
-            }
-
-            if (movie.Category != "Movies")
-            {
-                throw new ArgumentException("Invalid category");
-            }
-
-            await _movieRepository.Update(movie);
+            return Result.Failure(new Error("NotFound", "Movie with the specified ID does not exist"));
         }
-        catch (Exception)
+
+        if (movie.Category != "Movies")
         {
-            throw;
+            return Result.Failure(new Error("InvalidCategory", "Category must be 'Movies'"));
         }
+
+        await _movieRepository.Update(movie);
+
+        return Result.Success();
     }
 
-    public async Task Delete(int movieId)
+    public async Task<Result> Delete(int movieId)
     {
-        try
-        {
-            var movieExists = await _movieRepository.GetById(movieId);
+        var movieExists = await _movieRepository.GetById(movieId);
 
-            if (movieExists == null)
-            {
-                throw new ArgumentException("Movie not found");
-            }
-
-            await _movieRepository.Delete(movieId);
-        }
-        catch (Exception)
+        if (movieExists == null)
         {
-            throw;
+            return Result.Failure(new Error("NotFound", "Movie with the specified ID does not exist"));
         }
+
+        await _movieRepository.Delete(movieId);
+
+        return Result.Success();
     }
 }

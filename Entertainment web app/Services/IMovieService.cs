@@ -5,10 +5,10 @@ namespace Entertainment_web_app.Services;
 
 public interface IMovieService
 {
-    Task<IEnumerable<MovieDto>> GetAll();
-    Task<PagedResponse<MovieDto>> GetAllPaginated(int pageNumber, int pageSize);
-    Task<MovieDto> GetById(int movieId);
-    Task Add(Movie movie);
-    Task Update(Movie movie);
-    Task Delete(int movieId);
+    Task<Result<IEnumerable<MovieDto>>> GetAll();
+    Task<Result<PagedResponse<MovieDto>>> GetAllPaginated(int pageNumber, int pageSize);
+    Task<Result<MovieDto>> GetById(int movieId);
+    Task<Result> Add(Movie movie);
+    Task<Result> Update(Movie movie);
+    Task<Result> Delete(int movieId);
 }
