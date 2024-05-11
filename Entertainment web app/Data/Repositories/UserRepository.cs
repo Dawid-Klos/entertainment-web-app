@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 
 using Entertainment_web_app.Data;
-using Entertainment_web_app.Models.User;
+using Entertainment_web_app.Models.Auth;
 
 namespace Entertainment_web_app.Repositories;
 

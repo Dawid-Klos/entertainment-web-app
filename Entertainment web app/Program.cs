@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 
 using Entertainment_web_app.Helpers;
 using Entertainment_web_app.Data;
-using Entertainment_web_app.Models.User;
+using Entertainment_web_app.Models.Auth;
 using Entertainment_web_app.Repositories;
 using Entertainment_web_app.Services;
 

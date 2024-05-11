@@ -5,7 +5,6 @@ using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
-using Entertainment_web_app.Models.User;
 using Entertainment_web_app.Models.Auth;
 using Entertainment_web_app.Models.Responses;
 

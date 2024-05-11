@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 
 using Entertainment_web_app.Models.Content;
 
-namespace Entertainment_web_app.Models.User;
+namespace Entertainment_web_app.Models.Auth;
 
 public class ApplicationUser : IdentityUser
 {
