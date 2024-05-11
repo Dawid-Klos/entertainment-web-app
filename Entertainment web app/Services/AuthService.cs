@@ -25,18 +25,16 @@ public class AuthService : IAuthService
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public Response<ApplicationUser> AuthenticateUserAsync()
+    public Result AuthenticateUser()
     {
-        if (_httpContextAccessor.HttpContext?.User.Identity == null)
+        var userContext = _httpContextAccessor.HttpContext;
+
+        if (userContext?.User.Identity == null)
         {
-            return new Response<ApplicationUser>
-            {
-                Status = "error",
-                Error = "HttpContext is null"
-            };
+            return Result.Failure(new Error("Unauthorized", "User is not authenticated"));
         }
 
-        var userToken = _httpContextAccessor.HttpContext.Request.Cookies["_auth"];
+        var userToken = userContext.Request.Cookies["_auth"];
         var tokenHandler = new JwtSecurityTokenHandler();
 
         tokenHandler.ValidateToken(userToken, new TokenValidationParameters
@@ -52,46 +50,25 @@ public class AuthService : IAuthService
 
         if (validatedToken == null)
         {
-            return new Response<ApplicationUser>
-            {
-                Status = "error",
-                Error = "Invalid token"
-            };
+            return Result.Failure(new Error("Unauthorized", "Invalid token"));
         }
 
-        return new Response<ApplicationUser>
-        {
-            Status = "success",
-        };
+        return Result.Success();
     }
 
-    public async Task<Response<ApplicationUser>> RegisterUserAsync(RegisterViewModel model)
+    public async Task<Result> RegisterUser(RegisterViewModel model)
     {
-        if (model == null)
+
+        var user = await _userManager.FindByEmailAsync(model.Email);
+
+        if (user != null)
         {
-            return new Response<ApplicationUser>
-            {
-                Status = "error",
-                Error = "Register model is null",
-            };
+            return Result.Failure(new Error("BadRequest", "User with that email address already exists"));
         }
 
         if (model.Password != model.ConfirmPassword)
         {
-            return new Response<ApplicationUser>
-            {
-                Status = "error",
-                Error = "Confirm password doesn't match the password",
-            };
-        }
-
-        if (await _userManager.FindByEmailAsync(model.Email) != null)
-        {
-            return new Response<ApplicationUser>
-            {
-                Status = "error",
-                Error = "User with that email address already exists",
-            };
+            return Result.Failure(new Error("BadRequest", "Passwords do not match"));
         }
 
         var applicationUser = new ApplicationUser
@@ -106,49 +83,34 @@ public class AuthService : IAuthService
 
         if (!result.Succeeded)
         {
-            return new Response<ApplicationUser>
-            {
-                Status = "error",
-                Error = $"{result.Errors.First().Description}",
-            };
+            return Result.Failure(new Error("BadRequest", "User creation failed"));
         }
 
-        return new Response<ApplicationUser>
-        {
-            Status = "success",
-        };
+        return Result.Success();
     }
 
 
-    public async Task<Response<ApplicationUser>> LoginUserAsync(LoginViewModel model)
+    public async Task<Result> LoginUser(LoginViewModel model)
     {
         var user = await _userManager.FindByEmailAsync(model.Email);
 
         if (user == null)
         {
-            return new Response<ApplicationUser>
-            {
-                Status = "error",
-                Error = "User with that email address does not exist",
-            };
+            return Result.Failure(new Error("BadRequest", "User not found"));
         }
 
         var result = await _userManager.CheckPasswordAsync(user, model.Password);
 
         if (!result)
         {
-            return new Response<ApplicationUser>
-            {
-                Status = "error",
-                Error = "Invalid password",
-            };
+            return Result.Failure(new Error("BadRequest", "Invalid password"));
         }
 
         var claims = new[]
         {
-        new Claim("Email", model.Email),
+            new Claim("Email", model.Email),
             new Claim(ClaimTypes.NameIdentifier, user.Id)
-      };
+        };
 
         var keyString = _configuration["JWT_SECRET_KEY"];
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(keyString!));
@@ -170,112 +132,67 @@ public class AuthService : IAuthService
 
         if (_httpContextAccessor.HttpContext == null)
         {
-            return new Response<ApplicationUser>
-            {
-                Status = "error",
-                Error = "HttpContext is null"
-            };
+            return Result.Failure(new Error("InternalError", "An error occurred while processing your request."));
         }
 
         _httpContextAccessor.HttpContext.Response.Cookies.Append("_auth", tokenAsString, cookieOptions);
 
-        return new Response<ApplicationUser>
-        {
-            Status = "success",
-        };
+        return Result.Success();
     }
 
-    public Task<Response<ApplicationUser>> LogoutUserAsync()
+    public Result LogoutUser()
     {
 
-        if (_httpContextAccessor.HttpContext?.User.Identity == null)
+        var userContext = _httpContextAccessor.HttpContext;
+
+        if (userContext?.User.Identity == null || !userContext.User.Identity.IsAuthenticated)
         {
-            return Task.FromResult(new Response<ApplicationUser>
-            {
-                Status = "error",
-                Error = "HttpContext is null"
-            });
+            return Result.Failure(new Error("Unauthorized", "User is not authenticated"));
         }
 
-        if (!_httpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
-        {
+        userContext.Response.Cookies.Delete("_auth");
 
-            return Task.FromResult(new Response<ApplicationUser>
-            {
-                Status = "error",
-                Error = "User is not authenticated"
-            });
-        }
-
-        _httpContextAccessor.HttpContext?.Response.Cookies.Delete("_auth");
-
-        return Task.FromResult(new Response<ApplicationUser>
-        {
-            Status = "success",
-        });
+        return Result.Success();
     }
 
-    public Task<Response<ApplicationUser>> UpdateUserAsync(ApplicationUser user)
+    public async Task<Result> UpdateUser(ApplicationUser user)
     {
-        var userToUpdate = _userManager.FindByIdAsync(user.Id).Result;
+        var userToUpdate = await _userManager.FindByIdAsync(user.Id);
 
         if (userToUpdate == null)
         {
-            return Task.FromResult(new Response<ApplicationUser>
-            {
-                Status = "error",
-                Error = "User not found"
-            });
+            return Result.Failure(new Error("NotFound", "User not found"));
         }
 
         userToUpdate.Firstname = user.Firstname;
         userToUpdate.Lastname = user.Lastname;
 
-        var result = _userManager.UpdateAsync(userToUpdate).Result;
+        var result = await _userManager.UpdateAsync(userToUpdate);
 
         if (!result.Succeeded)
         {
-            return Task.FromResult(new Response<ApplicationUser>
-            {
-                Status = "error",
-                Error = "User update failed"
-            });
+            return Result.Failure(new Error("BadRequest", "User update failed"));
         }
 
-        return Task.FromResult(new Response<ApplicationUser>
-        {
-            Status = "success",
-            Data = new List<ApplicationUser>() { userToUpdate }
-        });
+        return Result.Success();
     }
 
-    public Task<Response<ApplicationUser>> DeleteUserAsync(string userId)
+    public async Task<Result> DeleteUser(string userId)
     {
-        var user = _userManager.FindByIdAsync(userId).Result;
+        var user = await _userManager.FindByIdAsync(userId);
 
         if (user == null)
         {
-            return Task.FromResult(new Response<ApplicationUser>
-            {
-                Status = "error",
-                Error = "User not found"
-            });
+            return Result.Failure(new Error("NotFound", "User not found"));
         }
 
-        var result = _userManager.DeleteAsync(user).Result;
+        var result = await _userManager.DeleteAsync(user);
 
         if (!result.Succeeded)
         {
-            return Task.FromResult(new Response<ApplicationUser>
-            {
-                Status = "error",
-                Error = "User deletion failed"
-            });
+            return Result.Failure(new Error("BadRequest", "User deletion failed"));
         }
 
-        return Task.FromResult(new Response<ApplicationUser>
-        {
-            Status = "success",
-        });
+        return Result.Success();
     }
 }

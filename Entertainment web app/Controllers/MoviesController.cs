@@ -30,36 +30,35 @@ public class MoviesController : ControllerBase
         {
             var movies = await _movieService.GetAllPaginated(pageNumber, pageSize);
 
-            var response = new PagedResponse<MovieDto>
+            if (movies.IsFailure)
+            {
+                return new JsonResult(new Response<MovieDto>
+                {
+                    Status = "error",
+                    Error = movies.Error,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                });
+            }
+
+            var data = movies.Data!;
+
+            return new PagedResponse<MovieDto>
             {
                 Status = "success",
                 StatusCode = StatusCodes.Status200OK,
-                PageNumber = movies.PageNumber,
-                PageSize = movies.PageSize,
-                TotalPages = movies.TotalPages,
-                TotalRecords = movies.TotalRecords,
-                Data = movies.Data,
+                PageNumber = data.PageNumber,
+                PageSize = data.PageSize,
+                TotalPages = data.TotalPages,
+                TotalRecords = data.TotalRecords,
+                Data = data.Data,
             };
-
-            return new JsonResult(response);
-        }
-        catch (ArgumentException ex)
-        {
-            var response = new Response<MovieDto>
-            {
-                Status = "error",
-                Error = ex.Message,
-                StatusCode = StatusCodes.Status400BadRequest,
-            };
-
-            return new JsonResult(response);
         }
         catch (Exception)
         {
             var response = new Response<MovieDto>
             {
                 Status = "error",
-                Error = "Internal Server Error",
+                Error = new Error("Internal Server Error", "An error occurred while processing your request."),
                 StatusCode = StatusCodes.Status500InternalServerError,
             };
 
@@ -78,22 +77,23 @@ public class MoviesController : ControllerBase
         {
             var movie = await _movieService.GetById(movieId);
 
+            if (movie.IsFailure)
+            {
+                return new JsonResult(new Response<MovieDto>
+                {
+                    Status = "error",
+                    Error = movie.Error,
+                    StatusCode = StatusCodes.Status404NotFound,
+                });
+            }
+
+            var data = movie.Data!;
+
             var response = new Response<MovieDto>
             {
                 Status = "success",
                 StatusCode = StatusCodes.Status200OK,
-                Data = new List<MovieDto> { movie },
-            };
-
-            return new JsonResult(response);
-        }
-        catch (ArgumentException ex)
-        {
-            var response = new Response<MovieDto>
-            {
-                Status = "error",
-                Error = ex.Message,
-                StatusCode = StatusCodes.Status404NotFound,
+                Data = new List<MovieDto> { data },
             };
 
             return new JsonResult(response);
@@ -103,7 +103,7 @@ public class MoviesController : ControllerBase
             var response = new Response<MovieDto>
             {
                 Status = "error",
-                Error = "Internal Server Error",
+                Error = new Error("Internal Server Error", "An error occurred while processing your request."),
                 StatusCode = StatusCodes.Status500InternalServerError,
             };
 
@@ -122,25 +122,23 @@ public class MoviesController : ControllerBase
         {
             var movie = await _movieService.GetById(movieId);
 
+            if (movie.IsFailure)
+            {
+                return new JsonResult(new Response<MovieDto>
+                {
+                    Status = "error",
+                    Error = movie.Error,
+                    StatusCode = StatusCodes.Status404NotFound,
+                });
+            }
+
             // TODO: Implement soft delete instead of hard delete
             // _movieService.Delete(movieId);
 
-            var response = new Response<MovieDto>
+            var response = new Response<Movie>
             {
                 Status = "success",
                 StatusCode = StatusCodes.Status200OK,
-                Data = new List<MovieDto> { movie },
-            };
-
-            return new JsonResult(response);
-        }
-        catch (ArgumentException ex)
-        {
-            var response = new Response<MovieDto>
-            {
-                Status = "error",
-                Error = ex.Message,
-                StatusCode = StatusCodes.Status404NotFound,
             };
 
             return new JsonResult(response);
@@ -150,7 +148,7 @@ public class MoviesController : ControllerBase
             var response = new Response<MovieDto>
             {
                 Status = "error",
-                Error = "Internal Server Error",
+                Error = new Error("Internal Server Error", "An error occurred while processing your request."),
                 StatusCode = StatusCodes.Status500InternalServerError,
             };
 
@@ -167,7 +165,17 @@ public class MoviesController : ControllerBase
     {
         try
         {
-            await _movieService.Add(newMovie);
+            var movieResult = await _movieService.Add(newMovie);
+
+            if (movieResult.IsFailure)
+            {
+                return new JsonResult(new Response<Movie>
+                {
+                    Status = "error",
+                    Error = movieResult.Error,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                });
+            }
 
             var response = new Response<Movie>
             {
@@ -178,23 +186,12 @@ public class MoviesController : ControllerBase
 
             return new JsonResult(response);
         }
-        catch (ArgumentException ex)
-        {
-            var response = new Response<Movie>
-            {
-                Status = "error",
-                Error = ex.Message,
-                StatusCode = StatusCodes.Status400BadRequest,
-            };
-
-            return new JsonResult(response);
-        }
         catch (Exception)
         {
             var response = new Response<Movie>
             {
                 Status = "error",
-                Error = "Internal Server Error",
+                Error = new Error("Internal Server Error", "An error occurred while processing your request."),
                 StatusCode = StatusCodes.Status500InternalServerError,
             };
 
@@ -211,34 +208,32 @@ public class MoviesController : ControllerBase
     {
         try
         {
-            await _movieService.Update(updatedMovie);
+            var movieResult = await _movieService.Update(updatedMovie);
+
+            if (movieResult.IsFailure)
+            {
+                return new JsonResult(new Response<Movie>
+                {
+                    Status = "error",
+                    Error = movieResult.Error,
+                    StatusCode = StatusCodes.Status404NotFound,
+                });
+            }
 
             var response = new Response<Movie>
             {
                 Status = "success",
                 StatusCode = StatusCodes.Status200OK,
-                Data = new List<Movie> { updatedMovie },
             };
 
             return new JsonResult(response);
         }
-        catch (ArgumentException ex)
+        catch (Exception)
         {
             var response = new Response<Movie>
             {
                 Status = "error",
-                Error = ex.Message,
-                StatusCode = StatusCodes.Status404NotFound,
-            };
-
-            return new JsonResult(response);
-        }
-        catch (Exception ex)
-        {
-            var response = new Response<Movie>
-            {
-                Status = "error",
-                Error = ex.Message,
+                Error = new Error("Internal Server Error", "An error occurred while processing your request."),
                 StatusCode = StatusCodes.Status500InternalServerError,
             };
 

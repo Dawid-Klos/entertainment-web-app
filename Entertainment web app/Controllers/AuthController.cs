@@ -29,34 +29,34 @@ public class AuthController : ControllerBase
     {
         try
         {
-            var authStatus = _authService.AuthenticateUserAsync();
+            var authStatus = _authService.AuthenticateUser();
 
-            if (authStatus.Status == "success")
+            if (authStatus.IsFailure)
             {
                 return new Response<ApplicationUser>
                 {
-                    Status = "success",
-                    StatusCode = StatusCodes.Status200OK,
-                    Data = authStatus.Data
+                    Status = "error",
+                    Error = authStatus.Error,
+                    StatusCode = StatusCodes.Status401Unauthorized,
                 };
             }
+
+
+            return new Response<ApplicationUser>
+            {
+                Status = "success",
+                StatusCode = StatusCodes.Status200OK,
+            };
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return new Response<ApplicationUser>
             {
                 Status = "error",
                 StatusCode = StatusCodes.Status500InternalServerError,
-                Error = ex.Message
+                Error = new Error("InternalServerError", "An error occurred while processing the request")
             };
         }
-
-        return new Response<ApplicationUser>
-        {
-            Status = "error",
-            StatusCode = StatusCodes.Status401Unauthorized,
-            Error = "User is not authenticated"
-        };
     }
 
     [HttpPost("register")]
@@ -70,15 +70,15 @@ public class AuthController : ControllerBase
             {
                 Status = "error",
                 StatusCode = StatusCodes.Status400BadRequest,
-                Error = "Something went wrong."
+                Error = new Error("BadRequest", "Invalid model state")
             };
         }
 
         try
         {
-            var result = await _authService.RegisterUserAsync(model);
+            var result = await _authService.RegisterUser(model);
 
-            if (result.Status != "success")
+            if (result.IsFailure)
             {
                 return new Response<ApplicationUser>
                 {
@@ -92,16 +92,15 @@ public class AuthController : ControllerBase
             {
                 Status = "success",
                 StatusCode = StatusCodes.Status200OK,
-                Data = result.Data
             };
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return new Response<ApplicationUser>
             {
                 Status = "error",
                 StatusCode = StatusCodes.Status500InternalServerError,
-                Error = ex.Message
+                Error = new Error("InternalServerError", "An error occurred while processing the request")
             };
         }
     }
@@ -117,15 +116,15 @@ public class AuthController : ControllerBase
             {
                 Status = "error",
                 StatusCode = StatusCodes.Status400BadRequest,
-                Error = "Something went wrong."
+                Error = new Error("BadRequest", "Invalid model state")
             };
         }
 
         try
         {
-            var result = await _authService.LoginUserAsync(model);
+            var result = await _authService.LoginUser(model);
 
-            if (result.Status != "success")
+            if (result.IsFailure)
             {
                 return new Response<ApplicationUser>
                 {
@@ -139,16 +138,15 @@ public class AuthController : ControllerBase
             {
                 Status = "success",
                 StatusCode = StatusCodes.Status200OK,
-                Data = result.Data
             };
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return new Response<ApplicationUser>
             {
                 Status = "error",
                 StatusCode = StatusCodes.Status500InternalServerError,
-                Error = ex.Message
+                Error = new Error("InternalServerError", "An error occurred while processing the request")
             };
         }
     }
@@ -158,14 +156,13 @@ public class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<Response<ApplicationUser>> LogoutAsync()
+    public Response<ApplicationUser> Logout()
     {
-
         try
         {
-            var result = await _authService.LogoutUserAsync();
+            var result = _authService.LogoutUser();
 
-            if (result.Status != "success")
+            if (result.IsFailure)
             {
                 return new Response<ApplicationUser>
                 {
@@ -179,16 +176,15 @@ public class AuthController : ControllerBase
             {
                 Status = "success",
                 StatusCode = StatusCodes.Status200OK,
-                Data = result.Data
             };
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return new Response<ApplicationUser>
             {
                 Status = "error",
                 StatusCode = StatusCodes.Status500InternalServerError,
-                Error = ex.Message
+                Error = new Error("InternalServerError", "An error occurred while processing the request")
             };
         }
     }
