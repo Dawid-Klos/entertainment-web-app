@@ -1,5 +1,4 @@
 using Entertainment_web_app.Models.Auth;
-using Entertainment_web_app.Models.User;
 using Entertainment_web_app.Models.Responses;
 
 namespace Entertainment_web_app.Services;
