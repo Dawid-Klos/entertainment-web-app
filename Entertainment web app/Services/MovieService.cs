@@ -72,9 +72,6 @@ public class MovieService : IMovieService
         }
 
         var totalMovies = await _movieRepository.CountByCategory(category.ToString());
-
-        Console.WriteLine($"Category: {category.ToString()}");
-
         var totalPages = (int)Math.Ceiling(totalMovies / (double)pageSize);
 
         if (pageNumber < 1 || pageNumber > totalPages)
