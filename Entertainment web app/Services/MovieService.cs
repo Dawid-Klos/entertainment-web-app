@@ -109,9 +109,14 @@ public class MovieService : IMovieService
     {
         var movie = await _movieRepository.GetById(movieId);
 
-        if (movie == null || movie.Category != category.ToString())
+        if (movie == null)
         {
             return Result<MovieDto>.Failure(new Error("NotFound", $"Movie with ID = {movieId} does not exist"));
+        }
+
+        if (movie.Category != category.ToString())
+        {
+            return Result<MovieDto>.Failure(new Error("InvalidCategory", "Movie category does not match the specified category"));
         }
 
         var movieDto = new MovieDto
