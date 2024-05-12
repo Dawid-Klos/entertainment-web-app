@@ -13,16 +13,29 @@ public class MovieService : IMovieService
         _movieRepository = movieRepository;
     }
 
-    public async Task<Result<IEnumerable<MovieDto>>> GetAll(MediaCategory category)
+    public async Task<Result<PagedResponse<MovieDto>>> GetAll(int pageNumber, int pageSize)
     {
-        var movies = await _movieRepository.GetByCategory(category.ToString());
-
-        if (movies == null || !movies.Any())
+        if (pageSize < 1 || pageSize > 20)
         {
-            return Result<IEnumerable<MovieDto>>.Failure(new Error("NotFound", "No movies found"));
+            return Result<PagedResponse<MovieDto>>.Failure(new Error("InvalidPageSize", "The page size is out of range"));
         }
 
-        var data = movies.Select(m => new MovieDto
+        var totalMovies = await _movieRepository.CountAll();
+        var totalPages = (int)Math.Ceiling(totalMovies / (double)pageSize);
+
+        if (pageNumber < 1 || pageNumber > totalPages)
+        {
+            return Result<PagedResponse<MovieDto>>.Failure(new Error("InvalidPageNumber", "The page number is out of range"));
+        }
+
+        var movies = await _movieRepository.GetAllPaginated(pageNumber, pageSize);
+
+        if (movies == null)
+        {
+            return Result<PagedResponse<MovieDto>>.Failure(new Error("NotFound", "No movies found"));
+        }
+
+        var movieDtos = movies.Select(m => new MovieDto
         {
             MovieId = m.MovieId,
             Title = m.Title,
@@ -32,12 +45,21 @@ public class MovieService : IMovieService
             ImgSmall = m.ImgSmall,
             ImgMedium = m.ImgMedium,
             ImgLarge = m.ImgLarge
-        });
+        }).ToList();
 
-        return Result<IEnumerable<MovieDto>>.Success(data);
+        var pagedResponse = new PagedResponse<MovieDto>
+        {
+            Data = movieDtos,
+            PageNumber = pageNumber,
+            PageSize = pageSize,
+            TotalPages = totalPages,
+            TotalRecords = totalMovies
+        };
+
+        return Result<PagedResponse<MovieDto>>.Success(pagedResponse);
     }
 
-    public async Task<Result<PagedResponse<MovieDto>>> GetAllPaginated(MediaCategory category, int pageNumber, int pageSize)
+    public async Task<Result<PagedResponse<MovieDto>>> GetByCategory(MediaCategory category, int pageNumber, int pageSize)
     {
         if (pageSize < 1 || pageSize > 20)
         {
