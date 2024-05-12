@@ -9,7 +9,7 @@ using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.HttpOverrides;
 
-using Entertainment_web_app.Helpers;
+using Entertainment_web_app.Common.Utils;
 using Entertainment_web_app.Data;
 using Entertainment_web_app.Models.Auth;
 using Entertainment_web_app.Repositories;

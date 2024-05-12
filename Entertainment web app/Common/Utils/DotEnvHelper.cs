@@ -1,4 +1,4 @@
-namespace Entertainment_web_app.Helpers;
+namespace Entertainment_web_app.Common.Utils;
 
 public static class DotEnvHelper
 {

@@ -1,4 +1,4 @@
-namespace Entertainment_web_app.Models.Responses;
+namespace Entertainment_web_app.Common.Responses;
 
 public class PagedResponse<T> : Response<T>
 {

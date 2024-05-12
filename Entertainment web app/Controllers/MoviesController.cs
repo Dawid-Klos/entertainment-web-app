@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using Entertainment_web_app.Models.Content;
-using Entertainment_web_app.Models.Responses;
+using Entertainment_web_app.Common.Responses;
 using Entertainment_web_app.Services;
 
 namespace Entertainment_web_app.Controllers;
