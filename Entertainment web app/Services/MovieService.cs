@@ -20,12 +20,17 @@ public class MovieService : IMovieService
             return Result<PagedResponse<MovieDto>>.Failure(new Error("InvalidPageSize", "The page size is out of range"));
         }
 
+        if (pageNumber < 1)
+        {
+            return Result<PagedResponse<MovieDto>>.Failure(new Error("InvalidPageNumber", "The page number is out of range"));
+        }
+
         var totalMovies = await _movieRepository.CountAll();
         var totalPages = (int)Math.Ceiling(totalMovies / (double)pageSize);
 
-        if (pageNumber < 1 || pageNumber > totalPages)
+        if (pageNumber > totalPages)
         {
-            return Result<PagedResponse<MovieDto>>.Failure(new Error("InvalidPageNumber", "The page number is out of range"));
+            return Result<PagedResponse<MovieDto>>.Failure(new Error("NotFound", "No movies found"));
         }
 
         var movies = await _movieRepository.GetAllPaginated(pageNumber, pageSize);
