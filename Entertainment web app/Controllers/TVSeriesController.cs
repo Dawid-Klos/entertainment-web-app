@@ -1,9 +1,10 @@
-using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+
 using Entertainment_web_app.Data;
 using Entertainment_web_app.Models.Content;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using Entertainment_web_app.Common.Responses;
+using Entertainment_web_app.Services;
 
 namespace Entertainment_web_app.Controllers;
 
@@ -13,193 +14,232 @@ namespace Entertainment_web_app.Controllers;
 [Produces("application/json")]
 public class TVSeriesController : ControllerBase
 {
-    private readonly NetwixDbContext _context;
+    private readonly IMovieService _movieService;
+    private readonly MediaCategory _category = MediaCategory.TVSeries;
 
-    public TVSeriesController(NetwixDbContext context)
+    public TVSeriesController(NetwixDbContext context, IMovieService movieService)
     {
-        _context = context;
+        _movieService = movieService;
     }
 
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<IEnumerable<MovieDto>>> Get()
+    public async Task<ActionResult<PagedResponse<MovieDto>>> Get([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
         try
         {
-            var user = await _context.Users.FindAsync(userId);
+            var tvSeries = await _movieService.GetByCategory(_category, pageNumber, pageSize);
 
-            var bookmarks = await _context.Bookmarks
-                .Where(b => b.UserId == userId)
-                .Select(b => b.MovieId)
-                .ToListAsync();
-
-            var movies = await _context.Movies
-                .Select(m => new MovieDto
+            if (tvSeries.IsFailure)
+            {
+                return new JsonResult(new Response<MovieDto>
                 {
-                    MovieId = m.MovieId,
-                    Title = m.Title,
-                    Year = m.Year,
-                    Category = m.Category,
-                    Rating = m.Rating,
-                    ImgSmall = m.ImgSmall,
-                    ImgMedium = m.ImgMedium,
-                    ImgLarge = m.ImgLarge,
-                    IsBookmarked = bookmarks!.Contains(m.MovieId)
-                }).ToListAsync();
+                    Status = "error",
+                    Error = tvSeries.Error,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                });
+            }
 
+            var data = tvSeries.Data!;
 
-            return new JsonResult(new { status = "success", statusCode = StatusCodes.Status200OK, data = movies });
+            return new PagedResponse<MovieDto>
+            {
+                Status = "success",
+                StatusCode = StatusCodes.Status200OK,
+                PageNumber = data.PageNumber,
+                PageSize = data.PageSize,
+                TotalPages = data.TotalPages,
+                TotalRecords = data.TotalRecords,
+                Data = data.Data,
+            };
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            return new JsonResult(new { status = "error", error = $"Internal Server Error, {ex}", statusCode = StatusCodes.Status500InternalServerError });
+            var response = new Response<MovieDto>
+            {
+                Status = "error",
+                Error = new Error("Internal Server Error", "An error occurred while processing your request."),
+                StatusCode = StatusCodes.Status500InternalServerError,
+            };
+
+            return new JsonResult(response);
         }
     }
 
-    [HttpGet("{movieId}")]
+    [HttpGet("{tvSeriesId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<MovieDto>> Get(int movieId)
+    public async Task<ActionResult<MovieDto>> Get(int tvSeriesId)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var user = await _context.Users.FindAsync(userId);
-
         try
         {
+            var tvSeries = await _movieService.GetById(_category, tvSeriesId);
 
-            var bookmarks = await _context.Bookmarks
-                .Where(b => b.UserId == userId)
-                .Select(b => b.MovieId)
-                .ToListAsync();
-
-            var movie = await _context.Movies
-                .Where(m => m.MovieId == movieId)
-                .Select(m => new MovieDto
-                {
-                    MovieId = m.MovieId,
-                    Title = m.Title,
-                    Year = m.Year,
-                    Category = m.Category,
-                    Rating = m.Rating,
-                    ImgSmall = m.ImgSmall,
-                    ImgMedium = m.ImgMedium,
-                    ImgLarge = m.ImgLarge,
-                    IsBookmarked = bookmarks.Contains(m.MovieId)
-                }).FirstOrDefaultAsync();
-
-            if (movie == null)
+            if (tvSeries.IsFailure)
             {
-                return new JsonResult(new { status = "error", error = "Movie with this Id does not exist in the database", statusCode = StatusCodes.Status404NotFound });
+                return new JsonResult(new Response<MovieDto>
+                {
+                    Status = "error",
+                    Error = tvSeries.Error,
+                    StatusCode = StatusCodes.Status404NotFound,
+                });
             }
 
-            return new JsonResult(new { status = "success", statusCode = StatusCodes.Status200OK, data = movie });
+            var data = tvSeries.Data!;
+
+            var response = new Response<MovieDto>
+            {
+                Status = "success",
+                StatusCode = StatusCodes.Status200OK,
+                Data = new List<MovieDto> { data },
+            };
+
+            return new JsonResult(response);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            return new JsonResult(new { status = "error", error = $"Internal Server Error, {ex}", statusCode = StatusCodes.Status500InternalServerError });
+            var response = new Response<MovieDto>
+            {
+                Status = "error",
+                Error = new Error("Internal Server Error", "An error occurred while processing your request."),
+                StatusCode = StatusCodes.Status500InternalServerError,
+            };
+
+            return new JsonResult(response);
         }
     }
 
-    [HttpDelete("{movieId}")]
+    [HttpDelete("{tvSeriesId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> Delete(int movieId)
+    public async Task<JsonResult> Delete(int tvSeriesId)
     {
         try
         {
-            var movie = await _context.Movies.FindAsync(movieId);
+            var tvSeries = await _movieService.GetById(_category, tvSeriesId);
 
-            if (movie == null)
+            if (tvSeries.IsFailure)
             {
-                return new JsonResult(new { status = "error", error = "Movie with this Id does not exist in the database", statusCode = StatusCodes.Status404NotFound });
+                return new JsonResult(new Response<MovieDto>
+                {
+                    Status = "error",
+                    Error = tvSeries.Error,
+                    StatusCode = StatusCodes.Status404NotFound,
+                });
             }
+
             // TODO: Implement soft delete instead of hard delete
-            // _context.Movies.Remove(movie);
-            // await _context.SaveChangesAsync();
-            return new JsonResult(new { status = "success", statusCode = StatusCodes.Status200OK, data = movie.MovieId });
+            // _movieService.Delete(tvSeriesId);
+
+            var response = new Response<Movie>
+            {
+                Status = "success",
+                StatusCode = StatusCodes.Status200OK,
+            };
+
+            return new JsonResult(response);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            return new JsonResult(new { status = "error", error = $"Internal Server Error, {ex}", statusCode = StatusCodes.Status500InternalServerError });
+            var response = new Response<MovieDto>
+            {
+                Status = "error",
+                Error = new Error("Internal Server Error", "An error occurred while processing your request."),
+                StatusCode = StatusCodes.Status500InternalServerError,
+            };
+
+            return new JsonResult(response);
         }
     }
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> Post([FromBody] Movie newMovie)
+    public async Task<JsonResult> Post([FromBody] Movie newMovie)
     {
         try
         {
-            var movie = new Movie
+            var tvSeriesResult = await _movieService.Add(newMovie);
+
+            if (tvSeriesResult.IsFailure)
             {
-                Title = newMovie.Title,
-                Year = newMovie.Year,
-                Category = newMovie.Category,
-                Rating = newMovie.Rating,
-                ImgSmall = newMovie.ImgSmall,
-                ImgMedium = newMovie.ImgMedium,
-                ImgLarge = newMovie.ImgLarge
+                return new JsonResult(new Response<Movie>
+                {
+                    Status = "error",
+                    Error = tvSeriesResult.Error,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                });
+            }
+
+            var response = new Response<Movie>
+            {
+                Status = "success",
+                StatusCode = StatusCodes.Status200OK,
+                Data = new List<Movie> { newMovie },
             };
 
-            _context.Movies.Add(movie);
-            await _context.SaveChangesAsync();
-
-            return new JsonResult(new { status = "success", statusCode = StatusCodes.Status200OK, data = movie });
+            return new JsonResult(response);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            return new JsonResult(new { status = "error", error = $"Internal Server Error, {ex}", statusCode = StatusCodes.Status500InternalServerError });
+            var response = new Response<Movie>
+            {
+                Status = "error",
+                Error = new Error("Internal Server Error", "An error occurred while processing your request."),
+                StatusCode = StatusCodes.Status500InternalServerError,
+            };
+
+            return new JsonResult(response);
         }
     }
-
-
 
     [HttpPut]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> Put([FromBody] Movie updatedMovie)
+    public async Task<JsonResult> Put([FromBody] Movie updatedTvSeries)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var user = await _context.Users.FindAsync(userId);
-
         try
         {
-            var movie = await _context.Movies.FindAsync(updatedMovie.MovieId);
+            var tvSeriesResult = await _movieService.Update(updatedTvSeries);
 
-            if (movie == null)
+            if (tvSeriesResult.IsFailure)
             {
-                return new JsonResult(new { status = "error", error = "Movie with this Id cannot be updated because does not exist in the database", statusCode = StatusCodes.Status404NotFound });
+                return new JsonResult(new Response<Movie>
+                {
+                    Status = "error",
+                    Error = tvSeriesResult.Error,
+                    StatusCode = StatusCodes.Status404NotFound,
+                });
             }
 
-            movie.Title = updatedMovie.Title;
-            movie.Year = updatedMovie.Year;
-            movie.Category = updatedMovie.Category;
-            movie.Rating = updatedMovie.Rating;
-            movie.ImgSmall = updatedMovie.ImgSmall;
-            movie.ImgMedium = updatedMovie.ImgMedium;
-            movie.ImgLarge = updatedMovie.ImgLarge;
+            var response = new Response<Movie>
+            {
+                Status = "success",
+                StatusCode = StatusCodes.Status200OK,
+            };
 
-            _context.Movies.Update(movie);
-            await _context.SaveChangesAsync();
-
-            return new JsonResult(new { status = "success", statusCode = StatusCodes.Status200OK, data = movie });
+            return new JsonResult(response);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            return new JsonResult(new { status = "error", error = $"Internal Server Error, {ex}", statusCode = StatusCodes.Status500InternalServerError });
+            var response = new Response<Movie>
+            {
+                Status = "error",
+                Error = new Error("Internal Server Error", "An error occurred while processing your request."),
+                StatusCode = StatusCodes.Status500InternalServerError,
+            };
+
+            return new JsonResult(response);
         }
     }
 }
