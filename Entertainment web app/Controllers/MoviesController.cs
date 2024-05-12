@@ -30,7 +30,7 @@ public class MoviesController : ControllerBase
     {
         try
         {
-            var movies = await _movieService.GetAllPaginated(_category, pageNumber, pageSize);
+            var movies = await _movieService.GetByCategory(_category, pageNumber, pageSize);
 
             if (movies.IsFailure)
             {
