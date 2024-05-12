@@ -61,7 +61,7 @@ export const useAuth = () => {
   const logout = async () => {
     try {
       setSubmission({ status: "logging out", message: "Logging out..." });
-      await axios.post("/api/Auth/Logout");
+      await axios.post("/api/auth/logout");
 
       setTimeout(() => {
         setSubmission({

@@ -58,13 +58,13 @@ const routerConfig = [
       {
         path: "/TV-series",
         element: <TVSeries />,
-        loader: () => fetchContent("movies"),
+        loader: () => fetchContent("tv-series"),
         action: bookmarkAction,
       },
       {
         path: "/Bookmarked",
         element: <Bookmark />,
-        loader: () => fetchContent("Bookmark"),
+        loader: () => fetchContent("bookmarks"),
         action: bookmarkAction,
       },
     ],

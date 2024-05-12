@@ -26,7 +26,7 @@ const Register = () => {
       ConfirmPassword: confirmPassword.current.value,
     };
 
-    await handleSubmit(e, body, "/api/Auth/Register");
+    await handleSubmit(e, body, "/api/auth/register");
   };
 
   return (

@@ -35,8 +35,8 @@ export const fetchSearchResult = async (query, category) => {
     let res;
 
     if (!category && !query) {
-      const movies = await axios.get("/api/Movies/GetMovies");
-      const tvSeries = await axios.get("/api/Movies/GetTvSeries");
+      const movies = await axios.get("/api/movies");
+      const tvSeries = await axios.get("/api/tv-series");
 
       res = { data: [...movies.data, ...tvSeries.data] };
     } else if (!category || category === "") {
