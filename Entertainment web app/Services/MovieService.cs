@@ -72,6 +72,9 @@ public class MovieService : IMovieService
         }
 
         var totalMovies = await _movieRepository.CountByCategory(category.ToString());
+
+        Console.WriteLine($"Category: {category.ToString()}");
+
         var totalPages = (int)Math.Ceiling(totalMovies / (double)pageSize);
 
         if (pageNumber < 1 || pageNumber > totalPages)
@@ -79,7 +82,7 @@ public class MovieService : IMovieService
             return Result<PagedResponse<MovieDto>>.Failure(new Error("InvalidPageNumber", "The page number is out of range"));
         }
 
-        var movies = await _movieRepository.GetByCategoryPaginated("Movies", pageNumber, pageSize);
+        var movies = await _movieRepository.GetByCategoryPaginated(category.ToString(), pageNumber, pageSize);
 
         if (movies == null)
         {
