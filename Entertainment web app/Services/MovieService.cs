@@ -1,5 +1,5 @@
 using Entertainment_web_app.Models.Content;
-using Entertainment_web_app.Models.Responses;
+using Entertainment_web_app.Common.Responses;
 using Entertainment_web_app.Repositories;
 
 namespace Entertainment_web_app.Services;
@@ -13,9 +13,9 @@ public class MovieService : IMovieService
         _movieRepository = movieRepository;
     }
 
-    public async Task<Result<IEnumerable<MovieDto>>> GetAll()
+    public async Task<Result<IEnumerable<MovieDto>>> GetAll(MediaCategory category)
     {
-        var movies = await _movieRepository.GetByCategory("Movies");
+        var movies = await _movieRepository.GetByCategory(category.ToString());
 
         if (movies == null || !movies.Any())
         {
@@ -37,14 +37,14 @@ public class MovieService : IMovieService
         return Result<IEnumerable<MovieDto>>.Success(data);
     }
 
-    public async Task<Result<PagedResponse<MovieDto>>> GetAllPaginated(int pageNumber, int pageSize)
+    public async Task<Result<PagedResponse<MovieDto>>> GetAllPaginated(MediaCategory category, int pageNumber, int pageSize)
     {
         if (pageSize < 1 || pageSize > 20)
         {
             return Result<PagedResponse<MovieDto>>.Failure(new Error("InvalidPageSize", "The page size is out of range"));
         }
 
-        var totalMovies = await _movieRepository.CountByCategory("Movies");
+        var totalMovies = await _movieRepository.CountByCategory(category.ToString());
         var totalPages = (int)Math.Ceiling(totalMovies / (double)pageSize);
 
         if (pageNumber < 1 || pageNumber > totalPages)
@@ -83,11 +83,11 @@ public class MovieService : IMovieService
         return Result<PagedResponse<MovieDto>>.Success(pagedResponse);
     }
 
-    public async Task<Result<MovieDto>> GetById(int movieId)
+    public async Task<Result<MovieDto>> GetById(MediaCategory category, int movieId)
     {
         var movie = await _movieRepository.GetById(movieId);
 
-        if (movie == null || movie.Category != "Movies")
+        if (movie == null || movie.Category != category.ToString())
         {
             return Result<MovieDto>.Failure(new Error("NotFound", $"Movie with ID = {movieId} does not exist"));
         }
@@ -116,9 +116,11 @@ public class MovieService : IMovieService
             return Result.Failure(new Error("AlreadyExists", "Movie with the same ID already exists"));
         }
 
-        if (movie.Category != "Movies")
+        bool isValidCategory = Enum.TryParse<MediaCategory>(movie.Category, out _);
+
+        if (!isValidCategory)
         {
-            return Result.Failure(new Error("InvalidCategory", "Category must be 'Movies'"));
+            return Result.Failure(new Error("InvalidCategory", "Ensure the category is correct"));
         }
 
         await _movieRepository.Add(movie);
@@ -135,9 +137,11 @@ public class MovieService : IMovieService
             return Result.Failure(new Error("NotFound", "Movie with the specified ID does not exist"));
         }
 
-        if (movie.Category != "Movies")
+        bool isValidCategory = Enum.TryParse<MediaCategory>(movie.Category, out _);
+
+        if (!isValidCategory)
         {
-            return Result.Failure(new Error("InvalidCategory", "Category must be 'Movies'"));
+            return Result.Failure(new Error("InvalidCategory", "Ensure the category is correct"));
         }
 
         await _movieRepository.Update(movie);
