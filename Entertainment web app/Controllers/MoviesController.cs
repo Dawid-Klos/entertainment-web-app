@@ -14,12 +14,11 @@ namespace Entertainment_web_app.Controllers;
 public class MoviesController : ControllerBase
 {
     private readonly IMovieService _movieService;
-    private readonly MediaCategory _category;
+    private readonly MediaCategory _category = MediaCategory.Movies;
 
     public MoviesController(IMovieService movieService)
     {
         _movieService = movieService;
-        _category = MediaCategory.Movies;
     }
 
     [HttpGet]
