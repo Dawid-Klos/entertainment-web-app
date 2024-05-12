@@ -14,10 +14,12 @@ namespace Entertainment_web_app.Controllers;
 public class MoviesController : ControllerBase
 {
     private readonly IMovieService _movieService;
+    private readonly MediaCategory _category;
 
     public MoviesController(IMovieService movieService)
     {
         _movieService = movieService;
+        _category = MediaCategory.Movies;
     }
 
     [HttpGet]
@@ -28,7 +30,7 @@ public class MoviesController : ControllerBase
     {
         try
         {
-            var movies = await _movieService.GetAllPaginated(pageNumber, pageSize);
+            var movies = await _movieService.GetAllPaginated(_category, pageNumber, pageSize);
 
             if (movies.IsFailure)
             {
@@ -75,7 +77,7 @@ public class MoviesController : ControllerBase
     {
         try
         {
-            var movie = await _movieService.GetById(movieId);
+            var movie = await _movieService.GetById(_category, movieId);
 
             if (movie.IsFailure)
             {
@@ -120,7 +122,7 @@ public class MoviesController : ControllerBase
     {
         try
         {
-            var movie = await _movieService.GetById(movieId);
+            var movie = await _movieService.GetById(_category, movieId);
 
             if (movie.IsFailure)
             {
