@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using Entertainment_web_app.Models.Content;
-using Entertainment_web_app.Models.Responses;
+using Entertainment_web_app.Common.Responses;
 using Entertainment_web_app.Services;
 
 namespace Entertainment_web_app.Controllers;
@@ -14,6 +14,7 @@ namespace Entertainment_web_app.Controllers;
 public class MoviesController : ControllerBase
 {
     private readonly IMovieService _movieService;
+    private readonly MediaCategory _category = MediaCategory.Movies;
 
     public MoviesController(IMovieService movieService)
     {
@@ -28,7 +29,7 @@ public class MoviesController : ControllerBase
     {
         try
         {
-            var movies = await _movieService.GetAllPaginated(pageNumber, pageSize);
+            var movies = await _movieService.GetByCategory(_category, pageNumber, pageSize);
 
             if (movies.IsFailure)
             {
@@ -75,7 +76,7 @@ public class MoviesController : ControllerBase
     {
         try
         {
-            var movie = await _movieService.GetById(movieId);
+            var movie = await _movieService.GetById(_category, movieId);
 
             if (movie.IsFailure)
             {
@@ -120,7 +121,7 @@ public class MoviesController : ControllerBase
     {
         try
         {
-            var movie = await _movieService.GetById(movieId);
+            var movie = await _movieService.GetById(_category, movieId);
 
             if (movie.IsFailure)
             {
