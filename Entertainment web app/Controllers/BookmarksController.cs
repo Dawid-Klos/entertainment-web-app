@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
+using Entertainment_web_app.Services;
+
 namespace Entertainment_web_app.Controllers;
 
 [ApiController]
@@ -13,11 +15,11 @@ namespace Entertainment_web_app.Controllers;
 [Produces("application/json")]
 public class BookmarksController : ControllerBase
 {
-    private readonly NetwixDbContext _context;
+    private readonly IBookmarkService _bookmarkService;
 
-    public BookmarksController(NetwixDbContext context)
+    public BookmarksController(IBookmarkService bookmarkService)
     {
-        _context = context;
+        _bookmarkService = bookmarkService;
     }
 
     [HttpGet]
