@@ -31,7 +31,10 @@ public class BookmarkRepository : IBookmarkRepository
 
     public async Task<Bookmark> GetById(string userId, int movieId)
     {
-        var bookmark = await _context.Bookmarks.FindAsync(userId, movieId);
+        var bookmark = await _context
+          .Bookmarks
+          .AsNoTracking()
+          .FirstOrDefaultAsync(b => b.UserId == userId && b.MovieId == movieId);
 
         if (bookmark == null)
         {
@@ -55,23 +58,6 @@ public class BookmarkRepository : IBookmarkRepository
         {
             await transaction.RollbackAsync();
             throw new Exception($"Error while adding bookmarkm, {ex.Message}");
-        }
-    }
-
-    public async Task Update(Bookmark bookmark)
-    {
-        using var transaction = _context.Database.BeginTransaction();
-
-        try
-        {
-            _context.Bookmarks.Update(bookmark);
-            await _context.SaveChangesAsync();
-            await transaction.CommitAsync();
-        }
-        catch (Exception ex)
-        {
-            await transaction.RollbackAsync();
-            throw new Exception($"Error while updating bookmark, {ex.Message}");
         }
     }
 
