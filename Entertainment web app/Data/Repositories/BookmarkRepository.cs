@@ -20,19 +20,31 @@ public class BookmarkRepository : IBookmarkRepository
         return await _context.Bookmarks.ToListAsync();
     }
 
-    public async Task<Bookmark> GetById(int id)
+    public async Task<IEnumerable<Bookmark>> GetAllPaginated(int pageNumber, int pageSize)
     {
-        var bookmark = await _context.Bookmarks.FindAsync(id);
+        return await _context.Bookmarks
+          .OrderBy(b => b.MovieId)
+          .Skip((pageNumber - 1) * pageSize)
+          .Take(pageSize)
+          .ToListAsync();
+    }
+
+    public async Task<Bookmark> GetById(string userId, int movieId)
+    {
+        var bookmark = await _context
+          .Bookmarks
+          .AsNoTracking()
+          .FirstOrDefaultAsync(b => b.UserId == userId && b.MovieId == movieId);
 
         if (bookmark == null)
         {
-            throw new Exception($"Bookmark with ID = {id} not found");
+            throw new Exception($"Bookmark with userId: {userId} and movieId: {movieId} not found");
         }
 
         return bookmark;
     }
 
-    public async void Add(Bookmark bookmark)
+    public async Task Add(Bookmark bookmark)
     {
         using var transaction = _context.Database.BeginTransaction();
 
@@ -49,32 +61,8 @@ public class BookmarkRepository : IBookmarkRepository
         }
     }
 
-    public async void Update(Bookmark bookmark)
+    public async Task Delete(Bookmark bookmark)
     {
-        using var transaction = _context.Database.BeginTransaction();
-
-        try
-        {
-            _context.Bookmarks.Update(bookmark);
-            await _context.SaveChangesAsync();
-            await transaction.CommitAsync();
-        }
-        catch (Exception ex)
-        {
-            await transaction.RollbackAsync();
-            throw new Exception($"Error while updating bookmark, {ex.Message}");
-        }
-    }
-
-    public async void Delete(int id)
-    {
-        var bookmark = await _context.Bookmarks.FindAsync(id);
-
-        if (bookmark == null)
-        {
-            throw new Exception($"Bookmark with ID = {id} not found");
-        }
-
         using var transaction = _context.Database.BeginTransaction();
 
         try
@@ -89,5 +77,14 @@ public class BookmarkRepository : IBookmarkRepository
             throw new Exception($"Error while deleting bookmark, {ex.Message}");
         }
     }
-}
 
+    public async Task<int> CountAll()
+    {
+        return await _context.Bookmarks.CountAsync();
+    }
+
+    public async Task<int> CountByUserId(string userId)
+    {
+        return await _context.Bookmarks.CountAsync(b => b.UserId == userId);
+    }
+}
