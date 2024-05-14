@@ -20,6 +20,15 @@ public class BookmarkRepository : IBookmarkRepository
         return await _context.Bookmarks.ToListAsync();
     }
 
+    public async Task<IEnumerable<Bookmark>> GetAllPaginated(int pageNumber, int pageSize)
+    {
+        return await _context.Bookmarks
+          .OrderBy(b => b.MovieId)
+          .Skip((pageNumber - 1) * pageSize)
+          .Take(pageSize)
+          .ToListAsync();
+    }
+
     public async Task<Bookmark> GetById(string userId, int movieId)
     {
         var bookmark = await _context.Bookmarks.FindAsync(userId, movieId);
