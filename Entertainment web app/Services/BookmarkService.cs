@@ -60,45 +60,31 @@ public class BookmarkService : IBookmarkService
         return Result<Bookmark>.Success(bookmark);
     }
 
-    public async Task<Result<Bookmark>> Add(Bookmark bookmark)
+    public async Task<Result> Add(Bookmark bookmark)
     {
         var existingBookmark = await _bookmarkRepository.GetById(bookmark.UserId, bookmark.MovieId);
 
         if (existingBookmark != null)
         {
-            return Result<Bookmark>.Failure(new Error("AlreadyExists", "Content is already bookmarked"));
+            return Result.Failure(new Error("AlreadyExists", "Content is already bookmarked"));
         }
 
         await _bookmarkRepository.Add(bookmark);
 
-        return Result<Bookmark>.Success(bookmark);
+        return Result.Success();
     }
 
-    public async Task<Result<Bookmark>> Update(Bookmark bookmark)
+    public async Task<Result> Delete(Bookmark bookmark)
     {
         var existingBookmark = await _bookmarkRepository.GetById(bookmark.UserId, bookmark.MovieId);
 
         if (existingBookmark == null)
         {
-            return Result<Bookmark>.Failure(new Error("NotFound", "Bookmark not found"));
-        }
-
-        await _bookmarkRepository.Update(bookmark);
-
-        return Result<Bookmark>.Success(bookmark);
-    }
-
-    public async Task<Result<Bookmark>> Delete(Bookmark bookmark)
-    {
-        var existingBookmark = await _bookmarkRepository.GetById(bookmark.UserId, bookmark.MovieId);
-
-        if (existingBookmark == null)
-        {
-            return Result<Bookmark>.Failure(new Error("NotFound", "Bookmark not found"));
+            return Result.Failure(new Error("NotFound", "Bookmark not found"));
         }
 
         await _bookmarkRepository.Delete(bookmark);
 
-        return Result<Bookmark>.Success(bookmark);
+        return Result.Success();
     }
 }

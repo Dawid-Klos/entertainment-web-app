@@ -7,7 +7,6 @@ public interface IBookmarkService
 {
     Task<Result<PagedResponse<Bookmark>>> GetAll(int pageNumber, int pageSize);
     Task<Result<Bookmark>> GetById(string userId, int movieId);
-    Task<Result<Bookmark>> Add(Bookmark bookmark);
-    Task<Result<Bookmark>> Update(Bookmark bookmark);
-    Task<Result<Bookmark>> Delete(Bookmark bookmark);
+    Task<Result> Add(Bookmark bookmark);
+    Task<Result> Delete(Bookmark bookmark);
 }
