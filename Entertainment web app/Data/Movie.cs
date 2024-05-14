@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Entertainment_web_app.Models.Content;
+namespace Entertainment_web_app.Data;
 
 public class Movie
 {

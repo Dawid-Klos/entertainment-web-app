@@ -1,4 +1,4 @@
-using Entertainment_web_app.Models.Auth;
+using Entertainment_web_app.Data;
 
 namespace Entertainment_web_app.Repositories;
 
