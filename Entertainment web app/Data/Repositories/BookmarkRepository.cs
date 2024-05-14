@@ -32,7 +32,7 @@ public class BookmarkRepository : IBookmarkRepository
         return bookmark;
     }
 
-    public async void Add(Bookmark bookmark)
+    public async Task Add(Bookmark bookmark)
     {
         using var transaction = _context.Database.BeginTransaction();
 
@@ -49,7 +49,7 @@ public class BookmarkRepository : IBookmarkRepository
         }
     }
 
-    public async void Update(Bookmark bookmark)
+    public async Task Update(Bookmark bookmark)
     {
         using var transaction = _context.Database.BeginTransaction();
 
@@ -66,7 +66,7 @@ public class BookmarkRepository : IBookmarkRepository
         }
     }
 
-    public async void Delete(Bookmark bookmark)
+    public async Task Delete(Bookmark bookmark)
     {
         using var transaction = _context.Database.BeginTransaction();
 
@@ -82,5 +82,14 @@ public class BookmarkRepository : IBookmarkRepository
             throw new Exception($"Error while deleting bookmark, {ex.Message}");
         }
     }
-}
 
+    public async Task<int> CountAll()
+    {
+        return await _context.Bookmarks.CountAsync();
+    }
+
+    public async Task<int> CountByUserId(string userId)
+    {
+        return await _context.Bookmarks.CountAsync(b => b.UserId == userId);
+    }
+}

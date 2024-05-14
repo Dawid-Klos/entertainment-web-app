@@ -6,7 +6,9 @@ public interface IBookmarkRepository
 {
     Task<IEnumerable<Bookmark>> GetAll();
     Task<Bookmark> GetById(string userId, int movieId);
-    void Add(Bookmark bookmark);
-    void Update(Bookmark bookmark);
-    void Delete(Bookmark bookmark);
+    Task Add(Bookmark bookmark);
+    Task Update(Bookmark bookmark);
+    Task Delete(Bookmark bookmark);
+    Task<int> CountAll();
+    Task<int> CountByUserId(string userId);
 }
