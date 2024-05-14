@@ -20,13 +20,13 @@ public class BookmarkRepository : IBookmarkRepository
         return await _context.Bookmarks.ToListAsync();
     }
 
-    public async Task<Bookmark> GetById(int id)
+    public async Task<Bookmark> GetById(string userId, int movieId)
     {
-        var bookmark = await _context.Bookmarks.FindAsync(id);
+        var bookmark = await _context.Bookmarks.FindAsync(userId, movieId);
 
         if (bookmark == null)
         {
-            throw new Exception($"Bookmark with ID = {id} not found");
+            throw new Exception($"Bookmark with userId: {userId} and movieId: {movieId} not found");
         }
 
         return bookmark;
@@ -66,15 +66,8 @@ public class BookmarkRepository : IBookmarkRepository
         }
     }
 
-    public async void Delete(int id)
+    public async void Delete(Bookmark bookmark)
     {
-        var bookmark = await _context.Bookmarks.FindAsync(id);
-
-        if (bookmark == null)
-        {
-            throw new Exception($"Bookmark with ID = {id} not found");
-        }
-
         using var transaction = _context.Database.BeginTransaction();
 
         try
