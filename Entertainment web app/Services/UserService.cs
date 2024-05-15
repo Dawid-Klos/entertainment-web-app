@@ -17,7 +17,7 @@ public class UserService : IUserService
     {
         var users = await _userRepository.GetAll();
 
-        if (users is null)
+        if (!users.Any() || users is null)
         {
             return Result<IEnumerable<UserDto>>.Failure(new Error("NotFound", "No users found"));
         }
