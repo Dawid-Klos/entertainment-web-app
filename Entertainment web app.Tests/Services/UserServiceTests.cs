@@ -77,7 +77,7 @@ public class UserServiceTests
     [InlineData("abc-6")]
     [InlineData("abc-7")]
     [InlineData("abc-8")]
-    public async Task GetBtId_NotFound_ReturnsError(string userId)
+    public async Task GetById_NotFound_ReturnsError(string userId)
     {
         var repository = new Mock<IUserRepository>();
         repository
