@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 
-using Entertainment_web_app.Models.Content;
 using Entertainment_web_app.Data;
 
 namespace Entertainment_web_app.Repositories;

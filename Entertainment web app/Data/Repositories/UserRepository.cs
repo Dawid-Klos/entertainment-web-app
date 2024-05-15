@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
 using Entertainment_web_app.Data;
-using Entertainment_web_app.Models.Auth;
 
 namespace Entertainment_web_app.Repositories;
 
@@ -25,7 +24,7 @@ public class UserRepository : IUserRepository
         return await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId);
     }
 
-    public async void Add(ApplicationUser user)
+    public async Task Add(ApplicationUser user)
     {
         using var transaction = _context.Database.BeginTransaction();
 
@@ -42,7 +41,7 @@ public class UserRepository : IUserRepository
         }
     }
 
-    public async void Update(ApplicationUser user)
+    public async Task Update(ApplicationUser user)
     {
         using var transaction = _context.Database.BeginTransaction();
 
@@ -59,7 +58,7 @@ public class UserRepository : IUserRepository
         }
     }
 
-    public async void Delete(ApplicationUser user)
+    public async Task Delete(ApplicationUser user)
     {
         using var transaction = _context.Database.BeginTransaction();
 
