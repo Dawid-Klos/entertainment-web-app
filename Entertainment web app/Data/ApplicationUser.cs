@@ -1,9 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 
-using Entertainment_web_app.Models.Content;
-
-namespace Entertainment_web_app.Models.Auth;
+namespace Entertainment_web_app.Data;
 
 public class ApplicationUser : IdentityUser
 {
