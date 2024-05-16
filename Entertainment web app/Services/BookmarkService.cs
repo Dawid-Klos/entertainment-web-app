@@ -29,7 +29,7 @@ public class BookmarkService : IBookmarkService
             return Result<PagedResponse<Bookmark>>.Failure(new Error("InvalidPageNumber", "The page number is out of range"));
         }
 
-        var bookmarks = await _bookmarkRepository.GetAll();
+        var bookmarks = await _bookmarkRepository.GetAllPaginated(pageNumber, pageSize);
 
         if (bookmarks == null)
         {
