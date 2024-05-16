@@ -54,7 +54,7 @@ public class BookmarkService : IBookmarkService
 
         if (bookmark == null)
         {
-            return Result<Bookmark>.Failure(new Error("NotFound", "Bookmark not found"));
+            return Result<Bookmark>.Failure(new Error("NotFound", $"Content with ID = {movieId} is not bookmarked"));
         }
 
         return Result<Bookmark>.Success(bookmark);
