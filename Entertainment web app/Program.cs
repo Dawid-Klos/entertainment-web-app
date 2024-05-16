@@ -84,6 +84,7 @@ builder.Services.AddScoped<IBookmarkRepository, BookmarkRepository>();
 // Services
 builder.Services.AddScoped<IMovieService, MovieService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IBookmarkService, BookmarkService>();
 
 builder.Services.AddCors(options =>

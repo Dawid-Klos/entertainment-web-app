@@ -29,7 +29,7 @@ public class BookmarkService : IBookmarkService
             return Result<PagedResponse<Bookmark>>.Failure(new Error("InvalidPageNumber", "The page number is out of range"));
         }
 
-        var bookmarks = await _bookmarkRepository.GetAll();
+        var bookmarks = await _bookmarkRepository.GetAllPaginated(pageNumber, pageSize);
 
         if (bookmarks == null)
         {
@@ -54,7 +54,7 @@ public class BookmarkService : IBookmarkService
 
         if (bookmark == null)
         {
-            return Result<Bookmark>.Failure(new Error("NotFound", "Bookmark not found"));
+            return Result<Bookmark>.Failure(new Error("NotFound", $"Content with ID = {movieId} is not bookmarked"));
         }
 
         return Result<Bookmark>.Success(bookmark);

@@ -28,19 +28,11 @@ public class BookmarkRepository : IBookmarkRepository
           .ToListAsync();
     }
 
-    public async Task<Bookmark> GetById(string userId, int movieId)
+    public async Task<Bookmark?> GetById(string userId, int movieId)
     {
-        var bookmark = await _context
-          .Bookmarks
+        return await _context.Bookmarks
           .AsNoTracking()
           .FirstOrDefaultAsync(b => b.UserId == userId && b.MovieId == movieId);
-
-        if (bookmark == null)
-        {
-            throw new Exception($"Bookmark with userId: {userId} and movieId: {movieId} not found");
-        }
-
-        return bookmark;
     }
 
     public async Task Add(Bookmark bookmark)
