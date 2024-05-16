@@ -3,8 +3,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
-using Entertainment_web_app.Data;
 using Entertainment_web_app.Common.Responses;
+using Entertainment_web_app.Models.Dto;
+using Entertainment_web_app.Data;
 using Entertainment_web_app.Services;
 
 
@@ -29,7 +30,7 @@ public class BookmarksController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<PagedResponse<Bookmark>> Get([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
+    public async Task<PagedResponse<BookmarkDto>> Get([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
     {
         try
         {
@@ -37,7 +38,7 @@ public class BookmarksController : ControllerBase
 
             if (bookmarks.IsFailure)
             {
-                return new PagedResponse<Bookmark>
+                return new PagedResponse<BookmarkDto>
                 {
                     Status = "error",
                     Error = bookmarks.Error,
@@ -45,22 +46,28 @@ public class BookmarksController : ControllerBase
                 };
             }
 
-            var data = bookmarks.Data!;
+            var bookmarksData = bookmarks.Data!;
 
-            return new PagedResponse<Bookmark>
+            var bookmarkDtos = bookmarksData.Data!.Select(bookmark => new BookmarkDto
+            {
+                UserId = bookmark.UserId,
+                MovieId = bookmark.MovieId
+            }).ToList();
+
+            return new PagedResponse<BookmarkDto>
             {
                 Status = "success",
                 StatusCode = StatusCodes.Status200OK,
-                PageNumber = data.PageNumber,
-                PageSize = data.PageSize,
-                TotalPages = data.TotalPages,
-                TotalRecords = data.TotalRecords,
-                Data = data.Data,
+                PageNumber = bookmarksData.PageNumber,
+                PageSize = bookmarksData.PageSize,
+                TotalPages = bookmarksData.TotalPages,
+                TotalRecords = bookmarksData.TotalRecords,
+                Data = bookmarkDtos
             };
         }
         catch (Exception)
         {
-            return new PagedResponse<Bookmark>
+            return new PagedResponse<BookmarkDto>
             {
                 Status = "error",
                 Error = new Error("Internal Server Error", "An error occurred while processing your request."),
@@ -74,7 +81,7 @@ public class BookmarksController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<Response<Bookmark>> Get(int movieId)
+    public async Task<Response<BookmarkDto>> Get(int movieId)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var user = await _userService.GetById(userId);
@@ -85,7 +92,7 @@ public class BookmarksController : ControllerBase
 
             if (bookmark.IsFailure)
             {
-                return new Response<Bookmark>
+                return new Response<BookmarkDto>
                 {
                     Status = "error",
                     Error = bookmark.Error,
@@ -95,16 +102,22 @@ public class BookmarksController : ControllerBase
 
             var userBookmark = bookmark.Data!;
 
-            return new Response<Bookmark>
+            var bookmarkDto = new BookmarkDto
+            {
+                UserId = userBookmark.UserId,
+                MovieId = userBookmark.MovieId
+            };
+
+            return new Response<BookmarkDto>
             {
                 Status = "success",
                 StatusCode = StatusCodes.Status200OK,
-                Data = new List<Bookmark> { userBookmark },
+                Data = new List<BookmarkDto> { bookmarkDto },
             };
         }
         catch (Exception ex)
         {
-            return new Response<Bookmark>
+            return new Response<BookmarkDto>
             {
                 Status = "error",
                 Error = new Error("Internal Server Error", $"An error occurred while processing your request, {ex}"),
