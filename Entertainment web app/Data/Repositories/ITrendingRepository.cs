@@ -7,8 +7,8 @@ public interface ITrendingRepository
     Task<IEnumerable<Trending>> GetAll();
     Task<Trending> GetById(int trendingId);
     Task<Trending?> GetByMovieId(int movieId);
-    void Add(Trending trending);
-    void Update(Trending trending);
-    void Delete(int trendingId);
+    Task Add(Trending trending);
+    Task Update(Trending trending);
+    Task Delete(int trendingId);
 }
 

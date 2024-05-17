@@ -36,7 +36,7 @@ public class TrendingRepository : ITrendingRepository
         return await _context.Trending.FirstOrDefaultAsync(t => t.MovieId == movieId);
     }
 
-    public async void Add(Trending trending)
+    public async Task Add(Trending trending)
     {
         using var transaction = _context.Database.BeginTransaction();
 
@@ -55,7 +55,7 @@ public class TrendingRepository : ITrendingRepository
         }
     }
 
-    public async void Update(Trending trending)
+    public async Task Update(Trending trending)
     {
         using var transaction = _context.Database.BeginTransaction();
 
@@ -74,7 +74,7 @@ public class TrendingRepository : ITrendingRepository
         }
     }
 
-    public async void Delete(int trendingId)
+    public async Task Delete(int trendingId)
     {
         var trending = await _context.Trending.FindAsync(trendingId);
 
