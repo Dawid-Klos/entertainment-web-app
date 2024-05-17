@@ -1,6 +1,6 @@
 using System.Security.Claims;
 using Entertainment_web_app.Data;
-using Entertainment_web_app.Models.Content;
+using Entertainment_web_app.Models.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

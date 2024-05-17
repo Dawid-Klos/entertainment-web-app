@@ -1,5 +1,6 @@
 using Entertainment_web_app.Common.Responses;
 using Entertainment_web_app.Models.Content;
+using Entertainment_web_app.Models.Dto;
 using Entertainment_web_app.Data;
 
 namespace Entertainment_web_app.Services;
