@@ -31,6 +31,11 @@ public class TrendingRepository : ITrendingRepository
         return trending;
     }
 
+    public async Task<Trending?> GetByMovieId(int movieId)
+    {
+        return await _context.Trending.FirstOrDefaultAsync(t => t.MovieId == movieId);
+    }
+
     public async void Add(Trending trending)
     {
         using var transaction = _context.Database.BeginTransaction();
