@@ -16,22 +16,29 @@ public class TrendingRepository : ITrendingRepository
 
     public async Task<IEnumerable<Trending>> GetAll()
     {
-        return await _context.Trending.ToListAsync();
+        return await _context
+          .Trending
+          .Include(t => t.Movie)
+          .ToListAsync();
     }
 
-    public async Task<Trending> GetById(int trendingId)
+    public async Task<Trending?> GetById(int trendingId)
     {
-        var trending = await _context.Trending.FindAsync(trendingId);
-
-        if (trending == null)
-        {
-            throw new Exception($"Trending with ID {trendingId} not found");
-        }
-
-        return trending;
+        return await _context
+          .Trending
+          .Include(t => t.Movie)
+          .FirstOrDefaultAsync(t => t.TrendingId == trendingId);
     }
 
-    public async void Add(Trending trending)
+    public async Task<Trending?> GetByMovieId(int movieId)
+    {
+        return await _context
+          .Trending
+          .Include(t => t.MovieId)
+          .FirstOrDefaultAsync(t => t.MovieId == movieId);
+    }
+
+    public async Task Add(Trending trending)
     {
         using var transaction = _context.Database.BeginTransaction();
 
@@ -50,7 +57,7 @@ public class TrendingRepository : ITrendingRepository
         }
     }
 
-    public async void Update(Trending trending)
+    public async Task Update(Trending trending)
     {
         using var transaction = _context.Database.BeginTransaction();
 
@@ -69,7 +76,7 @@ public class TrendingRepository : ITrendingRepository
         }
     }
 
-    public async void Delete(int trendingId)
+    public async Task Delete(int trendingId)
     {
         var trending = await _context.Trending.FindAsync(trendingId);
 

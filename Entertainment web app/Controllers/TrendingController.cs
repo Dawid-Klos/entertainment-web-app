@@ -1,9 +1,10 @@
-using System.Security.Claims;
-using Entertainment_web_app.Data;
-using Entertainment_web_app.Models.Content;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+
+using Entertainment_web_app.Services;
+using Entertainment_web_app.Common.Responses;
+using Entertainment_web_app.Models.Dto;
+using Entertainment_web_app.Data;
 
 namespace Entertainment_web_app.Controllers;
 
@@ -13,57 +14,49 @@ namespace Entertainment_web_app.Controllers;
 [Produces("application/json")]
 public class TrendingController : ControllerBase
 {
+    private readonly ITrendingService _trendingService;
 
-    private readonly NetwixDbContext _context;
-
-    public TrendingController(NetwixDbContext context)
+    public TrendingController(ITrendingService trendingService)
     {
-        _context = context;
+        _trendingService = trendingService;
     }
 
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<IEnumerable<MovieDto>>> Get()
+    public async Task<Response<TrendingDto>> Get()
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
         try
         {
-            var user = await _context.Users.FindAsync(userId);
+            var trendingMovies = await _trendingService.GetAll();
 
-            var trendingMovieIds = await _context.Trending
-                .Select(t => t.MovieId)
-                .ToListAsync();
-
-            var movies = await _context.Movies
-                .Where(m => trendingMovieIds.Contains(m.MovieId))
-                .ToListAsync();
-
-            var bookmarks = await _context.Bookmarks
-                .Where(b => b.UserId == userId)
-               .Select(b => b.MovieId)
-                .ToListAsync();
-
-            var trendingMovies = movies.Select(m => new MovieDto
+            if (trendingMovies.IsFailure)
             {
-                MovieId = m.MovieId,
-                Title = m.Title,
-                Year = m.Year,
-                Category = m.Category,
-                Rating = m.Rating,
-                ImgSmall = m.ImgSmall,
-                ImgMedium = m.ImgMedium,
-                ImgLarge = m.ImgLarge,
-                IsBookmarked = bookmarks.Contains(m.MovieId)
-            }).ToList();
+                return new Response<TrendingDto>
+                {
+                    Status = "error",
+                    Error = trendingMovies.Error,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                };
+            }
 
-            return new JsonResult(new { status = "success", statusCode = StatusCodes.Status200OK, data = trendingMovies });
+            return new Response<TrendingDto>
+            {
+                Status = "success",
+                StatusCode = StatusCodes.Status200OK,
+                Data = trendingMovies.Data!,
+            };
+
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            return new JsonResult(new { status = "error", error = $"Internal Server Error, {ex}", statusCode = StatusCodes.Status500InternalServerError });
+            return new Response<TrendingDto>
+            {
+                Status = "error",
+                Error = new Error("Internal Server Error", "An error occurred while processing your request."),
+                StatusCode = StatusCodes.Status500InternalServerError,
+            };
         }
     }
 
@@ -72,46 +65,154 @@ public class TrendingController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<MovieDto>> Get(int trendingId)
+    public async Task<Response<TrendingDto>> Get(int trendingId)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var user = await _context.Users.FindAsync(userId);
 
         try
         {
-            var trendingMovie = await _context.Trending.FindAsync(trendingId);
+            var trendingMovie = await _trendingService.GetById(trendingId);
 
-            if (trendingMovie == null)
+            if (trendingMovie.IsFailure)
             {
-                return new JsonResult(new { status = "error", error = $"Trending movie with id = {trendingId} does not exist in the database", statusCode = StatusCodes.Status404NotFound });
+                return new Response<TrendingDto>
+                {
+                    Status = "error",
+                    Error = trendingMovie.Error,
+                    StatusCode = StatusCodes.Status404NotFound,
+                };
             }
 
-            var movie = await _context.Movies
-                .Where(m => m.MovieId == trendingMovie.MovieId)
-                .FirstOrDefaultAsync();
-
-            var bookmark = await _context.Bookmarks
-                .Where(b => b.UserId == userId && b.MovieId == movie!.MovieId)
-                .FirstOrDefaultAsync();
-
-            var movieDto = new MovieDto
+            return new Response<TrendingDto>
             {
-                MovieId = movie!.MovieId,
-                Title = movie!.Title,
-                Year = movie!.Year,
-                Category = movie!.Category,
-                Rating = movie!.Rating,
-                ImgSmall = movie!.ImgSmall,
-                ImgMedium = movie!.ImgMedium,
-                ImgLarge = movie!.ImgLarge,
-                IsBookmarked = bookmark != null
+                Status = "success",
+                StatusCode = StatusCodes.Status200OK,
+                Data = new List<TrendingDto> { trendingMovie.Data! },
             };
 
-            return new JsonResult(new { status = "success", statusCode = StatusCodes.Status200OK, data = movieDto });
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            return new JsonResult(new { status = "error", error = $"Internal Server Error, {ex}", statusCode = StatusCodes.Status500InternalServerError });
+            return new Response<TrendingDto>
+            {
+                Status = "error",
+                Error = new Error("Internal Server Error", "An error occurred while processing your request."),
+                StatusCode = StatusCodes.Status500InternalServerError,
+            };
+        }
+    }
+
+
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<Response> Post([FromBody] Trending trending)
+    {
+        try
+        {
+            var trendingMovie = await _trendingService.Add(trending);
+
+            if (trendingMovie.IsFailure)
+            {
+                return new Response
+                {
+                    Status = "error",
+                    Error = trendingMovie.Error,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                };
+            }
+
+            return new Response
+            {
+                Status = "success",
+                StatusCode = StatusCodes.Status201Created,
+            };
+        }
+        catch (Exception)
+        {
+            return new Response
+            {
+                Status = "error",
+                Error = new Error("Internal Server Error", "An error occurred while processing your request."),
+                StatusCode = StatusCodes.Status500InternalServerError,
+            };
+        }
+    }
+
+    [HttpPut]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<Response> Put([FromBody] Trending trending)
+    {
+        try
+        {
+            var trendingMovie = await _trendingService.Update(trending);
+
+            if (trendingMovie.IsFailure)
+            {
+                return new Response
+                {
+                    Status = "error",
+                    Error = trendingMovie.Error,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                };
+            }
+
+            return new Response
+            {
+                Status = "success",
+                StatusCode = StatusCodes.Status200OK,
+            };
+        }
+        catch (Exception)
+        {
+            return new Response
+            {
+                Status = "error",
+                Error = new Error("Internal Server Error", "An error occurred while processing your request."),
+                StatusCode = StatusCodes.Status500InternalServerError,
+            };
+        }
+    }
+
+    [HttpDelete("{trendingId}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<Response> Delete(int trendingId)
+    {
+        try
+        {
+            var trendingMovie = await _trendingService.Delete(trendingId);
+
+            if (trendingMovie.IsFailure)
+            {
+                return new Response
+                {
+                    Status = "error",
+                    Error = trendingMovie.Error,
+                    StatusCode = StatusCodes.Status404NotFound,
+                };
+            }
+
+            return new Response
+            {
+                Status = "success",
+                StatusCode = StatusCodes.Status200OK,
+            };
+        }
+        catch (Exception)
+        {
+            return new Response
+            {
+                Status = "error",
+                Error = new Error("Internal Server Error", "An error occurred while processing your request."),
+                StatusCode = StatusCodes.Status500InternalServerError,
+            };
         }
     }
 }

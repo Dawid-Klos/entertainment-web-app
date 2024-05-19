@@ -10,10 +10,9 @@ using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.HttpOverrides;
 
 using Entertainment_web_app.Common.Utils;
-using Entertainment_web_app.Data;
-using Entertainment_web_app.Models.Auth;
 using Entertainment_web_app.Repositories;
 using Entertainment_web_app.Services;
+using Entertainment_web_app.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -77,15 +76,17 @@ builder.Services.AddAuthorization(options =>
 });
 
 // Repositories
-builder.Services.AddScoped<IMovieRepository, MovieRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IMovieRepository, MovieRepository>();
 builder.Services.AddScoped<IBookmarkRepository, BookmarkRepository>();
+builder.Services.AddScoped<ITrendingRepository, TrendingRepository>();
 
 // Services
-builder.Services.AddScoped<IMovieService, MovieService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IMovieService, MovieService>();
 builder.Services.AddScoped<IBookmarkService, BookmarkService>();
+builder.Services.AddScoped<ITrendingService, TrendingService>();
 
 builder.Services.AddCors(options =>
 {
