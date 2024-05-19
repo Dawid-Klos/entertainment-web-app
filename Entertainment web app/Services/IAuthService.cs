@@ -1,3 +1,4 @@
+using Entertainment_web_app.Data;
 using Entertainment_web_app.Models.Auth;
 using Entertainment_web_app.Common.Responses;
 

@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 using Entertainment_web_app.Models.Content;
-using Entertainment_web_app.Models.Auth;
 
 namespace Entertainment_web_app.Data;
 
