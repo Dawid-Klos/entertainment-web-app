@@ -33,8 +33,8 @@ public class TrendingService : ITrendingService
             Year = m.Movie.Year,
             Category = m.Movie.Category,
             Rating = m.Movie.Rating,
-            ImgTrendingSmall = m.ImgTrendingSmall,
-            ImgTrendingLarge = m.ImgTrendingLarge
+            ImgSmall = m.ImgTrendingSmall,
+            ImgLarge = m.ImgTrendingLarge
         }).ToList();
 
         return Result<IEnumerable<TrendingDto>>.Success(trendingDtos);
@@ -56,8 +56,8 @@ public class TrendingService : ITrendingService
             Year = trendingMovie.Movie.Year,
             Category = trendingMovie.Movie.Category,
             Rating = trendingMovie.Movie.Rating,
-            ImgTrendingSmall = trendingMovie.ImgTrendingSmall,
-            ImgTrendingLarge = trendingMovie.ImgTrendingLarge
+            ImgSmall = trendingMovie.ImgTrendingSmall,
+            ImgLarge = trendingMovie.ImgTrendingLarge
         };
 
         return Result<TrendingDto>.Success(trendingDto);

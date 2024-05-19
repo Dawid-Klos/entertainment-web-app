@@ -8,8 +8,8 @@ public class TrendingDto
     public int Year { get; set; }
     public string Category { get; set; } = null!;
     public string Rating { get; set; } = null!;
-    public string ImgTrendingSmall { get; set; } = null!;
-    public string ImgTrendingLarge { get; set; } = null!;
+    public string ImgSmall { get; set; } = null!;
+    public string ImgLarge { get; set; } = null!;
     public bool? IsBookmarked { get; set; }
 }
 
