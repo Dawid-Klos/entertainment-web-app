@@ -16,54 +16,51 @@ public class TrendingService : ITrendingService
     }
 
 
-    public async Task<Result<IEnumerable<MovieDto>>> GetAll()
+    public async Task<Result<IEnumerable<TrendingDto>>> GetAll()
     {
 
         var trendingMovies = await _trendingRepository.GetAll();
 
         if (trendingMovies == null || !trendingMovies.Any())
         {
-            return Result<IEnumerable<MovieDto>>.Failure(new Error("NotFound", "No trending movies found"));
+            return Result<IEnumerable<TrendingDto>>.Failure(new Error("NotFound", "No trending movies found"));
         }
 
-        var trendingDtos = trendingMovies.Select(m => new MovieDto
+        var trendingDtos = trendingMovies.Select(m => new TrendingDto
+
         {
             MovieId = m.Movie.MovieId,
             Title = m.Movie.Title,
             Year = m.Movie.Year,
             Category = m.Movie.Category,
             Rating = m.Movie.Rating,
-            ImgSmall = m.Movie.ImgSmall,
-            ImgMedium = m.Movie.ImgMedium,
-            ImgLarge = m.Movie.ImgLarge,
+            ImgTrendingSmall = m.ImgTrendingSmall,
+            ImgTrendingLarge = m.ImgTrendingLarge
         }).ToList();
 
 
-        return Result<IEnumerable<MovieDto>>.Success(trendingDtos);
+        return Result<IEnumerable<TrendingDto>>.Success(trendingDtos);
     }
 
-    public async Task<Result<MovieDto>> GetById(int trendingId)
+    public async Task<Result<TrendingDto>> GetById(int trendingId)
     {
         var trendingMovie = await _trendingRepository.GetById(trendingId);
 
         if (trendingMovie == null)
         {
-            return Result<MovieDto>.Failure(new Error("NotFound", $"Trending movie with ID = {trendingId} does not exist"));
+            return Result<TrendingDto>.Failure(new Error("NotFound", $"Trending movie with ID = {trendingId} does not exist"));
         }
 
-        var trendingDto = new MovieDto
+        var trendingDto = new TrendingDto
         {
             MovieId = trendingMovie.Movie.MovieId,
             Title = trendingMovie.Movie.Title,
             Year = trendingMovie.Movie.Year,
             Category = trendingMovie.Movie.Category,
             Rating = trendingMovie.Movie.Rating,
-            ImgSmall = trendingMovie.Movie.ImgSmall,
-            ImgMedium = trendingMovie.Movie.ImgMedium,
-            ImgLarge = trendingMovie.Movie.ImgLarge
         };
 
-        return Result<MovieDto>.Success(trendingDto);
+        return Result<TrendingDto>.Success(trendingDto);
     }
 
     public async Task<Result> Add(Trending newTrending)

@@ -6,8 +6,8 @@ namespace Entertainment_web_app.Services;
 
 public interface ITrendingService
 {
-    Task<Result<IEnumerable<MovieDto>>> GetAll();
-    Task<Result<MovieDto>> GetById(int trendingId);
+    Task<Result<IEnumerable<TrendingDto>>> GetAll();
+    Task<Result<TrendingDto>> GetById(int trendingId);
     Task<Result> Add(Trending trending);
     Task<Result> Update(Trending trending);
     Task<Result> Delete(int trendingId);
