@@ -107,7 +107,7 @@ public class TrendingController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<Response<TrendingDto>> Post([FromBody] Trending trending)
+    public async Task<Response> Post([FromBody] Trending trending)
     {
         try
         {
@@ -115,7 +115,7 @@ public class TrendingController : ControllerBase
 
             if (trendingMovie.IsFailure)
             {
-                return new Response<TrendingDto>
+                return new Response
                 {
                     Status = "error",
                     Error = trendingMovie.Error,
@@ -123,7 +123,7 @@ public class TrendingController : ControllerBase
                 };
             }
 
-            return new Response<TrendingDto>
+            return new Response
             {
                 Status = "success",
                 StatusCode = StatusCodes.Status201Created,
@@ -131,7 +131,45 @@ public class TrendingController : ControllerBase
         }
         catch (Exception)
         {
-            return new Response<TrendingDto>
+            return new Response
+            {
+                Status = "error",
+                Error = new Error("Internal Server Error", "An error occurred while processing your request."),
+                StatusCode = StatusCodes.Status500InternalServerError,
+            };
+        }
+    }
+
+    [HttpPut]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<Response> Put([FromBody] Trending trending)
+    {
+        try
+        {
+            var trendingMovie = await _trendingService.Update(trending);
+
+            if (trendingMovie.IsFailure)
+            {
+                return new Response
+                {
+                    Status = "error",
+                    Error = trendingMovie.Error,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                };
+            }
+
+            return new Response
+            {
+                Status = "success",
+                StatusCode = StatusCodes.Status200OK,
+            };
+        }
+        catch (Exception)
+        {
+            return new Response
             {
                 Status = "error",
                 Error = new Error("Internal Server Error", "An error occurred while processing your request."),
@@ -145,7 +183,7 @@ public class TrendingController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<Response<TrendingDto>> Delete(int trendingId)
+    public async Task<Response> Delete(int trendingId)
     {
         try
         {
@@ -153,7 +191,7 @@ public class TrendingController : ControllerBase
 
             if (trendingMovie.IsFailure)
             {
-                return new Response<TrendingDto>
+                return new Response
                 {
                     Status = "error",
                     Error = trendingMovie.Error,
@@ -161,7 +199,7 @@ public class TrendingController : ControllerBase
                 };
             }
 
-            return new Response<TrendingDto>
+            return new Response
             {
                 Status = "success",
                 StatusCode = StatusCodes.Status200OK,
@@ -169,7 +207,7 @@ public class TrendingController : ControllerBase
         }
         catch (Exception)
         {
-            return new Response<TrendingDto>
+            return new Response
             {
                 Status = "error",
                 Error = new Error("Internal Server Error", "An error occurred while processing your request."),
