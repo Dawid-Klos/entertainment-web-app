@@ -27,7 +27,6 @@ public class TrendingService : ITrendingService
         }
 
         var trendingDtos = trendingMovies.Select(m => new TrendingDto
-
         {
             MovieId = m.Movie.MovieId,
             Title = m.Movie.Title,
@@ -37,7 +36,6 @@ public class TrendingService : ITrendingService
             ImgTrendingSmall = m.ImgTrendingSmall,
             ImgTrendingLarge = m.ImgTrendingLarge
         }).ToList();
-
 
         return Result<IEnumerable<TrendingDto>>.Success(trendingDtos);
     }
@@ -58,6 +56,8 @@ public class TrendingService : ITrendingService
             Year = trendingMovie.Movie.Year,
             Category = trendingMovie.Movie.Category,
             Rating = trendingMovie.Movie.Rating,
+            ImgTrendingSmall = trendingMovie.ImgTrendingSmall,
+            ImgTrendingLarge = trendingMovie.ImgTrendingLarge
         };
 
         return Result<TrendingDto>.Success(trendingDto);
