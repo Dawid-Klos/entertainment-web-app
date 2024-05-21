@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-using Entertainment_web_app.Models.Content;
 using Entertainment_web_app.Common.Responses;
+using Entertainment_web_app.Models.Content;
 using Entertainment_web_app.Models.Dto;
 using Entertainment_web_app.Services;
 using Entertainment_web_app.Data;
@@ -27,11 +27,11 @@ public class MoviesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<PagedResponse<MovieDto>>> Get([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
+    public async Task<ActionResult<PagedResponse<MovieDto>>> Get([FromQuery] PaginationQuery query)
     {
         try
         {
-            var movies = await _movieService.GetByCategory(_category, pageNumber, pageSize);
+            var movies = await _movieService.GetByCategory(_category, query);
 
             if (movies.IsFailure)
             {
@@ -66,6 +66,51 @@ public class MoviesController : ControllerBase
             };
 
             return new JsonResult(response);
+        }
+    }
+
+
+    [HttpGet("search")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<Response<MovieDto>> Get([FromQuery] SearchQuery query)
+    {
+        try
+        {
+            var movies = await _movieService.Search(_category, query);
+
+            if (movies.IsFailure)
+            {
+                return new Response<MovieDto>
+                {
+                    Status = "error",
+                    Error = movies.Error,
+                    StatusCode = movies.Error.Code switch
+                    {
+                        "NotFound" => StatusCodes.Status404NotFound,
+                        _ => StatusCodes.Status400BadRequest,
+                    }
+                };
+            }
+
+            return new Response<MovieDto>
+            {
+                Status = "success",
+                StatusCode = StatusCodes.Status200OK,
+                Data = movies.Data
+            };
+        }
+        catch (Exception)
+        {
+            return new Response<MovieDto>
+            {
+                Status = "error",
+                Error = new Error("Internal Server Error", "An error occurred while processing your request."),
+                StatusCode = StatusCodes.Status500InternalServerError,
+            };
         }
     }
 
