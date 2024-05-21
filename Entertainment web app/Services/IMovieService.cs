@@ -7,8 +7,9 @@ namespace Entertainment_web_app.Services;
 
 public interface IMovieService
 {
-    Task<Result<PagedResponse<MovieDto>>> GetAll(int pageNumber, int pageSize);
-    Task<Result<PagedResponse<MovieDto>>> GetByCategory(MediaCategory category, int pageNumber, int pageSize);
+    Task<Result<PagedResponse<MovieDto>>> GetAll(PaginationQuery query);
+    Task<Result<PagedResponse<MovieDto>>> GetByCategory(MediaCategory category, PaginationQuery query);
+    Task<Result<IEnumerable<MovieDto>>> Search(MediaCategory category, SearchQuery query);
     Task<Result<MovieDto>> GetById(MediaCategory category, int movieId);
     Task<Result> Add(Movie movie);
     Task<Result> Update(Movie movie);
