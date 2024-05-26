@@ -1,5 +1,6 @@
-using Entertainment_web_app.Repositories;
 using Entertainment_web_app.Common.Responses;
+using Entertainment_web_app.Models.Content;
+using Entertainment_web_app.Repositories;
 using Entertainment_web_app.Data;
 
 namespace Entertainment_web_app.Services;
@@ -46,6 +47,18 @@ public class BookmarkService : IBookmarkService
         };
 
         return Result<PagedResponse<Bookmark>>.Success(pagedResponse);
+    }
+
+    public async Task<Result<IEnumerable<Bookmark>>> GetByUser(MediaCategory category, string userId)
+    {
+        var bookmarks = await _bookmarkRepository.GetByUserId(userId);
+
+        if (bookmarks == null)
+        {
+            return Result<IEnumerable<Bookmark>>.Failure(new Error("NotFound", "No bookmarks found"));
+        }
+
+        return Result<IEnumerable<Bookmark>>.Success(bookmarks);
     }
 
     public async Task<Result<Bookmark>> GetById(string userId, int movieId)

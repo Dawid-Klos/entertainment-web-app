@@ -28,6 +28,14 @@ public class BookmarkRepository : IBookmarkRepository
           .ToListAsync();
     }
 
+    public async Task<IEnumerable<Bookmark>?> GetByUserId(string userId)
+    {
+        return await _context.Bookmarks
+          .AsNoTracking()
+          .Where(b => b.UserId == userId)
+          .ToListAsync();
+    }
+
     public async Task<Bookmark?> GetById(string userId, int movieId)
     {
         return await _context.Bookmarks
