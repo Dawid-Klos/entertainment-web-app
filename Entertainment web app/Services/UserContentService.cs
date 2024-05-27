@@ -129,4 +129,69 @@ public class UserContentService : IUserContentService
 
         return Result<PagedResponse<MovieDto>>.Success(pagedResponse);
     }
+
+    public async Task<Result<IEnumerable<MovieDto>>> Search(string userId, MediaCategory category, SearchQuery query)
+    {
+        var bookmarks = await _bookmarkRepository.GetByCategoryAndUserId(category.ToString(), userId);
+
+        if (bookmarks == null)
+        {
+            return Result<IEnumerable<MovieDto>>.Failure(new Error("NotFound", $"No bookmarked content found for {category}"));
+        }
+
+        var movieIds = bookmarks.Select(b => b.MovieId);
+        var bookmarkedContent = await _movieRepository.GetByIds(movieIds);
+
+        if (bookmarkedContent == null)
+        {
+            return Result<IEnumerable<MovieDto>>.Failure(new Error("NotFound", $"No bookmarked content found for {category}"));
+        }
+
+        if (!string.IsNullOrWhiteSpace(query.Title))
+        {
+            bookmarkedContent = bookmarkedContent.Where(m => m.Title.ToLower().Contains(query.Title.ToLower()));
+        }
+
+        if (query.Year != null)
+        {
+            bookmarkedContent = bookmarkedContent.Where(m => m.Year == query.Year);
+        }
+
+        if (query.Rating != null)
+        {
+            bookmarkedContent = bookmarkedContent.Where(m => m.Rating == query.Rating);
+        }
+
+        if (!string.IsNullOrWhiteSpace(query.SortBy))
+        {
+            bookmarkedContent = query.SortBy switch
+            {
+                "title" => query.IsAscending
+                    ? bookmarkedContent.OrderBy(m => m.Title)
+                    : bookmarkedContent.OrderByDescending(m => m.Title),
+                "year" => query.IsAscending
+                    ? bookmarkedContent.OrderBy(m => m.Year)
+                    : bookmarkedContent.OrderByDescending(m => m.Year),
+                "rating" => query.IsAscending
+                    ? bookmarkedContent.OrderBy(m => m.Rating)
+                    : bookmarkedContent.OrderByDescending(m => m.Rating),
+                _ => bookmarkedContent
+            };
+        }
+
+        var movieDtos = bookmarkedContent.Select(m => new MovieDto
+        {
+            MovieId = m.MovieId,
+            Title = m.Title,
+            Year = m.Year,
+            Category = m.Category,
+            Rating = m.Rating,
+            ImgSmall = m.ImgSmall,
+            ImgMedium = m.ImgMedium,
+            ImgLarge = m.ImgLarge,
+            IsBookmarked = true
+        }).ToList();
+
+        return Result<IEnumerable<MovieDto>>.Success(movieDtos);
+    }
 }
