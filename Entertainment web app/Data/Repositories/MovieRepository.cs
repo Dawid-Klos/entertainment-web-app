@@ -42,6 +42,11 @@ public class MovieRepository : IMovieRepository
           .ToListAsync();
     }
 
+    public async Task<IEnumerable<Movie>> GetByIds(IEnumerable<int> movieIds)
+    {
+        return await _context.Movies.Where(m => movieIds.Contains(m.MovieId)).ToListAsync();
+    }
+
     public async Task<Movie?> GetById(int movieId)
     {
         return await _context.Movies.AsNoTracking().FirstOrDefaultAsync(m => m.MovieId == movieId);

@@ -27,20 +27,20 @@ public class TVSeriesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<PagedResponse<MovieDto>>> Get([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
+    public async Task<PagedResponse<MovieDto>> Get([FromQuery] PaginationQuery query)
     {
         try
         {
-            var tvSeries = await _movieService.GetByCategory(_category, pageNumber, pageSize);
+            var tvSeries = await _movieService.GetByCategory(_category, query);
 
             if (tvSeries.IsFailure)
             {
-                return new JsonResult(new Response<MovieDto>
+                return new PagedResponse<MovieDto>
                 {
                     Status = "error",
                     Error = tvSeries.Error,
                     StatusCode = StatusCodes.Status400BadRequest,
-                });
+                };
             }
 
             var data = tvSeries.Data!;
@@ -58,14 +58,57 @@ public class TVSeriesController : ControllerBase
         }
         catch (Exception)
         {
-            var response = new Response<MovieDto>
+            return new PagedResponse<MovieDto>
             {
                 Status = "error",
                 Error = new Error("Internal Server Error", "An error occurred while processing your request."),
                 StatusCode = StatusCodes.Status500InternalServerError,
             };
+        }
+    }
 
-            return new JsonResult(response);
+
+    [HttpGet("search")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<Response<MovieDto>> Get([FromQuery] SearchQuery query)
+    {
+        try
+        {
+            var movies = await _movieService.Search(_category, query);
+
+            if (movies.IsFailure)
+            {
+                return new Response<MovieDto>
+                {
+                    Status = "error",
+                    Error = movies.Error,
+                    StatusCode = movies.Error.Code switch
+                    {
+                        "NotFound" => StatusCodes.Status404NotFound,
+                        _ => StatusCodes.Status400BadRequest,
+                    }
+                };
+            }
+
+            return new Response<MovieDto>
+            {
+                Status = "success",
+                StatusCode = StatusCodes.Status200OK,
+                Data = movies.Data
+            };
+        }
+        catch (Exception)
+        {
+            return new Response<MovieDto>
+            {
+                Status = "error",
+                Error = new Error("Internal Server Error", "An error occurred while processing your request."),
+                StatusCode = StatusCodes.Status500InternalServerError,
+            };
         }
     }
 

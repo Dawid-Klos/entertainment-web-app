@@ -28,6 +28,27 @@ public class BookmarkRepository : IBookmarkRepository
           .ToListAsync();
     }
 
+    public async Task<IEnumerable<Bookmark>?> GetByUserId(string userId)
+    {
+        return await _context.Bookmarks
+          .AsNoTracking()
+          .Where(b => b.UserId == userId)
+          .ToListAsync();
+    }
+
+    public async Task<IEnumerable<Bookmark>?> GetByCategoryAndUserId(string category, string userId)
+    {
+        return await _context.Bookmarks
+          .AsNoTracking()
+          .Join(_context.Movies,
+              b => b.MovieId,
+              m => m.MovieId,
+              (b, m) => new { Bookmark = b, Movie = m })
+          .Where(x => x.Movie.Category == category && x.Bookmark.UserId == userId)
+          .Select(x => x.Bookmark)
+          .ToListAsync();
+    }
+
     public async Task<Bookmark?> GetById(string userId, int movieId)
     {
         return await _context.Bookmarks
@@ -48,7 +69,7 @@ public class BookmarkRepository : IBookmarkRepository
         catch (Exception ex)
         {
             await transaction.RollbackAsync();
-            throw new Exception($"Error while adding bookmarkm, {ex.Message}");
+            throw new Exception($"Error while adding bookmark, {ex.Message}");
         }
     }
 
