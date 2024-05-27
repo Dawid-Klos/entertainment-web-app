@@ -1,5 +1,9 @@
 import { redirect } from "react-router-dom";
-import { fetchSearchResult, fetchContent } from "../utils/fetchContent";
+import {
+  fetchSearchResult,
+  fetchContent,
+  fetchBookmarked,
+} from "../utils/fetchContent";
 import { AuthenticateUser } from "../utils/authUser";
 import { bookmarkAction } from "../utils/actions";
 
@@ -64,7 +68,7 @@ const routerConfig = [
       {
         path: "/Bookmarked",
         element: <Bookmark />,
-        loader: () => fetchContent("bookmarks"),
+        loader: () => fetchBookmarked(),
         action: bookmarkAction,
       },
     ],

@@ -5,13 +5,7 @@ import "./Bookmark.scss";
 
 const Bookmark = () => {
   const bookmarkData = useLoaderData();
-
-  const bookmarks = bookmarkData.bookmarks;
-  const movies = bookmarkData.data;
-
-  const filterByCategory = (data, category) => {
-    return data.filter((movie) => movie.Category === category);
-  };
+  const { tvSeries, movies } = bookmarkData;
 
   return (
     <section className="bookmark-container">
@@ -21,13 +15,8 @@ const Bookmark = () => {
           {!bookmarkData ? (
             <h1>Loading...</h1>
           ) : (
-            filterByCategory(movies, "Movies").map((movie) => (
-              <Card
-                key={movie.MovieId}
-                movie={movie}
-                bookmarks={bookmarks}
-                variant="standard"
-              />
+            movies.data.map((movie) => (
+              <Card key={movie.movieId} movie={movie} variant="standard" />
             ))
           )}
         </div>
@@ -38,13 +27,8 @@ const Bookmark = () => {
           {!bookmarkData ? (
             <h1>Loading...</h1>
           ) : (
-            filterByCategory(movies, "TV Series").map((movie) => (
-              <Card
-                key={movie.MovieId}
-                movie={movie}
-                bookmarks={bookmarks}
-                variant="standard"
-              />
+            tvSeries.data.map((movie) => (
+              <Card key={movie.movieId} movie={movie} variant="standard" />
             ))
           )}
         </div>

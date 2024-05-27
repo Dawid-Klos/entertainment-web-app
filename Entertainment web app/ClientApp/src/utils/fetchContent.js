@@ -2,9 +2,13 @@ import axios from "axios";
 
 export const fetchBookmarked = async () => {
   try {
-    const bookmarksResponse = await axios.get("/api/Bookmark");
+    const bookmarkedMovies = await axios.get("/api/user-content/movies");
+    const bookmarkedTVSeries = await axios.get("/api/user-content/tv-series");
 
-    return bookmarksResponse.data.map((bookmark) => bookmark.MovieId);
+    return {
+      movies: bookmarkedMovies.data,
+      tvSeries: bookmarkedTVSeries.data,
+    };
   } catch (error) {
     throw new Error(
       "Failed to download content, please check your internet connection or try later.",
