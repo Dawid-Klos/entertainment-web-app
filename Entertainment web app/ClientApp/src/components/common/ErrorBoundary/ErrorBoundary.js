@@ -3,24 +3,22 @@ import "./ErrorBoundary.scss";
 import { useRouteError } from "react-router-dom";
 
 const errorMessage = {
-  404: "This page doesn't exist!",
-  401: "You aren't authorized to see this",
-  500: "Looks like our API is down",
-  503: "Looks like our API is down",
-  418: "🫖",
+  401: "You are not authorized to view this page.",
+  404: "The page you are looking for does not exist.",
+  500: "An unexpected error occured. We're sorry about it, please try again later.",
   default:
     "An unexpected error occured. We're sorry about it, please try again later.",
 };
 
 const ErrorBoundary = () => {
   const errorData = useRouteError();
-  console.log(errorData);
+
   return (
     <>
       <Layout />
       <div className="error">
         <h1 className="error__title">Ooops, something went wrong...</h1>
-        <p className="error__message">{errorData?.message}</p>
+        <p className="error__message">{errorMessage[errorData.message]}</p>
       </div>
     </>
   );
