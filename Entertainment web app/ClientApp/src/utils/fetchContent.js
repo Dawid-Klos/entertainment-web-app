@@ -59,11 +59,11 @@ export const searchTVSeries = async (query) => {
 export const searchBookmarked = async (query) => {
   try {
     const [movies, tvSeries] = await Promise.all([
-      axios.get(`/api/user-content/movies?title=${query}`),
-      axios.get(`/api/user-content/tv-series?title=${query}`),
+      axios.get(`/api/user-content/movies/search?title=${query}`),
+      axios.get(`/api/user-content/tv-series/search?title=${query}`),
     ]);
 
-    const searchResult = movies.data.concat(tvSeries.data);
+    const searchResult = movies.data.data.concat(tvSeries.data.data);
 
     return {
       result: searchResult,
