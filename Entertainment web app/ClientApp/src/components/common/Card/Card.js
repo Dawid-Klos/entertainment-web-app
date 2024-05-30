@@ -10,7 +10,7 @@ import "./Card.scss";
 
 const Card = ({ movie, variant }) => {
   const { isMobile } = useWindowSize();
-  const backgroundImg = isMobile ? movie.ImgSmall : movie.ImgLarge;
+  const backgroundImg = isMobile ? movie.imgSmall : movie.imgLarge;
 
   return (
     <div className={`${variant === "trending" ? "trending-card" : "card"}`}>
@@ -24,36 +24,36 @@ const Card = ({ movie, variant }) => {
         }}
       >
         <Form className="card-bookmark__form" method="post">
-          <input type="hidden" name="movieId" value={movie.MovieId} />
-          <input type="hidden" name="isBookmarked" value={movie.IsBookmarked} />
+          <input type="hidden" name="movieId" value={movie.movieId} />
+          <input type="hidden" name="isBookmarked" value={movie.isBookmarked} />
           <button
             className="card-bookmark__button"
             aria-label="Adds a movie to bookmarks"
           >
             <BookmarkIcon
               className="card-bookmark__icon"
-              variant={movie.IsBookmarked ? "filled" : "outlined"}
+              variant={movie.isBookmarked ? "filled" : "outlined"}
             />
           </button>
         </Form>
       </div>
       <div className="card-bottom">
         <div className="card-info">
-          <p>{movie.Year}</p>
+          <p>{movie.year}</p>
           <span className="card-info__separator"></span>
           <p className="card-info__category">
             <img
               src={
-                movie.Category === "Movie" ? categoryMovieIcon : categoryTvIcon
+                movie.category === "Movie" ? categoryMovieIcon : categoryTvIcon
               }
-              alt={movie.Category === "Movie" ? "Movie" : "TV Series"}
+              alt={movie.category === "Movie" ? "Movie" : "TV Series"}
             />
-            {movie.Category}
+            {movie.category}
           </p>
           <span className="card-info__separator"></span>
-          <p>{movie.Rating}</p>
+          <p>{movie.rating}</p>
         </div>
-        <h2 className="card-bottom__title">{movie.Title}</h2>
+        <h2 className="card-bottom__title">{movie.title}</h2>
       </div>
     </div>
   );

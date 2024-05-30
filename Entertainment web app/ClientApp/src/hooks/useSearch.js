@@ -16,17 +16,13 @@ export const useSearch = () => {
 
     const searchParams = new URLSearchParams(location.search);
     searchParams.set("query", query);
-    searchParams.set("category", pageInfo.category);
 
-    if (query === "" || query === null) {
-      searchParams.delete("query");
-    }
-
-    if (pageInfo.category === "") {
-      searchParams.delete("category");
-    }
-
-    navigate(`/search?${searchParams.toString()}`);
+    const searchPath =
+      pageInfo.path === "/"
+        ? "/search"
+        : pageInfo.path.toLowerCase() + "/search";
+    console.log("search path ", searchPath);
+    navigate(`${searchPath}?${searchParams.toString()}`);
   };
 
   useEffect(() => {
@@ -34,8 +30,8 @@ export const useSearch = () => {
       let currentPage = Object.values(pages).find((page) =>
         location.pathname.includes(page.path),
       );
-      currentPage = currentPage ? currentPage : pages.home;
 
+      currentPage = currentPage ? currentPage : pages.home;
       setPageInfo(currentPage);
     }
   }, [location.pathname]);

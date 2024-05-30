@@ -1,22 +1,22 @@
 export const pages = {
   movies: {
-    path: "/Movies",
+    path: "/movies",
     placeholder: "Search for movies",
     category: "Movies",
   },
   tvSeries: {
-    path: "/TV-Series",
+    path: "/tv-series",
     placeholder: "Search for TV series",
-    category: "Series",
+    category: "TV Series",
   },
   bookmarked: {
-    path: "/Bookmarked",
+    path: "/bookmarked",
     placeholder: "Search for bookmarked content",
     category: "Bookmarked",
   },
   home: {
     path: "/",
     placeholder: "Search for movies or TV series",
-    category: "",
+    category: "Library",
   },
 };
