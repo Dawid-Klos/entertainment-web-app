@@ -19,7 +19,7 @@ const Recommended = ({ content }) => {
           <h1>Loading...</h1>
         ) : (
           movies.map((movie) => (
-            <Card key={movie.MovieId} movie={movie} variant="standard" />
+            <Card key={movie.movieId} movie={movie} variant="standard" />
           ))
         )}
       </div>
