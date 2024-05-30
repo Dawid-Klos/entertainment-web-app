@@ -1,23 +1,25 @@
 @import "../../../styles/variables";
 
 .error {
-  width: calc(100% - 2em);
-  min-height: 100%;
+  grid-area: main;
+  width: calc(100% - 2rem);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding: 1rem;
 
-  padding: 0 1em;
-  
-  &__title {
-    font: $large-heading-mobile;
-    font-size: 1.5rem;
-    padding: 0 0.5em;
+  @include breakpoint(tablet) {
+    padding: 2rem;
   }
-  
+
+  &__title {
+    text-align: center;
+    color: $color-red;
+  }
   &__message {
-    margin-top: 1em;
+    margin-top: 0.5rem;
     text-align: center;
   }
 }
+
