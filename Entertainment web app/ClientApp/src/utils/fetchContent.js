@@ -28,38 +28,65 @@ export const fetchContent = async (path) => {
   }
 };
 
-export const fetchSearchResult = async (query, category) => {
-  const apiUrl = {
-    byTitle: `/api/Search/SearchByTitle?title=${query}`,
-    byCategoryAndTitle: `/api/Search/SearchByCategoryAndTitle?category=${category}&title=${query}`,
-    byCategory: `/api/Search/SearchByCategory?category=${category}`,
-  };
-
+export const searchMovies = async (query) => {
   try {
-    let res;
-
-    if (!category && !query) {
-      const movies = await axios.get("/api/movies");
-      const tvSeries = await axios.get("/api/tv-series");
-
-      res = { data: [...movies.data, ...tvSeries.data] };
-    } else if (!category || category === "") {
-      res = await axios.get(apiUrl.byTitle);
-    } else if (!query || query === null) {
-      res = await axios.get(apiUrl.byCategory);
-    } else if (category && query) {
-      res = await axios.get(apiUrl.byCategoryAndTitle);
-    } else {
-      throw new Error("Invalid search query, please try again.");
-    }
-
-    const bookmarksResponse = await fetchBookmarked();
+    const movies = await axios.get(`/api/movies/search?title=${query}`);
 
     return {
-      data: res.data,
-      bookmarks: bookmarksResponse,
+      result: movies.data.data,
       query: query ? query : "",
-      category: category ? category : "Library",
+      category: "Movies",
+    };
+  } catch (error) {
+    throw new Error("Failed to fetch search result, please try again later.");
+  }
+};
+
+export const searchTVSeries = async (query) => {
+  try {
+    const tvSeries = await axios.get(`/api/tv-series/search?title=${query}`);
+
+    return {
+      result: tvSeries.data.data,
+      query: query ? query : "",
+      category: "TV Series",
+    };
+  } catch (error) {
+    throw new Error("Failed to fetch search result, please try again later.");
+  }
+};
+
+export const searchBookmarked = async (query) => {
+  try {
+    const [movies, tvSeries] = await Promise.all([
+      axios.get(`/api/user-content/movies?title=${query}`),
+      axios.get(`/api/user-content/tv-series?title=${query}`),
+    ]);
+
+    const searchResult = movies.data.concat(tvSeries.data);
+
+    return {
+      result: searchResult,
+      query: query ? query : "",
+      category: "Bookmarked",
+    };
+  } catch (error) {
+    throw new Error("Failed to fetch search result, please try again later.");
+  }
+};
+
+export const searchContent = async (query) => {
+  try {
+    const [movies, tvSeries] = await Promise.all([
+      axios.get(`/api/movies/search?title=${query}`),
+      axios.get(`/api/tv-series/search?title=${query}`),
+    ]);
+    const searchResult = movies.data.data.concat(tvSeries.data.data);
+
+    return {
+      result: searchResult,
+      query: query ? query : "",
+      category: "Library",
     };
   } catch (error) {
     throw new Error("Failed to fetch search result, please try again later.");

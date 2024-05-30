@@ -9,12 +9,11 @@ const Search = () => {
   const [title, setTitle] = useState(null);
   const searchResult = useLoaderData();
 
-  const bookmarks = searchResult.bookmarks;
-  const movies = searchResult.data;
+  const movies = searchResult.result;
 
   const setTitleForQuery = () => {
     setTitle(
-      `Found ${searchResult.data.length} results for '${searchResult.query}' in ${searchResult.category}`,
+      `Found ${movies.length} results for '${searchResult.query}' in ${searchResult.category}`,
     );
   };
 
@@ -28,14 +27,9 @@ const Search = () => {
     <div className="search">
       <h1 className="search__title">{title}</h1>
       <div className="search__content">
-        {searchResult ? (
+        {movies.length > 0 ? (
           movies.map((movie) => (
-            <Card
-              key={movie.MovieId}
-              movie={movie}
-              bookmarks={bookmarks}
-              variant="standard"
-            />
+            <Card key={movie.movieId} movie={movie} variant="standard" />
           ))
         ) : (
           <p>Content has not been found</p>

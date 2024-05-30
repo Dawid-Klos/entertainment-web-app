@@ -1,8 +1,11 @@
 import { redirect } from "react-router-dom";
 import {
-  fetchSearchResult,
   fetchContent,
   fetchBookmarked,
+  searchMovies,
+  searchTVSeries,
+  searchBookmarked,
+  searchContent,
 } from "../utils/fetchContent";
 import { AuthenticateUser } from "../utils/authUser";
 import { bookmarkAction } from "../utils/actions";
@@ -43,32 +46,61 @@ const routerConfig = [
         action: bookmarkAction,
       },
       {
-        path: "/Search",
+        path: "/search",
         element: <Search />,
         loader: ({ request }) => {
           const url = new URL(request.url);
           const query = url.searchParams.get("query");
-          const category = url.searchParams.get("category");
-
-          return fetchSearchResult(query, category);
+          return searchContent(query);
         },
+        action: bookmarkAction,
       },
       {
-        path: "/Movies",
+        path: "/movies",
         element: <Movies />,
         loader: () => fetchContent("movies"),
         action: bookmarkAction,
       },
       {
-        path: "/TV-series",
+        path: "/movies/search",
+        element: <Search />,
+        loader: ({ request }) => {
+          const url = new URL(request.url);
+          const query = url.searchParams.get("query");
+          return searchMovies(query);
+        },
+        action: bookmarkAction,
+      },
+      {
+        path: "/tv-series",
         element: <TVSeries />,
         loader: () => fetchContent("tv-series"),
         action: bookmarkAction,
       },
       {
-        path: "/Bookmarked",
+        path: "/tv-series/search",
+        element: <Search />,
+        loader: ({ request }) => {
+          const url = new URL(request.url);
+          const query = url.searchParams.get("query");
+          return searchTVSeries(query);
+        },
+        action: bookmarkAction,
+      },
+      {
+        path: "/bookmarked",
         element: <Bookmark />,
         loader: () => fetchBookmarked(),
+        action: bookmarkAction,
+      },
+      {
+        path: "/bookmarked/search",
+        element: <Search />,
+        loader: ({ request }) => {
+          const url = new URL(request.url);
+          const query = url.searchParams.get("query");
+          return searchBookmarked(query);
+        },
         action: bookmarkAction,
       },
     ],
