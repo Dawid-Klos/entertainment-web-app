@@ -25,11 +25,7 @@ const Card = ({ movie, variant }) => {
       >
         <Form className="card-bookmark__form" method="post">
           <input type="hidden" name="movieId" value={movie.movieId} />
-          <input
-            type="hidden"
-            name="isBookmarked"
-            value={movie.isBookmarked && false}
-          />
+          <input type="hidden" name="isBookmarked" value={movie.isBookmarked} />
           <button
             className="card-bookmark__button"
             aria-label="Adds a movie to bookmarks"
