@@ -6,14 +6,16 @@ export const bookmarkAction = async ({ request }) => {
   const movieId = formData.get("movieId");
   const isBookmarked = formData.get("isBookmarked") === "true";
 
+  console.log(movieId, isBookmarked);
+
   try {
     if (isBookmarked) {
-      await axios.delete("/api/Bookmark/" + movieId);
+      await axios.delete("/api/bookmarks/" + movieId);
       return { movieId: movieId, isBookmarked: false };
     }
 
     if (!isBookmarked) {
-      await axios.post("/api/Bookmark/" + movieId);
+      await axios.post("/api/bookmarks/" + movieId);
       return { movieId: movieId, isBookmarked: true };
     }
 
