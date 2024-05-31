@@ -82,6 +82,7 @@ input {
       "aside searchBar"
       "aside main";
     grid-template-columns: 1fr 12fr;
+    grid-template-rows: auto 1fr;
     align-items: start;
   }
 

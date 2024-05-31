@@ -37,7 +37,7 @@ const Slider = ({ movies }) => {
     <div ref={sliderRef} className="keen-slider">
       {movies &&
         movies.map((movie) => (
-          <div className="keen-slider__slide" key={movie.MovieId}>
+          <div className="keen-slider__slide" key={movie.movieId}>
             <Card movie={movie} variant="trending" />
           </div>
         ))}

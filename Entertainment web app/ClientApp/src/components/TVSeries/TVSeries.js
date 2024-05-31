@@ -1,12 +1,10 @@
 import { useLoaderData } from "react-router-dom";
 
 import Card from "../common/Card/Card";
-
 import "./TVSeries.scss";
 
 const TVSeries = () => {
   const tvSeriesData = useLoaderData();
-
   const tvSeries = tvSeriesData.data;
 
   return (
@@ -17,7 +15,7 @@ const TVSeries = () => {
           <h1>Loading...</h1>
         ) : (
           tvSeries.map((movie) => (
-            <Card key={movie.MovieId} movie={movie} variant="standard" />
+            <Card key={movie.movieId} movie={movie} variant="standard" />
           ))
         )}
       </div>

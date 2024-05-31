@@ -1,15 +1,21 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 
 import "./Nav.scss";
 
 const Nav = () => {
+  const { pathname } = useLocation();
+
   return (
     <nav className="nav">
       <NavLink className="nav__link" to="/">
         {({ isActive }) => (
           <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg">
             <path
-              className={isActive ? "nav__link--active" : "nav__link--default"}
+              className={
+                "/search".includes(pathname) || isActive
+                  ? "nav__link--active"
+                  : "nav__link--default"
+              }
               d="M8 0H1C.4 0 0 .4 0 1v7c0 .6.4 1 1 1h7c.6 0 1-.4 1-1V1c0-.6-.4-1-1-1Zm0 11H1c-.6 0-1 .4-1 1v7c0 .6.4 1 1 1h7c.6 0 1-.4 1-1v-7c0-.6-.4-1-1-1ZM19 0h-7c-.6 0-1 .4-1 1v7c0 .6.4 1 1 1h7c.6 0 1-.4 1-1V1c0-.6-.4-1-1-1Zm0 11h-7c-.6 0-1 .4-1 1v7c0 .6.4 1 1 1h7c.6 0 1-.4 1-1v-7c0-.6-.4-1-1-1Z"
             />
           </svg>
