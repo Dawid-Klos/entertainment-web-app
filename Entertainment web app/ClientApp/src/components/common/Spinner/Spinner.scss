@@ -1,4 +1,4 @@
-@import '../../../styles/variables.scss';
+@import "../../../styles/variables.scss";
 
 @keyframes loading {
   from {
@@ -13,15 +13,23 @@
 .spinner {
   display: none;
   visibility: hidden;
-  
+
   &--active {
     display: block;
     visibility: visible;
-    width: 1rem;
-    height: 1rem;
-    border: 4px solid transparent;
+    width: 1.5rem;
+    height: 1.5rem;
+    border: 5px solid transparent;
     border-top-color: $color-white;
     border-radius: 50%;
-    animation: loading .75s ease infinite;
+    animation: loading 1.15s ease infinite;
+  }
+
+  &--center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
 }
+
