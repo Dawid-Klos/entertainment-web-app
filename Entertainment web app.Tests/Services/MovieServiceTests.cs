@@ -1,6 +1,7 @@
 using Entertainment_web_app.Models.Content;
 using Entertainment_web_app.Repositories;
 using Entertainment_web_app.Services;
+using Entertainment_web_app.Models.Dto;
 using Entertainment_web_app.Data;
 
 namespace Entertainment_web_app.Tests;
@@ -33,7 +34,8 @@ public class MovieServiceTests
           .ReturnsAsync(6);
 
         var service = new MovieService(repository.Object);
-        var result = await service.GetAll(1, 10);
+        PaginationQuery query = new PaginationQuery { PageNumber = 1, PageSize = 10 };
+        var result = await service.GetAll(query);
 
         Assert.NotNull(result);
         Assert.True(result.IsSuccess);
@@ -52,7 +54,8 @@ public class MovieServiceTests
           .ReturnsAsync(new List<Movie>());
 
         var service = new MovieService(repository.Object);
-        var result = await service.GetAll(1, 10);
+        PaginationQuery query = new PaginationQuery { PageNumber = 1, PageSize = 10 };
+        var result = await service.GetAll(query);
 
         Assert.NotNull(result);
         Assert.True(result.IsFailure);
@@ -79,7 +82,8 @@ public class MovieServiceTests
           .ReturnsAsync(GetTestMovies().Where(m => m.Category == category.ToString()));
 
         var service = new MovieService(repository.Object);
-        var result = await service.GetByCategory(category, pageNumber, pageSize);
+        PaginationQuery query = new PaginationQuery { PageNumber = pageNumber, PageSize = pageSize };
+        var result = await service.GetByCategory(category, query);
 
         Assert.NotNull(result);
         Assert.True(result.IsSuccess);
@@ -108,7 +112,8 @@ public class MovieServiceTests
           .ReturnsAsync(GetTestMovies().Where(m => m.Category == category.ToString()));
 
         var service = new MovieService(repository.Object);
-        var result = await service.GetByCategory(category, pageNumber, pageSize);
+        PaginationQuery query = new PaginationQuery { PageNumber = pageNumber, PageSize = pageSize };
+        var result = await service.GetByCategory(category, query);
 
         Assert.NotNull(result);
         Assert.True(result.IsFailure);
@@ -132,7 +137,8 @@ public class MovieServiceTests
           .ReturnsAsync(GetTestMovies().Where(m => m.Category == category.ToString()));
 
         var service = new MovieService(repository.Object);
-        var result = await service.GetByCategory(category, pageNumber, pageSize);
+        PaginationQuery query = new PaginationQuery { PageNumber = pageNumber, PageSize = pageSize };
+        var result = await service.GetByCategory(category, query);
 
         Assert.NotNull(result);
         Assert.True(result.IsFailure);
