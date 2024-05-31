@@ -11,23 +11,17 @@ const Search = () => {
 
   const movies = searchResult.result;
 
-  const setTitleForQuery = () => {
+  useEffect(() => {
     setTitle(
       `Found ${movies.length} results for '${searchResult.query}' in ${searchResult.category}`,
     );
-  };
-
-  useEffect(() => {
-    if (searchResult) {
-      setTitleForQuery();
-    }
   }, [searchResult]);
 
   return (
     <div className="search">
       <h1 className="search__title">{title}</h1>
       <div className="search__content">
-        {movies.length > 0 ? (
+        {movies ? (
           movies.map((movie) => (
             <Card key={movie.movieId} movie={movie} variant="standard" />
           ))
