@@ -18,7 +18,9 @@ const ErrorBoundary = () => {
       <Layout />
       <div className="error">
         <h1 className="error__title">Ooops, something went wrong...</h1>
-        <p className="error__message">{errorMessage[errorData.message]}</p>
+        <p className="error__message">
+          {errorMessage[errorData.message] || errorMessage.default}
+        </p>
       </div>
     </>
   );
