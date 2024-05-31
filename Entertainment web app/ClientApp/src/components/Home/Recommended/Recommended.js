@@ -1,11 +1,11 @@
 import Card from "../../common/Card/Card";
-
+import Spinner from "../../common/Spinner/Spinner";
 import CarouselIcon from "../../../assets/icons/Carousel";
 
 import "./Recommended.scss";
 
 const Recommended = ({ content }) => {
-  const movies = content.data;
+  const movies = (content.data ||= []);
 
   return (
     <div className="recommend">
@@ -15,8 +15,8 @@ const Recommended = ({ content }) => {
       </div>
 
       <div className="recommend__content">
-        {!content ? (
-          <h1>Loading...</h1>
+        {!movies || movies.length < 1 ? (
+          <Spinner loading={true} variant="center" />
         ) : (
           movies.map((movie) => (
             <Card key={movie.movieId} movie={movie} variant="standard" />
