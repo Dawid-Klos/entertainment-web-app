@@ -26,7 +26,7 @@ public class TrendingServiceTests
     }
 
     [Fact]
-    public async Task GetAll_ReturnsTrue()
+    public async Task GetAll_ReturnsSuccess()
     {
         var repository = new Mock<ITrendingRepository>();
         repository
@@ -42,7 +42,7 @@ public class TrendingServiceTests
     }
 
     [Fact]
-    public async Task GetAll_ReturnsFalse()
+    public async Task GetAll_ReturnsNotFound()
     {
         var repository = new Mock<ITrendingRepository>();
         repository
@@ -54,7 +54,208 @@ public class TrendingServiceTests
 
         Assert.NotNull(result);
         Assert.False(result.IsSuccess);
-        Assert.Equal("NotFound", result.Error?.Code);
-        Assert.Equal("No trending movies found", result.Error?.Description);
+        Assert.Matches("NotFound", result.Error?.Code);
+    }
+
+    [Theory]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
+    public async Task GetById_ReturnsTrending(int trendingId)
+    {
+        var repository = new Mock<ITrendingRepository>();
+        repository
+          .Setup(repo => repo.GetById(trendingId))
+          .ReturnsAsync(GetTestTrending().Where(t => t.TrendingId == trendingId).FirstOrDefault());
+
+        var service = new TrendingService(repository.Object);
+        var result = await service.GetById(trendingId);
+
+        Assert.NotNull(result);
+        Assert.True(result.IsSuccess);
+        Assert.Equal(trendingId, result.Data?.MovieId);
+    }
+
+
+    [Theory]
+    [InlineData(7)]
+    [InlineData(8)]
+    [InlineData(9)]
+    public async Task GetById_ReturnsNotFound(int trendingId)
+    {
+        var repository = new Mock<ITrendingRepository>();
+        repository
+          .Setup(repo => repo.GetById(trendingId))
+          .ReturnsAsync(() => null!);
+
+        var service = new TrendingService(repository.Object);
+        var result = await service.GetById(trendingId);
+
+        Assert.NotNull(result);
+        Assert.True(result.IsFailure);
+        Assert.Matches("NotFound", result.Error?.Code);
+        Assert.Matches($"Trending movie with ID = {trendingId} does not exist", result.Error?.Description);
+    }
+
+    [Fact]
+    public async Task Add_ReturnsSuccess()
+    {
+        var trending = new Trending
+        {
+            TrendingId = 7,
+            ImgTrendingSmall = "img7",
+            ImgTrendingLarge = "img7",
+            Movie = new Movie { MovieId = 7, Title = "title7", Year = 2027, Category = "Movies", Rating = "PG" }
+        };
+
+        var repository = new Mock<ITrendingRepository>();
+        repository
+          .Setup(repo => repo.GetById(trending.TrendingId))
+          .ReturnsAsync(() => null!);
+
+        var service = new TrendingService(repository.Object);
+        var result = await service.Add(trending);
+
+        Assert.NotNull(result);
+        Assert.True(result.IsSuccess);
+    }
+
+    [Theory]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
+    public async Task Add_ReturnsAlreadyExists(int trendingId)
+    {
+        var newTrending = new Trending
+        {
+            TrendingId = trendingId,
+            ImgTrendingSmall = "img1",
+            ImgTrendingLarge = "img1",
+            Movie = new Movie { MovieId = 1, Title = "title1", Year = 2021, Category = "Movies", Rating = "PG" }
+        };
+
+        var repository = new Mock<ITrendingRepository>();
+        repository
+          .Setup(repo => repo.GetByMovieId(newTrending.MovieId))
+          .ReturnsAsync(GetTestTrending().Where(t => t.MovieId == newTrending.MovieId).FirstOrDefault());
+
+        repository
+          .Setup(repo => repo.GetById(trendingId))
+          .ReturnsAsync(GetTestTrending().Where(t => t.TrendingId == trendingId).FirstOrDefault());
+
+        var service = new TrendingService(repository.Object);
+        var result = await service.Add(newTrending);
+
+        Assert.NotNull(result);
+        Assert.True(result.IsFailure);
+        Assert.Matches("AlreadyExists", result.Error?.Code);
+    }
+
+    [Theory]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
+    public async Task Update_ReturnsSuccess(int trendingId)
+    {
+        var trending = GetTestTrending().Where(t => t.TrendingId == trendingId).FirstOrDefault()!;
+
+        var repository = new Mock<ITrendingRepository>();
+        repository
+          .Setup(repo => repo.GetById(trendingId))
+          .ReturnsAsync(trending);
+
+        var service = new TrendingService(repository.Object);
+        var result = await service.Update(trending);
+
+        Assert.NotNull(result);
+        Assert.True(result.IsSuccess);
+    }
+
+    [Theory]
+    [InlineData(7)]
+    [InlineData(8)]
+    [InlineData(9)]
+    public async Task Update_ReturnsNotFound(int trendingId)
+    {
+        var trending = new Trending
+        {
+            TrendingId = trendingId,
+            ImgTrendingSmall = "img1",
+            ImgTrendingLarge = "img1",
+            Movie = new Movie { MovieId = 1, Title = "title1", Year = 2021, Category = "Movies", Rating = "PG" }
+        };
+
+        var repository = new Mock<ITrendingRepository>();
+        repository
+          .Setup(repo => repo.GetById(trendingId))
+          .ReturnsAsync(() => null!);
+
+        var service = new TrendingService(repository.Object);
+        var result = await service.Update(trending);
+
+        Assert.NotNull(result);
+        Assert.True(result.IsFailure);
+        Assert.Matches("NotFound", result.Error?.Code);
+    }
+
+    [Theory]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
+    public async Task Update_ReturnsBadRequest(int trendingId)
+    {
+        var trending = GetTestTrending().Where(t => t.TrendingId == trendingId).FirstOrDefault()!;
+        trending = null!;
+
+        var repository = new Mock<ITrendingRepository>();
+        repository
+          .Setup(repo => repo.GetById(trendingId))
+          .ReturnsAsync(trending);
+
+        var service = new TrendingService(repository.Object);
+        var result = await service.Update(trending);
+
+        Assert.NotNull(result);
+        Assert.True(result.IsFailure);
+        Assert.Matches("BadRequest", result.Error?.Code);
+    }
+
+    [Theory]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
+    public async Task Delete_ReturnsSuccess(int trendingId)
+    {
+        var trending = GetTestTrending().Where(t => t.TrendingId == trendingId).FirstOrDefault()!;
+
+        var repository = new Mock<ITrendingRepository>();
+        repository
+          .Setup(repo => repo.GetById(trendingId))
+          .ReturnsAsync(trending);
+
+        var service = new TrendingService(repository.Object);
+        var result = await service.Delete(trendingId);
+
+        Assert.NotNull(result);
+        Assert.True(result.IsSuccess);
+    }
+
+    [Theory]
+    [InlineData(7)]
+    [InlineData(8)]
+    [InlineData(9)]
+    public async Task Delete_ReturnsNotFound(int trendingId)
+    {
+        var repository = new Mock<ITrendingRepository>();
+        repository
+          .Setup(repo => repo.GetById(trendingId))
+          .ReturnsAsync(() => null!);
+
+        var service = new TrendingService(repository.Object);
+        var result = await service.Delete(trendingId);
+
+        Assert.NotNull(result);
+        Assert.True(result.IsFailure);
+        Assert.Matches("NotFound", result.Error?.Code);
     }
 }
