@@ -80,6 +80,11 @@ public class TrendingService : ITrendingService
 
     public async Task<Result> Update(Trending trending)
     {
+        if (trending == null)
+        {
+            return Result.Failure(new Error("BadRequest", "Provided trending movie is null"));
+        }
+
         var trendingExists = await _trendingRepository.GetById(trending.TrendingId);
 
         if (trendingExists == null)
