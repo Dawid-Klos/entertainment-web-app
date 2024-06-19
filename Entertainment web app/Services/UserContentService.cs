@@ -162,8 +162,11 @@ public class UserContentService : IUserContentService
             bookmarkedContent = bookmarkedContent.Where(m => m.Rating == query.Rating);
         }
 
+
         if (!string.IsNullOrWhiteSpace(query.SortBy))
         {
+            query.SortBy = query.SortBy.ToLower();
+
             bookmarkedContent = query.SortBy switch
             {
                 "title" => query.IsAscending
