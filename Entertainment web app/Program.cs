@@ -73,7 +73,22 @@ builder.Services.AddAuthorization(options =>
     options.DefaultPolicy = new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme)
         .RequireAuthenticatedUser()
         .Build();
+
+    options.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
+    options.AddPolicy("RequireUserRole", policy => policy.RequireRole("User"));
 });
+
+// Seed roles
+var roleManager = builder.Services.BuildServiceProvider().GetService<RoleManager<IdentityRole>>();
+string[] roles = { "Admin", "User" };
+
+foreach (var role in roles)
+{
+    if (!roleManager!.RoleExistsAsync(role).Result)
+    {
+        await roleManager.CreateAsync(new IdentityRole(role));
+    }
+}
 
 // Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
