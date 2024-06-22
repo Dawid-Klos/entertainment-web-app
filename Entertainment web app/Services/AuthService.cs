@@ -86,6 +86,13 @@ public class AuthService : IAuthService
             return Result.Failure(new Error("BadRequest", "User creation failed"));
         }
 
+        var userRole = await _userManager.AddToRoleAsync(applicationUser, "User");
+
+        if (!userRole.Succeeded)
+        {
+            return Result.Failure(new Error("BadRequest", "User role assignment failed"));
+        }
+
         return Result.Success();
     }
 
