@@ -1,6 +1,6 @@
-using Entertainment_web_app.Data;
-using Entertainment_web_app.Models.Auth;
 using Entertainment_web_app.Common.Responses;
+using Entertainment_web_app.Models.Auth;
+using Entertainment_web_app.Data;
 
 namespace Entertainment_web_app.Services;
 
@@ -12,6 +12,6 @@ public interface IAuthService
     Task<Result> LoginUser(LoginViewModel model);
     Task<Result> UpdateUser(ApplicationUser user);
     Task<Result> DeleteUser(string userId);
-    Task<Result> AddRoleToUser(string userId, string roleName);
-    Task<Result> RemoveRoleFromUser(string userId, string roleName);
+    Task<Result> AddRoleToUser(UserRoleViewModel model);
+    Task<Result> RemoveRoleFromUser(UserRoleViewModel model);
 }

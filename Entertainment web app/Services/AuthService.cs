@@ -203,16 +203,16 @@ public class AuthService : IAuthService
         return Result.Success();
     }
 
-    public async Task<Result> AddRoleToUser(string userId, string roleName)
+    public async Task<Result> AddRoleToUser(UserRoleViewModel model)
     {
-        var user = await _userManager.FindByIdAsync(userId);
+        var user = await _userManager.FindByIdAsync(model.UserId);
 
         if (user == null)
         {
             return Result.Failure(new Error("NotFound", "User not found"));
         }
 
-        var result = await _userManager.AddToRoleAsync(user, roleName);
+        var result = await _userManager.AddToRoleAsync(user, model.RoleName);
 
         if (!result.Succeeded)
         {
@@ -222,16 +222,16 @@ public class AuthService : IAuthService
         return Result.Success();
     }
 
-    public async Task<Result> RemoveRoleFromUser(string userId, string roleName)
+    public async Task<Result> RemoveRoleFromUser(UserRoleViewModel model)
     {
-        var user = await _userManager.FindByIdAsync(userId);
+        var user = await _userManager.FindByIdAsync(model.UserId);
 
         if (user == null)
         {
             return Result.Failure(new Error("NotFound", "User not found"));
         }
 
-        var result = await _userManager.RemoveFromRoleAsync(user, roleName);
+        var result = await _userManager.RemoveFromRoleAsync(user, model.RoleName);
 
         if (!result.Succeeded)
         {
