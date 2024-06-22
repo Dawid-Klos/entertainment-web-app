@@ -202,4 +202,42 @@ public class AuthService : IAuthService
 
         return Result.Success();
     }
+
+    public async Task<Result> AddRoleToUser(string userId, string roleName)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+
+        if (user == null)
+        {
+            return Result.Failure(new Error("NotFound", "User not found"));
+        }
+
+        var result = await _userManager.AddToRoleAsync(user, roleName);
+
+        if (!result.Succeeded)
+        {
+            return Result.Failure(new Error("BadRequest", "Role assignment failed"));
+        }
+
+        return Result.Success();
+    }
+
+    public async Task<Result> RemoveRoleFromUser(string userId, string roleName)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+
+        if (user == null)
+        {
+            return Result.Failure(new Error("NotFound", "User not found"));
+        }
+
+        var result = await _userManager.RemoveFromRoleAsync(user, roleName);
+
+        if (!result.Succeeded)
+        {
+            return Result.Failure(new Error("BadRequest", "Role removal failed"));
+        }
+
+        return Result.Success();
+    }
 }
