@@ -189,4 +189,99 @@ public class AuthController : ControllerBase
         }
     }
 
+    [HttpPost("add-role")]
+    [Authorize(Roles = "Admin")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<Response<ApplicationUser>> AddRole([FromBody] UserRoleViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return new Response<ApplicationUser>
+            {
+                Status = "error",
+                StatusCode = StatusCodes.Status400BadRequest,
+                Error = new Error("BadRequest", "Invalid model state")
+            };
+        }
+
+        try
+        {
+            var result = await _authService.AddRoleToUser(model);
+
+            if (result.IsFailure)
+            {
+                return new Response<ApplicationUser>
+                {
+                    Status = "error",
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Error = result.Error
+                };
+            }
+
+            return new Response<ApplicationUser>
+            {
+                Status = "success",
+                StatusCode = StatusCodes.Status200OK,
+            };
+        }
+        catch (Exception)
+        {
+            return new Response<ApplicationUser>
+            {
+                Status = "error",
+                StatusCode = StatusCodes.Status500InternalServerError,
+                Error = new Error("InternalServerError", "An error occurred while processing the request")
+            };
+        }
+    }
+
+    [HttpPost("remove-role")]
+    [Authorize(Roles = "Admin")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<Response<ApplicationUser>> RemoveRole([FromBody] UserRoleViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return new Response<ApplicationUser>
+            {
+                Status = "error",
+                StatusCode = StatusCodes.Status400BadRequest,
+                Error = new Error("BadRequest", "Invalid model state")
+            };
+        }
+
+        try
+        {
+            var result = await _authService.RemoveRoleFromUser(model);
+
+            if (result.IsFailure)
+            {
+                return new Response<ApplicationUser>
+                {
+                    Status = "error",
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Error = result.Error
+                };
+            }
+
+            return new Response<ApplicationUser>
+            {
+                Status = "success",
+                StatusCode = StatusCodes.Status200OK,
+            };
+        }
+        catch (Exception)
+        {
+            return new Response<ApplicationUser>
+            {
+                Status = "error",
+                StatusCode = StatusCodes.Status500InternalServerError,
+                Error = new Error("InternalServerError", "An error occurred while processing the request")
+            };
+        }
+    }
 }
