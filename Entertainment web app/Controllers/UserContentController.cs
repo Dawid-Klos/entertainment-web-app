@@ -10,7 +10,7 @@ using Entertainment_web_app.Services;
 namespace Entertainment_web_app.Controllers;
 
 [ApiController]
-[Authorize]
+[Authorize(Roles = "User")]
 [Route("api/user-content")]
 [Produces("application/json")]
 public class UserContentController : ControllerBase
