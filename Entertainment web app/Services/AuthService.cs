@@ -113,11 +113,18 @@ public class AuthService : IAuthService
             return Result.Failure(new Error("BadRequest", "Invalid password"));
         }
 
-        var claims = new[]
+        List<Claim> claims = new List<Claim>
         {
-            new Claim("Email", model.Email),
+            new Claim(ClaimTypes.Email, model.Email),
             new Claim(ClaimTypes.NameIdentifier, user.Id)
         };
+
+        var userRoles = await _userManager.GetRolesAsync(user);
+
+        foreach (var role in userRoles)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, role));
+        }
 
         var keyString = _configuration["JWT_SECRET_KEY"];
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(keyString!));
