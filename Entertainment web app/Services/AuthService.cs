@@ -86,6 +86,13 @@ public class AuthService : IAuthService
             return Result.Failure(new Error("BadRequest", "User creation failed"));
         }
 
+        var userRole = await _userManager.AddToRoleAsync(applicationUser, "User");
+
+        if (!userRole.Succeeded)
+        {
+            return Result.Failure(new Error("BadRequest", "User role assignment failed"));
+        }
+
         return Result.Success();
     }
 
@@ -106,11 +113,18 @@ public class AuthService : IAuthService
             return Result.Failure(new Error("BadRequest", "Invalid password"));
         }
 
-        var claims = new[]
+        List<Claim> claims = new List<Claim>
         {
-            new Claim("Email", model.Email),
+            new Claim(ClaimTypes.Email, model.Email),
             new Claim(ClaimTypes.NameIdentifier, user.Id)
         };
+
+        var userRoles = await _userManager.GetRolesAsync(user);
+
+        foreach (var role in userRoles)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, role));
+        }
 
         var keyString = _configuration["JWT_SECRET_KEY"];
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(keyString!));
@@ -191,6 +205,44 @@ public class AuthService : IAuthService
         if (!result.Succeeded)
         {
             return Result.Failure(new Error("BadRequest", "User deletion failed"));
+        }
+
+        return Result.Success();
+    }
+
+    public async Task<Result> AddRoleToUser(UserRoleViewModel model)
+    {
+        var user = await _userManager.FindByIdAsync(model.UserId);
+
+        if (user == null)
+        {
+            return Result.Failure(new Error("NotFound", "User not found"));
+        }
+
+        var result = await _userManager.AddToRoleAsync(user, model.RoleName);
+
+        if (!result.Succeeded)
+        {
+            return Result.Failure(new Error("BadRequest", "Role assignment failed"));
+        }
+
+        return Result.Success();
+    }
+
+    public async Task<Result> RemoveRoleFromUser(UserRoleViewModel model)
+    {
+        var user = await _userManager.FindByIdAsync(model.UserId);
+
+        if (user == null)
+        {
+            return Result.Failure(new Error("NotFound", "User not found"));
+        }
+
+        var result = await _userManager.RemoveFromRoleAsync(user, model.RoleName);
+
+        if (!result.Succeeded)
+        {
+            return Result.Failure(new Error("BadRequest", "Role removal failed"));
         }
 
         return Result.Success();

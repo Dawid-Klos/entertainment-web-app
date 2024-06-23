@@ -75,6 +75,18 @@ builder.Services.AddAuthorization(options =>
         .Build();
 });
 
+// Seed roles
+var roleManager = builder.Services.BuildServiceProvider().GetService<RoleManager<IdentityRole>>();
+string[] roles = { "Admin", "User" };
+
+foreach (var role in roles)
+{
+    if (!roleManager!.RoleExistsAsync(role).Result)
+    {
+        await roleManager.CreateAsync(new IdentityRole(role));
+    }
+}
+
 // Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IMovieRepository, MovieRepository>();

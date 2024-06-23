@@ -10,7 +10,6 @@ using Entertainment_web_app.Data;
 namespace Entertainment_web_app.Controllers;
 
 [ApiController]
-[Authorize]
 [Route("api/tv-series")]
 [Produces("application/json")]
 public class TVSeriesController : ControllerBase
@@ -24,6 +23,7 @@ public class TVSeriesController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Roles = "User")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -69,6 +69,7 @@ public class TVSeriesController : ControllerBase
 
 
     [HttpGet("search")]
+    [Authorize(Roles = "User")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -113,6 +114,7 @@ public class TVSeriesController : ControllerBase
     }
 
     [HttpGet("{tvSeriesId}")]
+    [Authorize(Roles = "User")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -158,6 +160,7 @@ public class TVSeriesController : ControllerBase
     }
 
     [HttpDelete("{tvSeriesId}")]
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -203,6 +206,7 @@ public class TVSeriesController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -246,6 +250,7 @@ public class TVSeriesController : ControllerBase
     }
 
     [HttpPut]
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

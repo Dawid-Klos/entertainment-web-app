@@ -10,7 +10,6 @@ using Entertainment_web_app.Data;
 namespace Entertainment_web_app.Controllers;
 
 [ApiController]
-[Authorize]
 [Route("api/movies")]
 [Produces("application/json")]
 public class MoviesController : ControllerBase
@@ -24,6 +23,7 @@ public class MoviesController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Roles = "User")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -71,6 +71,7 @@ public class MoviesController : ControllerBase
 
 
     [HttpGet("search")]
+    [Authorize(Roles = "User")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -115,6 +116,7 @@ public class MoviesController : ControllerBase
     }
 
     [HttpGet("{movieId}")]
+    [Authorize(Roles = "User")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -160,6 +162,7 @@ public class MoviesController : ControllerBase
     }
 
     [HttpDelete("{movieId}")]
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -205,6 +208,7 @@ public class MoviesController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -248,6 +252,7 @@ public class MoviesController : ControllerBase
     }
 
     [HttpPut]
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
