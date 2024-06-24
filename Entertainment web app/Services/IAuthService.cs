@@ -12,6 +12,4 @@ public interface IAuthService
     Task<Result> LoginUser(LoginViewModel model);
     Task<Result> UpdateUser(ApplicationUser user);
     Task<Result> DeleteUser(string userId);
-    Task<Result> AddRoleToUser(UserRoleViewModel model);
-    Task<Result> RemoveRoleFromUser(UserRoleViewModel model);
 }

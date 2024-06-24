@@ -9,4 +9,6 @@ public interface IUserService
     Task<Result<UserDto>> GetById(string userId);
     Task<Result> Update(UserDto userDto);
     Task<Result> Delete(string userId);
+    Task<Result> AddUserToRole(UserRoleViewModel model);
+    Task<Result> RemoveUserFromRole(UserRoleViewModel model);
 }
