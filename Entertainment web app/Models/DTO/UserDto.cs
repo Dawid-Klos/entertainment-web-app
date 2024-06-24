@@ -1,4 +1,4 @@
-namespace Entertainment_web_app.Models.Auth;
+namespace Entertainment_web_app.Models.Dto;
 
 public class UserDto
 {

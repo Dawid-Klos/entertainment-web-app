@@ -1,16 +1,21 @@
+using Microsoft.AspNetCore.Identity;
+
 using Entertainment_web_app.Common.Responses;
-using Entertainment_web_app.Models.Auth;
 using Entertainment_web_app.Repositories;
+using Entertainment_web_app.Models.Dto;
+using Entertainment_web_app.Data;
 
 namespace Entertainment_web_app.Services;
 
 public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-    public UserService(IUserRepository userRepository)
+    public UserService(IUserRepository userRepository, UserManager<ApplicationUser> userManager)
     {
         _userRepository = userRepository;
+        _userManager = userManager;
     }
 
     public async Task<Result<IEnumerable<UserDto>>> GetAll()
@@ -84,6 +89,45 @@ public class UserService : IUserService
         }
 
         await _userRepository.Delete(user);
+
+        return Result.Success();
+    }
+
+
+    public async Task<Result> AddUserToRole(UserRoleViewModel model)
+    {
+        var user = await _userManager.FindByIdAsync(model.UserId);
+
+        if (user == null)
+        {
+            return Result.Failure(new Error("NotFound", "User not found"));
+        }
+
+        var result = await _userManager.AddToRoleAsync(user, model.RoleName);
+
+        if (!result.Succeeded)
+        {
+            return Result.Failure(new Error("BadRequest", "Role assignment failed"));
+        }
+
+        return Result.Success();
+    }
+
+    public async Task<Result> RemoveUserFromRole(UserRoleViewModel model)
+    {
+        var user = await _userManager.FindByIdAsync(model.UserId);
+
+        if (user == null)
+        {
+            return Result.Failure(new Error("NotFound", "User not found"));
+        }
+
+        var result = await _userManager.RemoveFromRoleAsync(user, model.RoleName);
+
+        if (!result.Succeeded)
+        {
+            return Result.Failure(new Error("BadRequest", "Role removal failed"));
+        }
 
         return Result.Success();
     }
