@@ -168,45 +168,4 @@ public class AuthService : IAuthService
 
         return Result.Success();
     }
-
-    public async Task<Result> UpdateUser(ApplicationUser user)
-    {
-        var userToUpdate = await _userManager.FindByIdAsync(user.Id);
-
-        if (userToUpdate == null)
-        {
-            return Result.Failure(new Error("NotFound", "User not found"));
-        }
-
-        userToUpdate.Firstname = user.Firstname;
-        userToUpdate.Lastname = user.Lastname;
-
-        var result = await _userManager.UpdateAsync(userToUpdate);
-
-        if (!result.Succeeded)
-        {
-            return Result.Failure(new Error("BadRequest", "User update failed"));
-        }
-
-        return Result.Success();
-    }
-
-    public async Task<Result> DeleteUser(string userId)
-    {
-        var user = await _userManager.FindByIdAsync(userId);
-
-        if (user == null)
-        {
-            return Result.Failure(new Error("NotFound", "User not found"));
-        }
-
-        var result = await _userManager.DeleteAsync(user);
-
-        if (!result.Succeeded)
-        {
-            return Result.Failure(new Error("BadRequest", "User deletion failed"));
-        }
-
-        return Result.Success();
-    }
 }
