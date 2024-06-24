@@ -18,6 +18,7 @@ const context = [
   "/api/bookmarks",
   "/api/user-content/movies",
   "/api/user-content/tv-series",
+  "/api/users",
   "/swagger/v1/swagger.json",
   "/swagger",
 ];
