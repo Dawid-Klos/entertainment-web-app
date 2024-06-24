@@ -3,9 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using Entertainment_web_app.Common.Responses;
 using Entertainment_web_app.Models.Auth;
-using Entertainment_web_app.Models.Dto;
 using Entertainment_web_app.Services;
-using Entertainment_web_app.Data;
 
 namespace Entertainment_web_app.Controllers;
 
@@ -63,11 +61,11 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<Response<ApplicationUser>> RegisterAsync([FromBody] RegisterViewModel model)
+    public async Task<Response> RegisterAsync([FromBody] RegisterViewModel model)
     {
         if (!ModelState.IsValid)
         {
-            return new Response<ApplicationUser>
+            return new Response
             {
                 Status = "error",
                 StatusCode = StatusCodes.Status400BadRequest,
@@ -81,7 +79,7 @@ public class AuthController : ControllerBase
 
             if (result.IsFailure)
             {
-                return new Response<ApplicationUser>
+                return new Response
                 {
                     Status = "error",
                     StatusCode = StatusCodes.Status400BadRequest,
@@ -89,7 +87,7 @@ public class AuthController : ControllerBase
                 };
             }
 
-            return new Response<ApplicationUser>
+            return new Response
             {
                 Status = "success",
                 StatusCode = StatusCodes.Status200OK,
@@ -97,7 +95,7 @@ public class AuthController : ControllerBase
         }
         catch (Exception)
         {
-            return new Response<ApplicationUser>
+            return new Response
             {
                 Status = "error",
                 StatusCode = StatusCodes.Status500InternalServerError,
@@ -109,11 +107,11 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<Response<ApplicationUser>> LoginAsync([FromBody] LoginViewModel model)
+    public async Task<Response> LoginAsync([FromBody] LoginViewModel model)
     {
         if (!ModelState.IsValid)
         {
-            return new Response<ApplicationUser>
+            return new Response
             {
                 Status = "error",
                 StatusCode = StatusCodes.Status400BadRequest,
@@ -127,7 +125,7 @@ public class AuthController : ControllerBase
 
             if (result.IsFailure)
             {
-                return new Response<ApplicationUser>
+                return new Response
                 {
                     Status = "error",
                     StatusCode = StatusCodes.Status400BadRequest,
@@ -135,7 +133,7 @@ public class AuthController : ControllerBase
                 };
             }
 
-            return new Response<ApplicationUser>
+            return new Response
             {
                 Status = "success",
                 StatusCode = StatusCodes.Status200OK,
@@ -143,7 +141,7 @@ public class AuthController : ControllerBase
         }
         catch (Exception)
         {
-            return new Response<ApplicationUser>
+            return new Response
             {
                 Status = "error",
                 StatusCode = StatusCodes.Status500InternalServerError,
@@ -157,7 +155,7 @@ public class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public Response<ApplicationUser> Logout()
+    public Response Logout()
     {
         try
         {
@@ -165,7 +163,7 @@ public class AuthController : ControllerBase
 
             if (result.IsFailure)
             {
-                return new Response<ApplicationUser>
+                return new Response
                 {
                     Status = "error",
                     StatusCode = StatusCodes.Status400BadRequest,
@@ -173,7 +171,7 @@ public class AuthController : ControllerBase
                 };
             }
 
-            return new Response<ApplicationUser>
+            return new Response
             {
                 Status = "success",
                 StatusCode = StatusCodes.Status200OK,
@@ -181,7 +179,7 @@ public class AuthController : ControllerBase
         }
         catch (Exception)
         {
-            return new Response<ApplicationUser>
+            return new Response
             {
                 Status = "error",
                 StatusCode = StatusCodes.Status500InternalServerError,
@@ -189,5 +187,4 @@ public class AuthController : ControllerBase
             };
         }
     }
-
 }
