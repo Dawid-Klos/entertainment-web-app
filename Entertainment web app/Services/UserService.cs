@@ -1,5 +1,5 @@
 using Entertainment_web_app.Common.Responses;
-using Entertainment_web_app.Models.Auth;
+using Entertainment_web_app.Models.Dto;
 using Entertainment_web_app.Repositories;
 
 namespace Entertainment_web_app.Services;
