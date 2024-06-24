@@ -24,7 +24,7 @@ public class UserServiceTests
 
     private Mock<UserManager<ApplicationUser>> InitializeUserManager()
     {
-        return new Mock<UserManager<ApplicationUser>>(new Mock<IUserStore<ApplicationUser>>().Object, null, null, null, null, null, null, null, null);
+        return new Mock<UserManager<ApplicationUser>>(new Mock<IUserStore<ApplicationUser>>().Object, null!, null!, null!, null!, null!, null!, null!, null!);
     }
 
     [Fact]
@@ -46,7 +46,7 @@ public class UserServiceTests
     }
 
     [Fact]
-    public async Task GetAll_ReturnsNoUsers()
+    public async Task GetAll_NotFound_ReturnsError()
     {
         var userManager = InitializeUserManager();
 
