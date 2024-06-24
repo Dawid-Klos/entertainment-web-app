@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Entertainment_web_app.Common.Responses;
 using Entertainment_web_app.Models.Dto;
 using Entertainment_web_app.Services;
-using Entertainment_web_app.Data;
 
 namespace Entertainment_web_app.Controllers;
 
@@ -160,6 +159,108 @@ public class UsersController : ControllerBase
                     Status = "error",
                     Error = result.Error,
                     StatusCode = StatusCodes.Status404NotFound,
+                };
+            }
+
+            return new Response<UserDto>
+            {
+                Status = "success",
+                StatusCode = StatusCodes.Status200OK,
+            };
+        }
+        catch (Exception)
+        {
+            return new Response<UserDto>
+            {
+                Status = "error",
+                StatusCode = StatusCodes.Status500InternalServerError,
+                Error = new Error("InternalServerError", "An error occurred while processing the request")
+            };
+        }
+    }
+
+    [HttpPost("{userId}/add-role")]
+    [Authorize(Roles = "Admin")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<Response<UserDto>> AddRole(string userId, [FromBody] UserRoleViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return new Response<UserDto>
+            {
+                Status = "error",
+                StatusCode = StatusCodes.Status400BadRequest,
+                Error = new Error("BadRequest", "Invalid model state")
+            };
+        }
+
+        try
+        {
+            model.UserId = userId;
+            var result = await _userService.AddUserToRole(model);
+
+            if (result.IsFailure)
+            {
+                return new Response<UserDto>
+                {
+                    Status = "error",
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Error = result.Error
+                };
+            }
+
+            return new Response<UserDto>
+            {
+                Status = "success",
+                StatusCode = StatusCodes.Status200OK,
+            };
+        }
+        catch (Exception)
+        {
+            return new Response<UserDto>
+            {
+                Status = "error",
+                StatusCode = StatusCodes.Status500InternalServerError,
+                Error = new Error("InternalServerError", "An error occurred while processing the request")
+            };
+        }
+    }
+
+    [HttpPost("{userId}/remove-role")]
+    [Authorize(Roles = "Admin")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<Response<UserDto>> RemoveRole(string userId, [FromBody] UserRoleViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return new Response<UserDto>
+            {
+                Status = "error",
+                StatusCode = StatusCodes.Status400BadRequest,
+                Error = new Error("BadRequest", "Invalid model state")
+            };
+        }
+
+        try
+        {
+            model.UserId = userId;
+            var result = await _userService.RemoveUserFromRole(model);
+
+            if (result.IsFailure)
+            {
+                return new Response<UserDto>
+                {
+                    Status = "error",
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Error = result.Error
                 };
             }
 
