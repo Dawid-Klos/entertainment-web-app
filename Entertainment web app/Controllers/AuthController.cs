@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-using Entertainment_web_app.Services;
-using Entertainment_web_app.Models.Auth;
-using Entertainment_web_app.Data;
 using Entertainment_web_app.Common.Responses;
+using Entertainment_web_app.Models.Auth;
+using Entertainment_web_app.Models.Dto;
+using Entertainment_web_app.Services;
+using Entertainment_web_app.Data;
 
 namespace Entertainment_web_app.Controllers;
 
@@ -25,7 +26,7 @@ public class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public Response<ApplicationUser> Auth()
+    public Response Auth()
     {
         try
         {
@@ -33,7 +34,7 @@ public class AuthController : ControllerBase
 
             if (authStatus.IsFailure)
             {
-                return new Response<ApplicationUser>
+                return new Response
                 {
                     Status = "error",
                     Error = authStatus.Error,
@@ -42,7 +43,7 @@ public class AuthController : ControllerBase
             }
 
 
-            return new Response<ApplicationUser>
+            return new Response
             {
                 Status = "success",
                 StatusCode = StatusCodes.Status200OK,
@@ -50,7 +51,7 @@ public class AuthController : ControllerBase
         }
         catch (Exception)
         {
-            return new Response<ApplicationUser>
+            return new Response
             {
                 Status = "error",
                 StatusCode = StatusCodes.Status500InternalServerError,
