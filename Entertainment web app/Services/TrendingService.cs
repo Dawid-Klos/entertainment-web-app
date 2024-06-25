@@ -1,3 +1,5 @@
+using System.Security.Claims;
+
 using Entertainment_web_app.Common.Responses;
 using Entertainment_web_app.Repositories;
 using Entertainment_web_app.Models.Dto;
@@ -9,12 +11,29 @@ namespace Entertainment_web_app.Services;
 public class TrendingService : ITrendingService
 {
     private readonly ITrendingRepository _trendingRepository;
+    private readonly IBookmarkRepository _bookmarkRepository;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public TrendingService(ITrendingRepository trendingRepository)
+    public TrendingService(ITrendingRepository trendingRepository, IBookmarkRepository bookmarkRepository,
+        IHttpContextAccessor httpContextAccessor)
     {
         _trendingRepository = trendingRepository;
+        _bookmarkRepository = bookmarkRepository;
+        _httpContextAccessor = httpContextAccessor;
     }
 
+    private async Task<List<int>?> GetBookmarkedMoviesIds()
+    {
+        var user = _httpContextAccessor.HttpContext!.User;
+        if (user.IsInRole("Admin")) { return null; }
+
+        var userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        var userBookmarks = await _bookmarkRepository.GetByUserId(userId);
+        if (userBookmarks == null || !userBookmarks.Any()) { return null; }
+
+        return userBookmarks.Select(b => b.MovieId).ToList();
+    }
 
     public async Task<Result<IEnumerable<TrendingDto>>> GetAll()
     {
@@ -26,6 +45,8 @@ public class TrendingService : ITrendingService
             return Result<IEnumerable<TrendingDto>>.Failure(new Error("NotFound", "No trending movies found"));
         }
 
+        var bookmarkedMoviesIds = await GetBookmarkedMoviesIds();
+
         var trendingDtos = trendingMovies.Select(m => new TrendingDto
         {
             MovieId = m.Movie.MovieId,
@@ -34,7 +55,8 @@ public class TrendingService : ITrendingService
             Category = m.Movie.Category,
             Rating = m.Movie.Rating,
             ImgSmall = m.ImgTrendingSmall,
-            ImgLarge = m.ImgTrendingLarge
+            ImgLarge = m.ImgTrendingLarge,
+            IsBookmarked = bookmarkedMoviesIds?.Contains(m.Movie.MovieId) ?? false
         }).ToList();
 
         return Result<IEnumerable<TrendingDto>>.Success(trendingDtos);
@@ -49,6 +71,8 @@ public class TrendingService : ITrendingService
             return Result<TrendingDto>.Failure(new Error("NotFound", $"Trending movie with ID = {trendingId} does not exist"));
         }
 
+        var bookmarkedMoviesIds = await GetBookmarkedMoviesIds();
+
         var trendingDto = new TrendingDto
         {
             MovieId = trendingMovie.Movie.MovieId,
@@ -57,7 +81,8 @@ public class TrendingService : ITrendingService
             Category = trendingMovie.Movie.Category,
             Rating = trendingMovie.Movie.Rating,
             ImgSmall = trendingMovie.ImgTrendingSmall,
-            ImgLarge = trendingMovie.ImgTrendingLarge
+            ImgLarge = trendingMovie.ImgTrendingLarge,
+            IsBookmarked = bookmarkedMoviesIds?.Contains(trendingMovie.Movie.MovieId) ?? false
         };
 
         return Result<TrendingDto>.Success(trendingDto);
