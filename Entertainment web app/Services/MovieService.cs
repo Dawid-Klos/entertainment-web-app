@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Identity;
+
 using Entertainment_web_app.Common.Responses;
 using Entertainment_web_app.Models.Content;
 using Entertainment_web_app.Repositories;
@@ -9,10 +11,18 @@ namespace Entertainment_web_app.Services;
 public class MovieService : IMovieService
 {
     private readonly IMovieRepository _movieRepository;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-    public MovieService(IMovieRepository movieRepository)
+    public MovieService(IMovieRepository movieRepository, UserManager<ApplicationUser> userManager)
     {
         _movieRepository = movieRepository;
+        _userManager = userManager;
+    }
+
+    private async Task<bool> IsAdmin(string userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        return user != null && await _userManager.IsInRoleAsync(user, "Admin");
     }
 
     public async Task<Result<PagedResponse<MovieDto>>> GetAll(PaginationQuery query)
