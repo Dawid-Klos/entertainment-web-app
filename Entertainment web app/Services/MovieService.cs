@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 
 using Entertainment_web_app.Common.Responses;
 using Entertainment_web_app.Models.Content;
@@ -11,18 +12,28 @@ namespace Entertainment_web_app.Services;
 public class MovieService : IMovieService
 {
     private readonly IMovieRepository _movieRepository;
-    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IBookmarkRepository _bookmarkRepository;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public MovieService(IMovieRepository movieRepository, UserManager<ApplicationUser> userManager)
+    public MovieService(IMovieRepository movieRepository, IBookmarkRepository bookmarkRepository,
+        IHttpContextAccessor httpContextAccessor)
     {
         _movieRepository = movieRepository;
-        _userManager = userManager;
+        _bookmarkRepository = bookmarkRepository;
+        _httpContextAccessor = httpContextAccessor;
     }
 
-    private async Task<bool> IsAdmin(string userId)
+    private async Task<List<int>?> GetBookmarkedMoviesIds()
     {
-        var user = await _userManager.FindByIdAsync(userId);
-        return user != null && await _userManager.IsInRoleAsync(user, "Admin");
+        var user = _httpContextAccessor.HttpContext!.User;
+        if (user.IsInRole("Admin")) { return null; }
+
+        var userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        var userBookmarks = await _bookmarkRepository.GetByUserId(userId);
+        if (userBookmarks == null || !userBookmarks.Any()) { return null; }
+
+        return userBookmarks.Select(b => b.MovieId).ToList();
     }
 
     public async Task<Result<PagedResponse<MovieDto>>> GetAll(PaginationQuery query)
@@ -52,6 +63,8 @@ public class MovieService : IMovieService
             return Result<PagedResponse<MovieDto>>.Failure(new Error("NotFound", "No movies found"));
         }
 
+        var userBookmarks = await GetBookmarkedMoviesIds();
+
         var movieDtos = movies.Select(m => new MovieDto
         {
             MovieId = m.MovieId,
@@ -61,8 +74,10 @@ public class MovieService : IMovieService
             Rating = m.Rating,
             ImgSmall = m.ImgSmall,
             ImgMedium = m.ImgMedium,
-            ImgLarge = m.ImgLarge
+            ImgLarge = m.ImgLarge,
+            IsBookmarked = userBookmarks?.Contains(m.MovieId) ?? false
         }).ToList();
+
 
         var pagedResponse = new PagedResponse<MovieDto>
         {
@@ -98,6 +113,8 @@ public class MovieService : IMovieService
             return Result<PagedResponse<MovieDto>>.Failure(new Error("NotFound", "No movies found"));
         }
 
+        var userBookmarks = await GetBookmarkedMoviesIds();
+
         var movieDtos = movies.Select(m => new MovieDto
         {
             MovieId = m.MovieId,
@@ -107,7 +124,8 @@ public class MovieService : IMovieService
             Rating = m.Rating,
             ImgSmall = m.ImgSmall,
             ImgMedium = m.ImgMedium,
-            ImgLarge = m.ImgLarge
+            ImgLarge = m.ImgLarge,
+            IsBookmarked = userBookmarks?.Contains(m.MovieId) ?? false
         }).ToList();
 
         var pagedResponse = new PagedResponse<MovieDto>
@@ -163,6 +181,8 @@ public class MovieService : IMovieService
             };
         }
 
+        var userBookmarks = await GetBookmarkedMoviesIds();
+
         var movieDtos = movies.Select(m => new MovieDto
         {
             MovieId = m.MovieId,
@@ -172,7 +192,8 @@ public class MovieService : IMovieService
             Rating = m.Rating,
             ImgSmall = m.ImgSmall,
             ImgMedium = m.ImgMedium,
-            ImgLarge = m.ImgLarge
+            ImgLarge = m.ImgLarge,
+            IsBookmarked = userBookmarks?.Contains(m.MovieId) ?? false
         }).ToList();
 
         return Result<IEnumerable<MovieDto>>.Success(movieDtos);
@@ -192,6 +213,8 @@ public class MovieService : IMovieService
             return Result<MovieDto>.Failure(new Error("InvalidCategory", "Movie category does not match the specified category"));
         }
 
+        var userBookmarks = await GetBookmarkedMoviesIds();
+
         var movieDto = new MovieDto
         {
             MovieId = movie.MovieId,
@@ -201,7 +224,8 @@ public class MovieService : IMovieService
             Rating = movie.Rating,
             ImgSmall = movie.ImgSmall,
             ImgMedium = movie.ImgMedium,
-            ImgLarge = movie.ImgLarge
+            ImgLarge = movie.ImgLarge,
+            IsBookmarked = userBookmarks?.Contains(movie.MovieId) ?? false
         };
 
         return Result<MovieDto>.Success(movieDto);
