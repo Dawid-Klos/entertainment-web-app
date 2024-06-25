@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 
 using Entertainment_web_app.Common.Responses;
