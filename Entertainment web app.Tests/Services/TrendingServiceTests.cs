@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Http;
+
 using Entertainment_web_app.Repositories;
 using Entertainment_web_app.Services;
 using Entertainment_web_app.Data;
@@ -28,12 +30,19 @@ public class TrendingServiceTests
     [Fact]
     public async Task GetAll_ReturnsSuccess()
     {
+        var httpContextAccessor = new Mock<IHttpContextAccessor>();
+        httpContextAccessor
+          .Setup(hca => hca.HttpContext!.User.IsInRole("Admin"))
+          .Returns(false);
+
+        var bookmarkRepository = new Mock<IBookmarkRepository>();
+
         var repository = new Mock<ITrendingRepository>();
         repository
           .Setup(repo => repo.GetAll())
           .ReturnsAsync(GetTestTrending());
 
-        var service = new TrendingService(repository.Object);
+        var service = new TrendingService(repository.Object, bookmarkRepository.Object, httpContextAccessor.Object);
         var result = await service.GetAll();
 
         Assert.NotNull(result);
@@ -44,12 +53,19 @@ public class TrendingServiceTests
     [Fact]
     public async Task GetAll_ReturnsNotFound()
     {
+        var httpContextAccessor = new Mock<IHttpContextAccessor>();
+        httpContextAccessor
+          .Setup(hca => hca.HttpContext!.User.IsInRole("Admin"))
+          .Returns(false);
+
+        var bookmarkRepository = new Mock<IBookmarkRepository>();
+
         var repository = new Mock<ITrendingRepository>();
         repository
           .Setup(repo => repo.GetAll())
           .ReturnsAsync(() => null!);
 
-        var service = new TrendingService(repository.Object);
+        var service = new TrendingService(repository.Object, bookmarkRepository.Object, httpContextAccessor.Object);
         var result = await service.GetAll();
 
         Assert.NotNull(result);
@@ -63,12 +79,19 @@ public class TrendingServiceTests
     [InlineData(3)]
     public async Task GetById_ReturnsTrending(int trendingId)
     {
+        var httpContextAccessor = new Mock<IHttpContextAccessor>();
+        httpContextAccessor
+          .Setup(hca => hca.HttpContext!.User.IsInRole("Admin"))
+          .Returns(false);
+
+        var bookmarkRepository = new Mock<IBookmarkRepository>();
+
         var repository = new Mock<ITrendingRepository>();
         repository
           .Setup(repo => repo.GetById(trendingId))
           .ReturnsAsync(GetTestTrending().Where(t => t.TrendingId == trendingId).FirstOrDefault());
 
-        var service = new TrendingService(repository.Object);
+        var service = new TrendingService(repository.Object, bookmarkRepository.Object, httpContextAccessor.Object);
         var result = await service.GetById(trendingId);
 
         Assert.NotNull(result);
@@ -83,12 +106,19 @@ public class TrendingServiceTests
     [InlineData(9)]
     public async Task GetById_ReturnsNotFound(int trendingId)
     {
+        var httpContextAccessor = new Mock<IHttpContextAccessor>();
+        httpContextAccessor
+          .Setup(hca => hca.HttpContext!.User.IsInRole("Admin"))
+          .Returns(false);
+
+        var bookmarkRepository = new Mock<IBookmarkRepository>();
+
         var repository = new Mock<ITrendingRepository>();
         repository
           .Setup(repo => repo.GetById(trendingId))
           .ReturnsAsync(() => null!);
 
-        var service = new TrendingService(repository.Object);
+        var service = new TrendingService(repository.Object, bookmarkRepository.Object, httpContextAccessor.Object);
         var result = await service.GetById(trendingId);
 
         Assert.NotNull(result);
@@ -100,6 +130,13 @@ public class TrendingServiceTests
     [Fact]
     public async Task Add_ReturnsSuccess()
     {
+        var httpContextAccessor = new Mock<IHttpContextAccessor>();
+        httpContextAccessor
+          .Setup(hca => hca.HttpContext!.User.IsInRole("Admin"))
+          .Returns(false);
+
+        var bookmarkRepository = new Mock<IBookmarkRepository>();
+
         var trending = new Trending
         {
             TrendingId = 7,
@@ -113,7 +150,7 @@ public class TrendingServiceTests
           .Setup(repo => repo.GetById(trending.TrendingId))
           .ReturnsAsync(() => null!);
 
-        var service = new TrendingService(repository.Object);
+        var service = new TrendingService(repository.Object, bookmarkRepository.Object, httpContextAccessor.Object);
         var result = await service.Add(trending);
 
         Assert.NotNull(result);
@@ -126,6 +163,13 @@ public class TrendingServiceTests
     [InlineData(3)]
     public async Task Add_ReturnsAlreadyExists(int trendingId)
     {
+        var httpContextAccessor = new Mock<IHttpContextAccessor>();
+        httpContextAccessor
+          .Setup(hca => hca.HttpContext!.User.IsInRole("Admin"))
+          .Returns(false);
+
+        var bookmarkRepository = new Mock<IBookmarkRepository>();
+
         var newTrending = new Trending
         {
             TrendingId = trendingId,
@@ -143,7 +187,7 @@ public class TrendingServiceTests
           .Setup(repo => repo.GetById(trendingId))
           .ReturnsAsync(GetTestTrending().Where(t => t.TrendingId == trendingId).FirstOrDefault());
 
-        var service = new TrendingService(repository.Object);
+        var service = new TrendingService(repository.Object, bookmarkRepository.Object, httpContextAccessor.Object);
         var result = await service.Add(newTrending);
 
         Assert.NotNull(result);
@@ -157,6 +201,13 @@ public class TrendingServiceTests
     [InlineData(3)]
     public async Task Update_ReturnsSuccess(int trendingId)
     {
+        var httpContextAccessor = new Mock<IHttpContextAccessor>();
+        httpContextAccessor
+          .Setup(hca => hca.HttpContext!.User.IsInRole("Admin"))
+          .Returns(false);
+
+        var bookmarkRepository = new Mock<IBookmarkRepository>();
+
         var trending = GetTestTrending().Where(t => t.TrendingId == trendingId).FirstOrDefault()!;
 
         var repository = new Mock<ITrendingRepository>();
@@ -164,7 +215,7 @@ public class TrendingServiceTests
           .Setup(repo => repo.GetById(trendingId))
           .ReturnsAsync(trending);
 
-        var service = new TrendingService(repository.Object);
+        var service = new TrendingService(repository.Object, bookmarkRepository.Object, httpContextAccessor.Object);
         var result = await service.Update(trending);
 
         Assert.NotNull(result);
@@ -177,6 +228,13 @@ public class TrendingServiceTests
     [InlineData(9)]
     public async Task Update_ReturnsNotFound(int trendingId)
     {
+        var httpContextAccessor = new Mock<IHttpContextAccessor>();
+        httpContextAccessor
+          .Setup(hca => hca.HttpContext!.User.IsInRole("Admin"))
+          .Returns(false);
+
+        var bookmarkRepository = new Mock<IBookmarkRepository>();
+
         var trending = new Trending
         {
             TrendingId = trendingId,
@@ -190,7 +248,7 @@ public class TrendingServiceTests
           .Setup(repo => repo.GetById(trendingId))
           .ReturnsAsync(() => null!);
 
-        var service = new TrendingService(repository.Object);
+        var service = new TrendingService(repository.Object, bookmarkRepository.Object, httpContextAccessor.Object);
         var result = await service.Update(trending);
 
         Assert.NotNull(result);
@@ -204,6 +262,13 @@ public class TrendingServiceTests
     [InlineData(3)]
     public async Task Update_ReturnsBadRequest(int trendingId)
     {
+        var httpContextAccessor = new Mock<IHttpContextAccessor>();
+        httpContextAccessor
+          .Setup(hca => hca.HttpContext!.User.IsInRole("Admin"))
+          .Returns(false);
+
+        var bookmarkRepository = new Mock<IBookmarkRepository>();
+
         var trending = GetTestTrending().Where(t => t.TrendingId == trendingId).FirstOrDefault()!;
         trending = null!;
 
@@ -212,7 +277,7 @@ public class TrendingServiceTests
           .Setup(repo => repo.GetById(trendingId))
           .ReturnsAsync(trending);
 
-        var service = new TrendingService(repository.Object);
+        var service = new TrendingService(repository.Object, bookmarkRepository.Object, httpContextAccessor.Object);
         var result = await service.Update(trending);
 
         Assert.NotNull(result);
@@ -226,6 +291,13 @@ public class TrendingServiceTests
     [InlineData(3)]
     public async Task Delete_ReturnsSuccess(int trendingId)
     {
+        var httpContextAccessor = new Mock<IHttpContextAccessor>();
+        httpContextAccessor
+          .Setup(hca => hca.HttpContext!.User.IsInRole("Admin"))
+          .Returns(false);
+
+        var bookmarkRepository = new Mock<IBookmarkRepository>();
+
         var trending = GetTestTrending().Where(t => t.TrendingId == trendingId).FirstOrDefault()!;
 
         var repository = new Mock<ITrendingRepository>();
@@ -233,7 +305,7 @@ public class TrendingServiceTests
           .Setup(repo => repo.GetById(trendingId))
           .ReturnsAsync(trending);
 
-        var service = new TrendingService(repository.Object);
+        var service = new TrendingService(repository.Object, bookmarkRepository.Object, httpContextAccessor.Object);
         var result = await service.Delete(trendingId);
 
         Assert.NotNull(result);
@@ -246,12 +318,19 @@ public class TrendingServiceTests
     [InlineData(9)]
     public async Task Delete_ReturnsNotFound(int trendingId)
     {
+        var httpContextAccessor = new Mock<IHttpContextAccessor>();
+        httpContextAccessor
+          .Setup(hca => hca.HttpContext!.User.IsInRole("Admin"))
+          .Returns(false);
+
+        var bookmarkRepository = new Mock<IBookmarkRepository>();
+
         var repository = new Mock<ITrendingRepository>();
         repository
           .Setup(repo => repo.GetById(trendingId))
           .ReturnsAsync(() => null!);
 
-        var service = new TrendingService(repository.Object);
+        var service = new TrendingService(repository.Object, bookmarkRepository.Object, httpContextAccessor.Object);
         var result = await service.Delete(trendingId);
 
         Assert.NotNull(result);

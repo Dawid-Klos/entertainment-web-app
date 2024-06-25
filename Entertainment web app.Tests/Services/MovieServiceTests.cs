@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Http;
+
 using Entertainment_web_app.Models.Content;
 using Entertainment_web_app.Repositories;
 using Entertainment_web_app.Models.Dto;
@@ -23,6 +25,12 @@ public class MovieServiceTests
     [Fact]
     public async Task GetAll_ReturnsAllMovies()
     {
+        var httpContextAccessor = new Mock<IHttpContextAccessor>();
+        httpContextAccessor
+          .Setup(hca => hca.HttpContext!.User.IsInRole("Admin"))
+          .Returns(false);
+        var bookmarkRepository = new Mock<IBookmarkRepository>();
+
         var repository = new Mock<IMovieRepository>();
         repository
           .Setup(repo => repo.GetAll())
@@ -32,7 +40,7 @@ public class MovieServiceTests
           .Setup(repo => repo.CountAll())
           .ReturnsAsync(6);
 
-        var service = new MovieService(repository.Object);
+        var service = new MovieService(repository.Object, bookmarkRepository.Object, httpContextAccessor.Object);
         PaginationQuery query = new PaginationQuery { PageNumber = 1, PageSize = 10 };
         var result = await service.GetAll(query);
 
@@ -46,13 +54,18 @@ public class MovieServiceTests
     [Fact]
     public async Task GetAll_ReturnsNoMovies()
     {
+        var httpContextAccessor = new Mock<IHttpContextAccessor>();
+        httpContextAccessor
+          .Setup(hca => hca.HttpContext!.User.IsInRole("Admin"))
+          .Returns(false);
+        var bookmarkRepository = new Mock<IBookmarkRepository>();
 
         var repository = new Mock<IMovieRepository>();
         repository
           .Setup(repo => repo.GetAll())
           .ReturnsAsync(new List<Movie>());
 
-        var service = new MovieService(repository.Object);
+        var service = new MovieService(repository.Object, bookmarkRepository.Object, httpContextAccessor.Object);
         PaginationQuery query = new PaginationQuery { PageNumber = 1, PageSize = 10 };
         var result = await service.GetAll(query);
 
@@ -71,6 +84,13 @@ public class MovieServiceTests
     [InlineData(MediaCategory.TVSeries, 3, 1)]
     public async Task GetByCategory_ReturnsContent(MediaCategory category, int pageNumber, int pageSize)
     {
+        var httpContextAccessor = new Mock<IHttpContextAccessor>();
+        httpContextAccessor
+          .Setup(hca => hca.HttpContext!.User.IsInRole("Admin"))
+          .Returns(false);
+
+        var bookmarkRepository = new Mock<IBookmarkRepository>();
+
         var repository = new Mock<IMovieRepository>();
         repository.Setup(repo => repo
           .CountByCategory(category.ToString()))
@@ -80,7 +100,7 @@ public class MovieServiceTests
           .GetByCategoryPaginated(category.ToString(), pageNumber, pageSize))
           .ReturnsAsync(GetTestMovies().Where(m => m.Category == category.ToString()));
 
-        var service = new MovieService(repository.Object);
+        var service = new MovieService(repository.Object, bookmarkRepository.Object, httpContextAccessor.Object);
         PaginationQuery query = new PaginationQuery { PageNumber = pageNumber, PageSize = pageSize };
         var result = await service.GetByCategory(category, query);
 
@@ -101,6 +121,13 @@ public class MovieServiceTests
     [InlineData(MediaCategory.TVSeries, 6, 1)]
     public async Task GetByCategory_InvalidPageNumber_ReturnsError(MediaCategory category, int pageNumber, int pageSize)
     {
+        var httpContextAccessor = new Mock<IHttpContextAccessor>();
+        httpContextAccessor
+          .Setup(hca => hca.HttpContext!.User.IsInRole("Admin"))
+          .Returns(false);
+
+        var bookmarkRepository = new Mock<IBookmarkRepository>();
+
         var repository = new Mock<IMovieRepository>();
         repository.Setup(repo => repo
           .CountByCategory(category.ToString()))
@@ -110,7 +137,7 @@ public class MovieServiceTests
           .GetByCategoryPaginated(category.ToString(), pageNumber, pageSize))
           .ReturnsAsync(GetTestMovies().Where(m => m.Category == category.ToString()));
 
-        var service = new MovieService(repository.Object);
+        var service = new MovieService(repository.Object, bookmarkRepository.Object, httpContextAccessor.Object);
         PaginationQuery query = new PaginationQuery { PageNumber = pageNumber, PageSize = pageSize };
         var result = await service.GetByCategory(category, query);
 
@@ -126,6 +153,13 @@ public class MovieServiceTests
     [InlineData(MediaCategory.TVSeries, 1, 30)]
     public async Task GetByCategory_InvalidPageSize_ReturnsError(MediaCategory category, int pageNumber, int pageSize)
     {
+        var httpContextAccessor = new Mock<IHttpContextAccessor>();
+        httpContextAccessor
+          .Setup(hca => hca.HttpContext!.User.IsInRole("Admin"))
+          .Returns(false);
+
+        var bookmarkRepository = new Mock<IBookmarkRepository>();
+
         var repository = new Mock<IMovieRepository>();
         repository.Setup(repo => repo
           .CountByCategory(category.ToString()))
@@ -135,7 +169,8 @@ public class MovieServiceTests
           .GetByCategoryPaginated(category.ToString(), pageNumber, pageSize))
           .ReturnsAsync(GetTestMovies().Where(m => m.Category == category.ToString()));
 
-        var service = new MovieService(repository.Object);
+        var service = new MovieService(repository.Object, bookmarkRepository.Object, httpContextAccessor.Object);
+
         PaginationQuery query = new PaginationQuery { PageNumber = pageNumber, PageSize = pageSize };
         var result = await service.GetByCategory(category, query);
 
@@ -154,6 +189,13 @@ public class MovieServiceTests
     [InlineData(MediaCategory.TVSeries, 6)]
     public async Task GetById_ReturnsMovie(MediaCategory category, int movieId)
     {
+        var httpContextAccessor = new Mock<IHttpContextAccessor>();
+        httpContextAccessor
+          .Setup(hca => hca.HttpContext!.User.IsInRole("Admin"))
+          .Returns(false);
+
+        var bookmarkRepository = new Mock<IBookmarkRepository>();
+
         var repository = new Mock<IMovieRepository>();
         repository
           .Setup(repo => repo
@@ -161,7 +203,7 @@ public class MovieServiceTests
           .ReturnsAsync(GetTestMovies().Where(m => m.MovieId == movieId)
           .FirstOrDefault());
 
-        var service = new MovieService(repository.Object);
+        var service = new MovieService(repository.Object, bookmarkRepository.Object, httpContextAccessor.Object);
         var result = await service.GetById(category, movieId);
         var movie = result.Data;
 
@@ -180,13 +222,20 @@ public class MovieServiceTests
     [InlineData(MediaCategory.TVSeries, 3)]
     public async Task GetById_InvalidCategory_ReturnsError(MediaCategory category, int movieId)
     {
+        var httpContextAccessor = new Mock<IHttpContextAccessor>();
+        httpContextAccessor
+          .Setup(hca => hca.HttpContext!.User.IsInRole("Admin"))
+          .Returns(false);
+
+        var bookmarkRepository = new Mock<IBookmarkRepository>();
+
         var repository = new Mock<IMovieRepository>();
         repository
           .Setup(repo => repo.GetById(movieId))
           .ReturnsAsync(GetTestMovies().Where(m => m.MovieId == movieId)
           .FirstOrDefault());
 
-        var service = new MovieService(repository.Object);
+        var service = new MovieService(repository.Object, bookmarkRepository.Object, httpContextAccessor.Object);
         var result = await service.GetById(category, movieId);
 
         Assert.NotNull(result);
@@ -204,13 +253,20 @@ public class MovieServiceTests
     [InlineData(MediaCategory.TVSeries, 9)]
     public async Task GetById_InvalidId_ReturnsError(MediaCategory category, int movieId)
     {
+        var httpContextAccessor = new Mock<IHttpContextAccessor>();
+        httpContextAccessor
+          .Setup(hca => hca.HttpContext!.User.IsInRole("Admin"))
+          .Returns(false);
+
+        var bookmarkRepository = new Mock<IBookmarkRepository>();
+
         var repository = new Mock<IMovieRepository>();
         repository
           .Setup(repo => repo.GetById(movieId))
           .ReturnsAsync(GetTestMovies().Where(m => m.MovieId == movieId)
           .FirstOrDefault());
 
-        var service = new MovieService(repository.Object);
+        var service = new MovieService(repository.Object, bookmarkRepository.Object, httpContextAccessor.Object);
         var result = await service.GetById(category, movieId);
 
         Assert.NotNull(result);
@@ -222,10 +278,17 @@ public class MovieServiceTests
     [Fact]
     public async Task Add_AddsMovie()
     {
+        var httpContextAccessor = new Mock<IHttpContextAccessor>();
+        httpContextAccessor
+          .Setup(hca => hca.HttpContext!.User.IsInRole("Admin"))
+          .Returns(false);
+
+        var bookmarkRepository = new Mock<IBookmarkRepository>();
+
         var repository = new Mock<IMovieRepository>();
         var movie = new Movie { MovieId = 7, Title = "Movie 7", Category = "Movies", Rating = "PG", Year = 2022, ImgSmall = "/images/movie7.jpg", ImgMedium = "/images/movie7.jpg", ImgLarge = "/images/movie7.jpg" };
 
-        var service = new MovieService(repository.Object);
+        var service = new MovieService(repository.Object, bookmarkRepository.Object, httpContextAccessor.Object);
         var result = await service.Add(movie);
 
         Assert.NotNull(result);
@@ -238,6 +301,13 @@ public class MovieServiceTests
     [InlineData(3)]
     public async void Add_MovieAlreadyExists_ReturnsError(int movieId)
     {
+        var httpContextAccessor = new Mock<IHttpContextAccessor>();
+        httpContextAccessor
+          .Setup(hca => hca.HttpContext!.User.IsInRole("Admin"))
+          .Returns(false);
+
+        var bookmarkRepository = new Mock<IBookmarkRepository>();
+
         var movie = new Movie { MovieId = movieId, Title = "Movie", Category = "Movies", Rating = "PG", Year = 1998, ImgSmall = "/images/movie1.jpg", ImgMedium = "/images/movie1.jpg", ImgLarge = "/images/movie1.jpg" };
 
         var repository = new Mock<IMovieRepository>();
@@ -245,7 +315,7 @@ public class MovieServiceTests
           .Setup(repo => repo.GetById(movie.MovieId))
           .ReturnsAsync(GetTestMovies().FirstOrDefault(m => m.MovieId == movieId));
 
-        var service = new MovieService(repository.Object);
+        var service = new MovieService(repository.Object, bookmarkRepository.Object, httpContextAccessor.Object);
         var result = await service.Add(movie);
 
         Assert.NotNull(result);
@@ -256,6 +326,13 @@ public class MovieServiceTests
     [Fact]
     public async Task Add_InvalidCategory_ReturnsError()
     {
+        var httpContextAccessor = new Mock<IHttpContextAccessor>();
+        httpContextAccessor
+          .Setup(hca => hca.HttpContext!.User.IsInRole("Admin"))
+          .Returns(false);
+
+        var bookmarkRepository = new Mock<IBookmarkRepository>();
+
         var movie = new Movie { MovieId = 7, Title = "Movie", Category = "Invalid", Rating = "PG", Year = 2022, ImgSmall = "/images/movie7.jpg", ImgMedium = "/images/movie7.jpg", ImgLarge = "/images/movie7.jpg" };
 
         var repository = new Mock<IMovieRepository>();
@@ -263,7 +340,7 @@ public class MovieServiceTests
           .Setup(repo => repo.GetById(movie.MovieId))
           .ReturnsAsync(GetTestMovies().FirstOrDefault(m => m.MovieId == movie.MovieId));
 
-        var service = new MovieService(repository.Object);
+        var service = new MovieService(repository.Object, bookmarkRepository.Object, httpContextAccessor.Object);
         var result = await service.Add(movie);
 
         Assert.NotNull(result);
@@ -277,6 +354,13 @@ public class MovieServiceTests
     [InlineData(3)]
     public async Task Update_UpdatesMovie(int movieId)
     {
+        var httpContextAccessor = new Mock<IHttpContextAccessor>();
+        httpContextAccessor
+          .Setup(hca => hca.HttpContext!.User.IsInRole("Admin"))
+          .Returns(false);
+
+        var bookmarkRepository = new Mock<IBookmarkRepository>();
+
         var movie = new Movie
         {
             MovieId = movieId,
@@ -295,7 +379,7 @@ public class MovieServiceTests
           .ReturnsAsync(GetTestMovies()
           .FirstOrDefault(m => m.MovieId == movieId));
 
-        var service = new MovieService(repository.Object);
+        var service = new MovieService(repository.Object, bookmarkRepository.Object, httpContextAccessor.Object);
         var result = await service.Update(movie);
 
         Assert.NotNull(result);
@@ -306,6 +390,13 @@ public class MovieServiceTests
     [Fact]
     public async Task Update_InvalidCategory_ReturnsError()
     {
+        var httpContextAccessor = new Mock<IHttpContextAccessor>();
+        httpContextAccessor
+          .Setup(hca => hca.HttpContext!.User.IsInRole("Admin"))
+          .Returns(false);
+
+        var bookmarkRepository = new Mock<IBookmarkRepository>();
+
         var movie = new Movie
         {
             MovieId = 1,
@@ -324,7 +415,7 @@ public class MovieServiceTests
           .ReturnsAsync(GetTestMovies()
           .FirstOrDefault(m => m.MovieId == movie.MovieId));
 
-        var service = new MovieService(repository.Object);
+        var service = new MovieService(repository.Object, bookmarkRepository.Object, httpContextAccessor.Object);
         var result = await service.Update(movie);
 
         Assert.NotNull(result);
@@ -338,6 +429,13 @@ public class MovieServiceTests
     [InlineData(-1)]
     public async Task Update_DoesNotExist_ReturnsError(int movieId)
     {
+        var httpContextAccessor = new Mock<IHttpContextAccessor>();
+        httpContextAccessor
+          .Setup(hca => hca.HttpContext!.User.IsInRole("Admin"))
+          .Returns(false);
+
+        var bookmarkRepository = new Mock<IBookmarkRepository>();
+
         var movie = new Movie
         {
             MovieId = movieId,
@@ -356,7 +454,7 @@ public class MovieServiceTests
           .ReturnsAsync(GetTestMovies()
           .FirstOrDefault(m => m.MovieId == movieId));
 
-        var service = new MovieService(repository.Object);
+        var service = new MovieService(repository.Object, bookmarkRepository.Object, httpContextAccessor.Object);
         var result = await service.Update(movie);
 
         Assert.NotNull(result);
@@ -370,13 +468,20 @@ public class MovieServiceTests
     [InlineData(3)]
     public async Task Delete_DeletesMovie(int movieId)
     {
+        var httpContextAccessor = new Mock<IHttpContextAccessor>();
+        httpContextAccessor
+          .Setup(hca => hca.HttpContext!.User.IsInRole("Admin"))
+          .Returns(false);
+
+        var bookmarkRepository = new Mock<IBookmarkRepository>();
+
         var repository = new Mock<IMovieRepository>();
         repository
           .Setup(repo => repo.GetById(movieId))
           .ReturnsAsync(GetTestMovies()
           .FirstOrDefault(m => m.MovieId == movieId));
 
-        var service = new MovieService(repository.Object);
+        var service = new MovieService(repository.Object, bookmarkRepository.Object, httpContextAccessor.Object);
         var result = await service.Delete(movieId);
 
         Assert.NotNull(result);
@@ -389,12 +494,19 @@ public class MovieServiceTests
     [InlineData(9)]
     public async void Delete_DoesNotExist_ReturnsError(int movieId)
     {
+        var httpContextAccessor = new Mock<IHttpContextAccessor>();
+        httpContextAccessor
+          .Setup(hca => hca.HttpContext!.User.IsInRole("Admin"))
+          .Returns(false);
+
+        var bookmarkRepository = new Mock<IBookmarkRepository>();
+
         var repository = new Mock<IMovieRepository>();
         repository
           .Setup(repo => repo.GetById(movieId))
           .ReturnsAsync(GetTestMovies().FirstOrDefault(m => m.MovieId == movieId));
 
-        var service = new MovieService(repository.Object);
+        var service = new MovieService(repository.Object, bookmarkRepository.Object, httpContextAccessor.Object);
         var result = await service.Delete(movieId);
 
         Assert.NotNull(result);
