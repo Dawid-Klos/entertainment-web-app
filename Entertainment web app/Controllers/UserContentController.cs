@@ -11,7 +11,7 @@ namespace Entertainment_web_app.Controllers;
 
 [ApiController]
 [Authorize(Roles = "User")]
-[Route("api/user-content")]
+[Route("api/users")]
 [Produces("application/json")]
 public class UserContentController : ControllerBase
 {

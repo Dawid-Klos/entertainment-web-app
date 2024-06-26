@@ -13,17 +13,15 @@ namespace Entertainment_web_app.Controllers;
 
 [ApiController]
 [Authorize(Roles = "User")]
-[Route("api/bookmarks")]
+[Route("api/users/bookmarks")]
 [Produces("application/json")]
 public class BookmarksController : ControllerBase
 {
     private readonly IBookmarkService _bookmarkService;
-    private readonly IUserService _userService;
 
-    public BookmarksController(IBookmarkService bookmarkService, IUserService userService)
+    public BookmarksController(IBookmarkService bookmarkService)
     {
         _bookmarkService = bookmarkService;
-        _userService = userService;
     }
 
     [HttpGet]
@@ -84,7 +82,6 @@ public class BookmarksController : ControllerBase
     public async Task<Response<BookmarkDto>> Get(int movieId)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var user = await _userService.GetById(userId);
 
         try
         {

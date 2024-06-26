@@ -10,12 +10,12 @@ export const bookmarkAction = async ({ request }) => {
 
   try {
     if (isBookmarked) {
-      await axios.delete("/api/bookmarks/" + movieId);
+      await axios.delete("/api/users/bookmarks/" + movieId);
       return { movieId: movieId, isBookmarked: false };
     }
 
     if (!isBookmarked) {
-      await axios.post("/api/bookmarks/" + movieId);
+      await axios.post("/api/users/bookmarks/" + movieId);
       return { movieId: movieId, isBookmarked: true };
     }
 
