@@ -8,8 +8,8 @@ const validateResponse = (response) => {
 
 export const fetchBookmarked = async () => {
   try {
-    const bookmarkedMovies = await axios.get("/api/user-content/movies");
-    const bookmarkedTVSeries = await axios.get("/api/user-content/tv-series");
+    const bookmarkedMovies = await axios.get(`api/users/movies`);
+    const bookmarkedTVSeries = await axios.get(`api/users/tv-series`);
 
     validateResponse(bookmarkedMovies);
     validateResponse(bookmarkedTVSeries);

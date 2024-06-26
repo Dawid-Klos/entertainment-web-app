@@ -16,8 +16,6 @@ const context = [
   "/api/tv-series",
   "/api/trending",
   "/api/bookmarks",
-  "/api/user-content/movies",
-  "/api/user-content/tv-series",
   "/api/users",
   "/swagger/v1/swagger.json",
   "/swagger",
