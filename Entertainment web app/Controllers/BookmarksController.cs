@@ -13,7 +13,7 @@ namespace Entertainment_web_app.Controllers;
 
 [ApiController]
 [Authorize(Roles = "User")]
-[Route("api/bookmarks")]
+[Route("api/users/bookmarks")]
 [Produces("application/json")]
 public class BookmarksController : ControllerBase
 {
