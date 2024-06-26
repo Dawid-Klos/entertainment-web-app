@@ -69,8 +69,8 @@ export const searchTVSeries = async (query) => {
 export const searchBookmarked = async (query) => {
   try {
     const [movies, tvSeries] = await Promise.all([
-      axios.get(`/api/user-content/movies/search?title=${query}`),
-      axios.get(`/api/user-content/tv-series/search?title=${query}`),
+      axios.get(`/api/users/movies/search?title=${query}`),
+      axios.get(`/api/users/tv-series/search?title=${query}`),
     ]);
 
     validateResponse(movies);
