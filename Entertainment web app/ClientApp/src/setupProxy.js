@@ -9,14 +9,10 @@ const target = env.ASPNETCORE_HTTPS_PORT
 
 const context = [
   "/api/auth",
-  "/api/auth/login",
-  "/api/auth/logout",
-  "/api/auth/register",
+  "/api/users",
   "/api/movies",
   "/api/tv-series",
   "/api/trending",
-  "/api/bookmarks",
-  "/api/users",
   "/swagger/v1/swagger.json",
   "/swagger",
 ];
