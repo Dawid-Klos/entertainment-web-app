@@ -7,7 +7,7 @@ import routerConfig from "./config/routes";
 import "./styles/custom.scss";
 
 const rootElement = document.getElementById("root");
-const root = createRoot(rootElement);
+const root = createRoot(rootElement!);
 const router = createBrowserRouter(routerConfig);
 
 root.render(<RouterProvider router={router} />);
