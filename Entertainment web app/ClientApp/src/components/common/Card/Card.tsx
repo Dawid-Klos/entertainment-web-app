@@ -1,14 +1,28 @@
 import { Form } from "react-router-dom";
 
-import { useWindowSize } from "../../../hooks/useWindowSize";
-import BookmarkIcon from "../../../assets/icons/Bookmark";
+import { useWindowSize } from "@hooks/useWindowSize";
+import BookmarkIcon from "@assets/icons/Bookmark";
 
-import categoryMovieIcon from "../../../assets/icon-category-movie.svg";
-import categoryTvIcon from "../../../assets/icon-category-tv.svg";
+import categoryMovieIcon from "@assets/icon-category-movie.svg";
+import categoryTvIcon from "@assets/icon-category-tv.svg";
 
 import "./Card.scss";
 
-const Card = ({ movie, variant }) => {
+type CardProps = {
+  movie: {
+    movieId: string;
+    imgSmall: string;
+    imgLarge: string;
+    year: number;
+    category: string;
+    rating: number;
+    title: string;
+    isBookmarked: string;
+  };
+  variant: "trending" | "normal";
+};
+
+const Card = ({ movie, variant }: CardProps) => {
   const { isMobile } = useWindowSize();
   const backgroundImg = isMobile ? movie.imgSmall : movie.imgLarge;
 
@@ -28,7 +42,7 @@ const Card = ({ movie, variant }) => {
           <input
             type="hidden"
             name="isBookmarked"
-            value={(movie.isBookmarked ??= false)}
+            value={movie.isBookmarked ? movie.isBookmarked.toString() : "false"}
           />
           <button
             className="card-bookmark__button"
