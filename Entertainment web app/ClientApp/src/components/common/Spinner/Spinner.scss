@@ -25,11 +25,10 @@
     animation: loading 1.15s ease infinite;
   }
 
-  &--center {
+  &--primary {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
   }
 }
-

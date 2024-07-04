@@ -19,7 +19,7 @@ type CardProps = {
     title: string;
     isBookmarked: string;
   };
-  variant: "trending" | "normal";
+  variant: "primary" | "secondary";
 };
 
 const Card = ({ movie, variant }: CardProps) => {
@@ -27,7 +27,7 @@ const Card = ({ movie, variant }: CardProps) => {
   const backgroundImg = isMobile ? movie.imgSmall : movie.imgLarge;
 
   return (
-    <div className={`${variant === "trending" ? "trending-card" : "card"}`}>
+    <div className={`${variant === "primary" ? "card" : "trending-card"}`}>
       <div
         className="card-bookmark"
         style={{
