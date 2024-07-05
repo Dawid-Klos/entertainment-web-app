@@ -1,11 +1,16 @@
 import "keen-slider/keen-slider.min.css";
 import { useKeenSlider } from "keen-slider/react";
 
-import Card from "../../../common/Card/Card";
+import Card from "@components/common/Card/Card";
+import { Movie } from "@commonTypes/content.types";
 
 import "./Slider.scss";
 
-const Slider = ({ movies }) => {
+type SliderProps = {
+  movies: Movie[];
+};
+
+const Slider = ({ movies }: SliderProps) => {
   const [sliderRef] = useKeenSlider({
     slides: {
       perView: "auto",
@@ -38,7 +43,7 @@ const Slider = ({ movies }) => {
       {movies &&
         movies.map((movie) => (
           <div className="keen-slider__slide" key={movie.movieId}>
-            <Card movie={movie} variant="trending" />
+            <Card movie={movie} variant="secondary" />
           </div>
         ))}
     </div>

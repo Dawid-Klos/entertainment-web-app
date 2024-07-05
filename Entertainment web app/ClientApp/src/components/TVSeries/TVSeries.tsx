@@ -2,19 +2,12 @@ import { useLoaderData } from "react-router-dom";
 
 import Card from "@components/common/Card/Card";
 import Spinner from "@components/common/Spinner/Spinner";
+import { Movie } from "@commonTypes/content.types";
+
 import "./TVSeries.scss";
 
 type TVSeriesData = {
-  data: {
-    movieId: string;
-    imgSmall: string;
-    imgLarge: string;
-    year: number;
-    category: string;
-    rating: number;
-    title: string;
-    isBookmarked: string;
-  }[];
+  data: Movie[];
 };
 
 const TVSeries = () => {

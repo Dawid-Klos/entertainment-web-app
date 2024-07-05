@@ -1,13 +1,20 @@
 import { useLoaderData } from "react-router-dom";
 import { useState, useEffect } from "react";
 
-import Card from "../common/Card/Card";
+import Card from "@components/common/Card/Card";
+import { Movie } from "@commonTypes/content.types";
 
 import "./Search.scss";
 
+type SearchResult = {
+  query: string;
+  category: string;
+  result: Movie[];
+};
+
 const Search = () => {
-  const [title, setTitle] = useState(null);
-  const searchResult = useLoaderData();
+  const [title, setTitle] = useState<string>("");
+  const searchResult = useLoaderData() as SearchResult;
 
   const movies = searchResult.result;
 
@@ -23,7 +30,7 @@ const Search = () => {
       <div className="search__content">
         {movies ? (
           movies.map((movie) => (
-            <Card key={movie.movieId} movie={movie} variant="standard" />
+            <Card key={movie.movieId} movie={movie} variant="primary" />
           ))
         ) : (
           <p>Content has not been found</p>

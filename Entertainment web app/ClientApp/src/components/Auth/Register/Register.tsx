@@ -1,24 +1,28 @@
 import { Link } from "react-router-dom";
 import { useRef } from "react";
 
-import { useAuth } from "../../../hooks/useAuth";
-import logo from "../../../assets/logo.svg";
+import { useAuth } from "@hooks/useAuth";
+import { RegisterBody } from "@commonTypes/auth.types";
+import Spinner from "@components/common/Spinner/Spinner";
+import logo from "@assets/logo.svg";
+
 import "../Auth.scss";
-import Spinner from "../../common/Spinner/Spinner";
 
 const Register = () => {
-  const firstName = useRef();
-  const lastName = useRef();
-  const email = useRef();
-  const password = useRef();
-  const confirmPassword = useRef();
+  const firstName = useRef() as React.MutableRefObject<HTMLInputElement>;
+  const lastName = useRef() as React.MutableRefObject<HTMLInputElement>;
+  const email = useRef() as React.MutableRefObject<HTMLInputElement>;
+  const password = useRef() as React.MutableRefObject<HTMLInputElement>;
+  const confirmPassword = useRef() as React.MutableRefObject<HTMLInputElement>;
 
   const { submission, handleSubmit } = useAuth();
 
-  const submitForm = async (e) => {
+  const submitForm: React.FormEventHandler = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     e.preventDefault();
 
-    const body = {
+    const body: RegisterBody = {
       Email: email.current.value,
       Firstname: firstName.current.value,
       Lastname: lastName.current.value,
@@ -108,17 +112,15 @@ const Register = () => {
             <p className="form__status">{submission.message}</p>
           )}
 
-          {submission.errors && submission.errors.length > 1 && (
+          {submission.error !== "" && (
             <ul className="form__errors">
-              {submission.errors.map((error, index) => (
-                <li key={index}>{error}</li>
-              ))}
+              <li>{submission.error}</li>
             </ul>
           )}
 
           <button className="form__submit-btn" type="submit">
             {submission.status === "submitting" ? "" : "Create an account"}
-            <Spinner loading={submission.status === "submitting"} />
+            <Spinner loading={submission.status === "submitting"} variant="primary" />
           </button>
         </form>
 

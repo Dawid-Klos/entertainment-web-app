@@ -1,7 +1,6 @@
-import { useSearch } from "../../hooks/useSearch";
+import { useSearch } from "@hooks/useSearch";
 
-import searchIcon from "../../assets/icon-search.svg";
-
+import searchIcon from "@assets/icon-search.svg";
 import "./SearchBar.scss";
 
 const SearchBar = () => {

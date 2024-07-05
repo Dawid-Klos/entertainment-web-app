@@ -1,4 +1,9 @@
-const Carousel = ({ variant, className }) => {
+type CarouselProps = {
+  variant: "vertical" | "horizontal";
+  className?: string;
+};
+
+const Carousel = ({ variant, className }: CarouselProps) => {
   return (
     <>
       {variant === "vertical" ? (

@@ -2,6 +2,7 @@ import { Form } from "react-router-dom";
 
 import { useWindowSize } from "@hooks/useWindowSize";
 import BookmarkIcon from "@assets/icons/Bookmark";
+import { Movie } from "@commonTypes/content.types";
 
 import categoryMovieIcon from "@assets/icon-category-movie.svg";
 import categoryTvIcon from "@assets/icon-category-tv.svg";
@@ -9,16 +10,7 @@ import categoryTvIcon from "@assets/icon-category-tv.svg";
 import "./Card.scss";
 
 type CardProps = {
-  movie: {
-    movieId: string;
-    imgSmall: string;
-    imgLarge: string;
-    year: number;
-    category: string;
-    rating: number;
-    title: string;
-    isBookmarked: string;
-  };
+  movie: Movie;
   variant: "primary" | "secondary";
 };
 
