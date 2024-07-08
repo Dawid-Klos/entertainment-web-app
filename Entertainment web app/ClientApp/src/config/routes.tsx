@@ -1,4 +1,4 @@
-import { redirect } from "react-router-dom";
+import { redirect, ActionFunctionArgs } from "react-router-dom";
 import {
   fetchContent,
   fetchBookmarked,
@@ -48,9 +48,11 @@ const routerConfig = [
       {
         path: "/search",
         element: <Search />,
-        loader: ({ request }) => {
+        loader: ({ request }: ActionFunctionArgs) => {
           const url = new URL(request.url);
-          const query = url.searchParams.get("query");
+          let query = url.searchParams.get("query");
+          query = query ? query : "";
+
           return searchContent(query);
         },
         action: bookmarkAction,
@@ -64,9 +66,11 @@ const routerConfig = [
       {
         path: "/movies/search",
         element: <Search />,
-        loader: ({ request }) => {
+        loader: ({ request }: ActionFunctionArgs) => {
           const url = new URL(request.url);
-          const query = url.searchParams.get("query");
+          let query = url.searchParams.get("query");
+          query = query ? query : ""; 
+
           return searchMovies(query);
         },
         action: bookmarkAction,
@@ -80,9 +84,11 @@ const routerConfig = [
       {
         path: "/tv-series/search",
         element: <Search />,
-        loader: ({ request }) => {
+        loader: ({ request }: ActionFunctionArgs) => {
           const url = new URL(request.url);
-          const query = url.searchParams.get("query");
+          let query = url.searchParams.get("query");
+          query = query ? query : "";
+
           return searchTVSeries(query);
         },
         action: bookmarkAction,
@@ -96,9 +102,11 @@ const routerConfig = [
       {
         path: "/bookmarked/search",
         element: <Search />,
-        loader: ({ request }) => {
+        loader: ({ request }: ActionFunctionArgs) => {
           const url = new URL(request.url);
-          const query = url.searchParams.get("query");
+          let query = url.searchParams.get("query");
+          query = query ? query : "";
+
           return searchBookmarked(query);
         },
         action: bookmarkAction,
