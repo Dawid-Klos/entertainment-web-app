@@ -1,8 +1,8 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 
-const validateResponse = (response) => {
-  if (response.data.status === "error" || response.data.statusCode !== 200) {
-    throw new Error(response.statusCode);
+const validateResponse = (response: AxiosResponse) => {
+  if (response.data.status === "error" && response.data.statusCode !== 200) {
+    throw new Error(response.data.message);
   }
 };
 
@@ -19,11 +19,11 @@ export const fetchBookmarked = async () => {
       tvSeries: bookmarkedTVSeries.data,
     };
   } catch (error) {
-    throw new Error(500);
+    throw new Error("Failed to fetch bookmarked content");
   }
 };
 
-export const fetchContent = async (path) => {
+export const fetchContent = async (path: string) => {
   try {
     const contentResponse = await axios.get(`/api/${path}`);
 
@@ -31,11 +31,11 @@ export const fetchContent = async (path) => {
 
     return { data: contentResponse.data.data };
   } catch (error) {
-    throw new Error(500);
+    throw new Error("Failed to fetch content, please try again later");
   }
 };
 
-export const searchMovies = async (query) => {
+export const searchMovies = async (query: string) => {
   try {
     const movies = await axios.get(`/api/movies/search?title=${query}`);
 
@@ -47,11 +47,11 @@ export const searchMovies = async (query) => {
       category: "Movies",
     };
   } catch (error) {
-    throw new Error(500);
+    throw new Error("Failed to search movies, please try again later");
   }
 };
 
-export const searchTVSeries = async (query) => {
+export const searchTVSeries = async (query: string) => {
   try {
     const tvSeries = await axios.get(`/api/tv-series/search?title=${query}`);
 
@@ -61,12 +61,11 @@ export const searchTVSeries = async (query) => {
       category: "TV Series",
     };
   } catch (error) {
-    console.error(error);
-    throw new Error(500);
+    throw new Error("Failed to search TV series, please try again later");
   }
 };
 
-export const searchBookmarked = async (query) => {
+export const searchBookmarked = async (query: string) => {
   try {
     const [movies, tvSeries] = await Promise.all([
       axios.get(`/api/users/movies/search?title=${query}`),
@@ -84,11 +83,13 @@ export const searchBookmarked = async (query) => {
       category: "Bookmarked",
     };
   } catch (error) {
-    throw new Error(500);
+    throw new Error(
+      "Failed to search bookmarked content, please try again later",
+    );
   }
 };
 
-export const searchContent = async (query) => {
+export const searchContent = async (query: string) => {
   try {
     const [movies, tvSeries] = await Promise.all([
       axios.get(`/api/movies/search?title=${query}`),
@@ -104,6 +105,6 @@ export const searchContent = async (query) => {
       category: "Library",
     };
   } catch (error) {
-    throw new Error(500);
+    throw new Error("Failed to search content, please try again later");
   }
 };
