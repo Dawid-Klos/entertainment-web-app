@@ -1,11 +1,17 @@
 import { useLoaderData } from "react-router-dom";
 
-import Card from "../common/Card/Card";
-import Spinner from "../common/Spinner/Spinner";
+import Card from "@components/common/Card/Card";
+import Spinner from "@components/common/Spinner/Spinner";
+import { Movie } from "@commonTypes/content.types";
+
 import "./TVSeries.scss";
 
+type TVSeriesData = {
+  data: Movie[];
+};
+
 const TVSeries = () => {
-  const tvSeriesData = useLoaderData();
+  const tvSeriesData = useLoaderData() as TVSeriesData;
   const tvSeries = (tvSeriesData.data ||= []);
 
   return (
@@ -13,10 +19,10 @@ const TVSeries = () => {
       <h1 className="TVSeries__title">TV Series</h1>
       <div className="TVSeries__content">
         {!tvSeries || tvSeries.length < 1 ? (
-          <Spinner loading={true} variant="center" />
+          <Spinner loading={true} variant="primary" />
         ) : (
           tvSeries.map((movie) => (
-            <Card key={movie.movieId} movie={movie} variant="standard" />
+            <Card key={movie.movieId} movie={movie} variant="primary" />
           ))
         )}
       </div>

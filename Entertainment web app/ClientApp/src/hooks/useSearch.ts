@@ -9,7 +9,7 @@ export const useSearch = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const navigateToSearch = (e) => {
+  const navigateToSearch = (e: any) => {
     e.preventDefault();
 
     const query = e.target.search.value;

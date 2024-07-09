@@ -1,20 +1,25 @@
 import { useRef } from "react";
 import { Link } from "react-router-dom";
 
-import { useAuth } from "../../../hooks/useAuth";
-import Spinner from "../../common/Spinner/Spinner";
+import { useAuth } from "@hooks/useAuth";
+import Spinner from "@components/common/Spinner/Spinner";
+import { LoginBody } from "@commonTypes/auth.types";
 
-import logo from "../../../assets/logo.svg";
+import logo from "@assets/logo.svg";
 import "../Auth.scss";
 
 const Login = () => {
-  const email = useRef();
-  const password = useRef();
+  const email = useRef() as React.MutableRefObject<HTMLInputElement>;
+  const password = useRef() as React.MutableRefObject<HTMLInputElement>;
 
   const { submission, handleSubmit } = useAuth();
 
-  const submitForm = async (e) => {
-    const body = {
+  const submitForm: React.FormEventHandler = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    e.preventDefault();
+
+    const body: LoginBody = {
       Email: email.current.value,
       Password: password.current.value,
     };
@@ -66,7 +71,10 @@ const Login = () => {
 
           <button className="form__submit-btn" type="submit">
             {submission.status === "submitting" ? "" : "Login to your account"}
-            <Spinner loading={submission.status === "submitting"} />
+            <Spinner
+              loading={submission.status === "submitting"}
+              variant="primary"
+            />
           </button>
         </form>
         <div className="create-account">

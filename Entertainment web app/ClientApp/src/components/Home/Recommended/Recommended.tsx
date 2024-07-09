@@ -1,10 +1,17 @@
-import Card from "../../common/Card/Card";
-import Spinner from "../../common/Spinner/Spinner";
-import CarouselIcon from "../../../assets/icons/Carousel";
+import Card from "@components/common/Card/Card";
+import Spinner from "@components/common/Spinner/Spinner";
+import CarouselIcon from "@assets/icons/Carousel";
+import { Movie } from "@commonTypes/content.types";
 
 import "./Recommended.scss";
 
-const Recommended = ({ content }) => {
+type RecommendedContent = {
+  content: {
+    data: Movie[];
+  };
+};
+
+const Recommended = ({ content }: RecommendedContent) => {
   const movies = (content.data ||= []);
 
   return (
@@ -16,10 +23,10 @@ const Recommended = ({ content }) => {
 
       <div className="recommend__content">
         {!movies || movies.length < 1 ? (
-          <Spinner loading={true} variant="center" />
+          <Spinner loading={true} variant="primary" />
         ) : (
           movies.map((movie) => (
-            <Card key={movie.movieId} movie={movie} variant="standard" />
+            <Card key={movie.movieId} movie={movie} variant="primary" />
           ))
         )}
       </div>

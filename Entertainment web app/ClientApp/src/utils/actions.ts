@@ -1,12 +1,11 @@
 import axios from "axios";
+import type { ActionFunctionArgs } from "react-router-dom";
 
-export const bookmarkAction = async ({ request }) => {
+export const bookmarkAction = async ({ request }: ActionFunctionArgs) => {
   let formData = await request.formData();
 
   const movieId = formData.get("movieId");
   const isBookmarked = formData.get("isBookmarked") === "true";
-
-  console.log(movieId, isBookmarked);
 
   try {
     if (isBookmarked) {

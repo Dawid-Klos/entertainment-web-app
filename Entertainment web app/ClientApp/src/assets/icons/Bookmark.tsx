@@ -1,4 +1,9 @@
-const Bookmark = ({ variant, className }) => {
+type BookmarkProps = {
+  variant: "filled" | "outlined";
+  className?: string;
+};
+
+const Bookmark = ({ variant, className }: BookmarkProps) => {
   return (
     <svg
       className={className}
