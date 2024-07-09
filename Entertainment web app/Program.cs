@@ -81,9 +81,17 @@ string[] roles = { "Admin", "User" };
 
 foreach (var role in roles)
 {
-    if (!roleManager!.RoleExistsAsync(role).Result)
+    try
     {
-        await roleManager.CreateAsync(new IdentityRole(role));
+        if (!roleManager!.RoleExistsAsync(role).Result)
+        {
+            await roleManager.CreateAsync(new IdentityRole(role));
+        }
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine("--- Program.cs: Error seeding roles");
+        Console.WriteLine(e.Message);
     }
 }
 
