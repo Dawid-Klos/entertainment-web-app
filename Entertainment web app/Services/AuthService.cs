@@ -83,7 +83,8 @@ public class AuthService : IAuthService
 
         if (!result.Succeeded)
         {
-            return Result.Failure(new Error("BadRequest", "User creation failed"));
+            var errors = result.Errors.Select(error => error.Description).Aggregate((error1, error2) => $"{error1}, {error2}");
+            return Result.Failure(new Error("BadRequest", $"User creation failed: {errors}"));
         }
 
         var userRole = await _userManager.AddToRoleAsync(applicationUser, "User");
