@@ -4,14 +4,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import Spinner from "@components/common/Spinner/Spinner";
 
-import { useAuth } from "@hooks/useAuth";
+import { useSignIn } from "@hooks/useSignIn";
 import { loginSchema, LoginBody } from "@config/formSchemas";
 
 import logo from "@assets/logo.svg";
 import "../Auth.scss";
 
 const Login = () => {
-  const { submission, sendRequest } = useAuth();
+  const { submission, signIn } = useSignIn();
   const {
     register,
     handleSubmit,
@@ -26,7 +26,7 @@ const Login = () => {
       password: data.password,
     };
 
-    await sendRequest(body, "/api/auth/login");
+    await signIn(body);
   };
 
   return (
