@@ -1,30 +1,32 @@
-import { useRef } from "react";
 import { Link } from "react-router-dom";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-import { useAuth } from "@hooks/useAuth";
 import Spinner from "@components/common/Spinner/Spinner";
-import { LoginBody } from "@commonTypes/auth.types";
+
+import { useSignIn } from "@hooks/useSignIn";
+import { loginSchema, LoginBody } from "@config/formSchemas";
 
 import logo from "@assets/logo.svg";
 import "../Auth.scss";
 
 const Login = () => {
-  const email = useRef() as React.MutableRefObject<HTMLInputElement>;
-  const password = useRef() as React.MutableRefObject<HTMLInputElement>;
+  const { submission, signIn } = useSignIn();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginBody>({
+    resolver: zodResolver(loginSchema),
+  });
 
-  const { submission, handleSubmit } = useAuth();
-
-  const submitForm: React.FormEventHandler = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    e.preventDefault();
-
+  const onSubmit: SubmitHandler<LoginBody> = async (data) => {
     const body: LoginBody = {
-      Email: email.current.value,
-      Password: password.current.value,
+      email: data.email,
+      password: data.password,
     };
 
-    await handleSubmit(e, body, "/api/auth/login");
+    await signIn(body);
   };
 
   return (
@@ -36,7 +38,7 @@ const Login = () => {
       />
 
       <div className="auth-section__container">
-        <form className="form" onSubmit={submitForm}>
+        <form className="form" onSubmit={handleSubmit(onSubmit)}>
           <h2 className="form__title">Login</h2>
 
           <div className="form__inputs-wrapper">
@@ -47,9 +49,10 @@ const Login = () => {
               <input
                 className="input-container__input"
                 type="text"
-                ref={email}
                 id="email"
+                {...register("email")}
               />
+              <p className="form__error">{errors.email?.message}</p>
             </div>
             <div className="input-container">
               <label htmlFor="password" className="input-container__label">
@@ -58,15 +61,16 @@ const Login = () => {
               <input
                 className="input-container__input"
                 type="password"
-                ref={password}
                 id="password"
+                {...register("password")}
               />
+              <p className="form__error">{errors.password?.message}</p>
             </div>
           </div>
 
           {(submission.status === "success" ||
             submission.status === "error") && (
-            <p className="form__status">{submission.message}</p>
+            <p className="form__special-error">{submission.message}</p>
           )}
 
           <button className="form__submit-btn" type="submit">

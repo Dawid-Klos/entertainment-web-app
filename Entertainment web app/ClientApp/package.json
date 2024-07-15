@@ -8,6 +8,7 @@
     "@babel/plugin-syntax-flow": "^7.23.3",
     "@babel/plugin-transform-react-jsx": "^7.23.4",
     "@craco/craco": "^7.1.0",
+    "@hookform/resolvers": "^3.9.0",
     "@types/node": "^20.14.9",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
@@ -23,6 +24,7 @@
     "postcss": "^8.4.32",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-hook-form": "^7.52.1",
     "react-router-bootstrap": "^0.26.1",
     "react-router-dom": "^6.21.0",
     "reactstrap": "^9.2.1",
@@ -41,7 +43,8 @@
     "workbox-range-requests": "^7.0.0",
     "workbox-routing": "^7.0.0",
     "workbox-strategies": "^7.0.0",
-    "workbox-streams": "^7.0.0"
+    "workbox-streams": "^7.0.0",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@craco/types": "^7.1.0",

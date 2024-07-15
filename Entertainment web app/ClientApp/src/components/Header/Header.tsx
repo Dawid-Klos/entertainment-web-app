@@ -1,4 +1,4 @@
-import { useAuth } from "@hooks/useAuth";
+import { useSignIn } from "@hooks/useSignIn";
 import Spinner from "@components/common/Spinner/Spinner";
 
 import logo from "@assets/logo.svg";
@@ -8,7 +8,7 @@ import Nav from "./Nav/Nav";
 import "./Header.scss";
 
 const Header = () => {
-  const { logout, submission } = useAuth();
+  const { signOut, submission } = useSignIn();
 
   return (
     <header className="header">
@@ -16,7 +16,7 @@ const Header = () => {
       <Nav />
       <div className="user-info">
         <img className="user-info__avatar" src={avatar} alt="User avatar" />
-        <button className="user-info__button" type="submit" onClick={logout}>
+        <button className="user-info__button" type="submit" onClick={signOut}>
           <Spinner
             loading={submission.status === "logging out"}
             variant="primary"
