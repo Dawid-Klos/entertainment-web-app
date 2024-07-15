@@ -20,6 +20,7 @@
       "@components/*": ["components/*"],
       "@hooks/*": ["hooks/*"],
       "@utils/*": ["utils/*"],
+      "@config/*": ["config/*"],
       "@styles/*": ["styles/*"],
       "@assets/*": ["assets/*"],
       "@commonTypes/*": ["types/*"]
