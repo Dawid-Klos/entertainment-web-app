@@ -4,13 +4,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import Spinner from "@components/common/Spinner/Spinner";
 import { registerSchema, RegisterBody } from "@config/formSchemas";
-import { useAuth } from "@hooks/useAuth";
+import { useRegisterUser } from "@hooks/useRegisterUser";
 
 import logo from "@assets/logo.svg";
 import "../Auth.scss";
 
 const Register = () => {
-  const { submission, sendRequest } = useAuth();
+  const { submission, createAccount } = useRegisterUser();
   const {
     register,
     handleSubmit,
@@ -28,7 +28,7 @@ const Register = () => {
       confirmPassword: data.confirmPassword,
     };
 
-    await sendRequest(body, "/api/auth/register");
+    await createAccount(body);
   };
 
   return (
