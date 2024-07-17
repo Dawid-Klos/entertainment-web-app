@@ -1,22 +1,18 @@
-import axios, { AxiosResponse } from "axios";
-
-const validateResponse = (response: AxiosResponse) => {
-  if (response.data.status === "error" && response.data.statusCode !== 200) {
-    throw new Error(response.data.message);
-  }
-};
+import axios from "axios";
 
 export const fetchBookmarked = async () => {
   try {
-    const bookmarkedMovies = await axios.get(`api/users/movies`);
-    const bookmarkedTVSeries = await axios.get(`api/users/tv-series`);
+    const bookmarkedMovies = axios.get(`api/users/movies`);
+    const bookmarkedTVSeries = axios.get(`api/users/tv-series`);
 
-    validateResponse(bookmarkedMovies);
-    validateResponse(bookmarkedTVSeries);
+    const bookmarkedContent = await Promise.all([
+      bookmarkedMovies,
+      bookmarkedTVSeries,
+    ]);
 
     return {
-      movies: bookmarkedMovies.data,
-      tvSeries: bookmarkedTVSeries.data,
+      movies: bookmarkedContent[0].data || [],
+      tvSeries: bookmarkedContent[1].data || [],
     };
   } catch (error) {
     throw new Error("Failed to fetch bookmarked content");
@@ -27,9 +23,7 @@ export const fetchContent = async (path: string) => {
   try {
     const contentResponse = await axios.get(`/api/${path}`);
 
-    validateResponse(contentResponse);
-
-    return { data: contentResponse.data.data };
+    return { data: contentResponse.data.data || [] };
   } catch (error) {
     throw new Error("Failed to fetch content, please try again later");
   }
@@ -39,10 +33,8 @@ export const searchMovies = async (query: string) => {
   try {
     const movies = await axios.get(`/api/movies/search?title=${query}`);
 
-    validateResponse(movies);
-
     return {
-      result: movies.data.data,
+      result: movies.data.data || [],
       query: query ? query : "",
       category: "Movies",
     };
@@ -56,7 +48,7 @@ export const searchTVSeries = async (query: string) => {
     const tvSeries = await axios.get(`/api/tv-series/search?title=${query}`);
 
     return {
-      result: tvSeries.data.data,
+      result: tvSeries.data.data || [],
       query: query ? query : "",
       category: "TV Series",
     };
@@ -72,9 +64,10 @@ export const searchBookmarked = async (query: string) => {
       axios.get(`/api/users/tv-series/search?title=${query}`),
     ]);
 
-    validateResponse(movies);
-    validateResponse(tvSeries);
-
+    if (!movies.data.data && !tvSeries.data.data) {
+      return { result: [], query: query ? query : "", category: "Bookmarked" };
+    }
+    
     const searchResult = movies.data.data.concat(tvSeries.data.data);
 
     return {
@@ -95,8 +88,10 @@ export const searchContent = async (query: string) => {
       axios.get(`/api/movies/search?title=${query}`),
       axios.get(`/api/tv-series/search?title=${query}`),
     ]);
-
-    validateResponse(movies);
+    
+    if (!movies.data.data && !tvSeries.data.data) {
+      return { result: [], query: query ? query : "", category: "Library" };
+    }
     const searchResult = movies.data.data.concat(tvSeries.data.data);
 
     return {
