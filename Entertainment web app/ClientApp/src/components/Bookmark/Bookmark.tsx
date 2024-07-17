@@ -27,7 +27,7 @@ const Bookmark = () => {
       <section className="bookmark">
         <h1 className="bookmark__title">Bookmarked Movies</h1>
         <div className="bookmark__content">
-          {!bookmarkedMovies || bookmarkedMovies.length < 1 ? (
+          {!bookmarkedMovies ? (
             <Spinner loading={true} variant="primary" />
           ) : (
             movies.data.map((movie) => (
@@ -39,7 +39,7 @@ const Bookmark = () => {
       <section className="bookmark-tv">
         <h2 className="bookmark-tv__title">Bookmarked TV Series</h2>
         <div className="bookmark-tv__content">
-          {!bookmarkedTvSeries || bookmarkedTvSeries.length < 1 ? (
+          {!bookmarkedTvSeries ? (
             <Spinner loading={true} variant="primary" />
           ) : (
             tvSeries.data.map((movie) => (

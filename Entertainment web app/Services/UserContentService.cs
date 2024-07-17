@@ -32,9 +32,9 @@ public class UserContentService : IUserContentService
         var category = MediaCategory.Movies.ToString();
         var bookmarks = await _bookmarkRepository.GetByCategoryAndUserId(category, userId);
 
-        if (bookmarks == null)
+        if (bookmarks is null || bookmarks.Count() == 0)
         {
-            return Result<PagedResponse<MovieDto>>.Failure(new Error("NotFound", "No bookmarked movies found"));
+            return Result<PagedResponse<MovieDto>>.Failure(new Error("NoContent", "No bookmarked movies found"));
         }
 
         var movieIds = bookmarks.Select(b => b.MovieId);
@@ -89,9 +89,9 @@ public class UserContentService : IUserContentService
         var category = MediaCategory.TVSeries.ToString();
         var bookmarks = await _bookmarkRepository.GetByCategoryAndUserId(category, userId);
 
-        if (bookmarks == null)
+        if (bookmarks is null || bookmarks.Count() == 0)
         {
-            return Result<PagedResponse<MovieDto>>.Failure(new Error("NotFound", "No bookmarked movies found"));
+            return Result<PagedResponse<MovieDto>>.Failure(new Error("NoContent", "No bookmarked TV-Series found"));
         }
 
         var movieIds = bookmarks.Select(b => b.MovieId);

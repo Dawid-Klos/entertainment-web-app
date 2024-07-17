@@ -67,6 +67,30 @@ public class UserContentServiceTests
     }
 
     [Fact]
+    public async Task GetMovies_ReturnsNoContent()
+    {
+        var paginatonQuery = new PaginationQuery
+        {
+            PageNumber = 1,
+            PageSize = 5
+        };
+
+        var movieRepository = new Mock<IMovieRepository>();
+        var bookmarkRepository = new Mock<IBookmarkRepository>();
+
+        bookmarkRepository
+          .Setup(repo => repo.GetByCategoryAndUserId("Movies", "1"))
+          .ReturnsAsync(new List<Bookmark>());
+
+        var service = new UserContentService(movieRepository.Object, bookmarkRepository.Object);
+        var result = await service.GetMovies("1", paginatonQuery);
+
+        Assert.NotNull(result);
+        Assert.False(result.IsSuccess);
+        Assert.Equal("NoContent", result.Error?.Code);
+    }
+
+    [Fact]
     public async Task GetMovies_InvalidPageNumber_ReturnsError()
     {
         var paginatonQuery = new PaginationQuery

@@ -39,11 +39,21 @@ public class UserContentController : ControllerBase
 
             if (result.IsFailure)
             {
+                var code = result.Error.Code switch
+                {
+                    "InvalidPageSize" => StatusCodes.Status400BadRequest,
+                    "InvalidPageNumber" => StatusCodes.Status400BadRequest,
+                    "NoContent" => StatusCodes.Status204NoContent,
+                    _ => StatusCodes.Status404NotFound
+                };
+
+                HttpContext.Response.StatusCode = code;
+
                 return new PagedResponse<MovieDto>
                 {
                     Status = "error",
-                    StatusCode = StatusCodes.Status404NotFound,
-                    Error = result.Error
+                    StatusCode = code,
+                    Error = result.Error,
                 };
             }
 
@@ -84,10 +94,20 @@ public class UserContentController : ControllerBase
 
             if (result.IsFailure)
             {
+                var code = result.Error.Code switch
+                {
+                    "InvalidPageSize" => StatusCodes.Status400BadRequest,
+                    "InvalidPageNumber" => StatusCodes.Status400BadRequest,
+                    "NoContent" => StatusCodes.Status204NoContent,
+                    _ => StatusCodes.Status404NotFound
+                };
+
+                HttpContext.Response.StatusCode = code;
+
                 return new Response<MovieDto>
                 {
                     Status = "error",
-                    StatusCode = StatusCodes.Status404NotFound,
+                    StatusCode = code,
                     Error = result.Error
                 };
             }
@@ -125,10 +145,20 @@ public class UserContentController : ControllerBase
 
             if (result.IsFailure)
             {
+                var code = result.Error.Code switch
+                {
+                    "InvalidPageSize" => StatusCodes.Status400BadRequest,
+                    "InvalidPageNumber" => StatusCodes.Status400BadRequest,
+                    "NoContent" => StatusCodes.Status204NoContent,
+                    _ => StatusCodes.Status404NotFound
+                };
+
+                HttpContext.Response.StatusCode = code;
+
                 return new PagedResponse<MovieDto>
                 {
                     Status = "error",
-                    StatusCode = StatusCodes.Status404NotFound,
+                    StatusCode = code,
                     Error = result.Error
                 };
             }
@@ -167,10 +197,20 @@ public class UserContentController : ControllerBase
 
             if (result.IsFailure)
             {
+                var code = result.Error.Code switch
+                {
+                    "InvalidPageSize" => StatusCodes.Status400BadRequest,
+                    "InvalidPageNumber" => StatusCodes.Status400BadRequest,
+                    "NoContent" => StatusCodes.Status204NoContent,
+                    _ => StatusCodes.Status404NotFound
+                };
+
+                HttpContext.Response.StatusCode = code;
+
                 return new Response<MovieDto>
                 {
                     Status = "error",
-                    StatusCode = StatusCodes.Status404NotFound,
+                    StatusCode = code,
                     Error = result.Error
                 };
             }
