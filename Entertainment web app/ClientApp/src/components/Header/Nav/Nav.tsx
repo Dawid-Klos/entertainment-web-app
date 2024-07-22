@@ -9,7 +9,7 @@ import "./Nav.scss";
 
 const Nav = () => {
   const { pathname } = useLocation();
-  const isSearchPage = pathname.includes("/search");
+  const isSearchPage = "/search".includes(pathname);
 
   return (
     <nav className="nav">
