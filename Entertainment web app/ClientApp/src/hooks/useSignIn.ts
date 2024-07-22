@@ -22,14 +22,16 @@ export const useSignIn = () => {
       const res = login.data;
 
       if (res.statusCode === 200 && res.status === "success") {
-        setSubmission({
-          status: "success",
-          message: "You have been logged in.",
-        });
+        setTimeout(() => {
+          setSubmission({
+            status: "success",
+            message: "You have been logged in.",
+          });
+        }, 1000);
 
         setTimeout(() => {
           navigate("/");
-        }, 1500);
+        }, 2000);
       }
 
       if (res.statusCode === 400 && res.status === "error") {
