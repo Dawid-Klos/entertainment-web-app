@@ -17,11 +17,11 @@ const Header = () => {
       <div className="user-info">
         <img className="user-info__avatar" src={avatar} alt="User avatar" />
         <button className="user-info__button" type="submit" onClick={signOut}>
-          <Spinner
-            loading={submission.status === "logging out"}
-            variant="primary"
-          />
-          Logout
+          {submission.status === "signing out" ? (
+            <Spinner loading={true} variant="primary" />
+          ) : (
+            "Logout"
+          )}
         </button>
       </div>
     </header>

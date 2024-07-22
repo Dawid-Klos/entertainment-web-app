@@ -22,12 +22,10 @@ export const useSignIn = () => {
       const res = login.data;
 
       if (res.statusCode === 200 && res.status === "success") {
-        setTimeout(() => {
-          setSubmission({
-            status: "success",
-            message: "You have been logged in.",
-          });
-        }, 1000);
+        setSubmission({
+          status: "success",
+          message: "You have been logged in.",
+        });
 
         setTimeout(() => {
           navigate("/");
@@ -58,6 +56,8 @@ export const useSignIn = () => {
   };
 
   const signOut = async () => {
+    setSubmission({ status: "signing out", message: "" });
+
     try {
       await axios.post("/api/auth/logout");
 
