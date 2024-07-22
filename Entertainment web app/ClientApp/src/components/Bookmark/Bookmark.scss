@@ -11,6 +11,13 @@
 }
 .bookmark {
   @include content_container;
+
+  &__empty {
+    grid-column: 1 / -1;
+    font: $small-body-desktop;
+    font-style: italic;
+    color: rgba($color-white, 0.75);
+  }
 }
 
 .bookmark-tv {
@@ -27,5 +34,12 @@
     @include breakpoint(desktop_xl) {
       font: $large-heading-desktop;
     }
+  }
+
+  &__empty {
+    grid-column: 1 / -1;
+    font: $small-body-desktop;
+    font-style: italic;
+    color: rgba($color-white, 0.75);
   }
 }
