@@ -20,7 +20,7 @@ const Search = () => {
 
   useEffect(() => {
     setTitle(
-      `Found ${movies.length} results for '${searchResult.query}' in ${searchResult.category}`,
+      `Found ${movies.length} results for "${searchResult.query}" in ${searchResult.category}`,
     );
   }, [searchResult]);
 
@@ -28,13 +28,9 @@ const Search = () => {
     <div className="search">
       <h1 className="search__title">{title}</h1>
       <div className="search__content">
-        {movies ? (
-          movies.map((movie) => (
-            <Card key={movie.movieId} movie={movie} variant="primary" />
-          ))
-        ) : (
-          <p>Content has not been found</p>
-        )}
+        {movies.map((movie) => (
+          <Card key={movie.movieId} movie={movie} variant="primary" />
+        ))}
       </div>
     </div>
   );

@@ -4,7 +4,13 @@ import searchIcon from "@assets/icon-search.svg";
 import "./SearchBar.scss";
 
 const SearchBar = () => {
-  const { pageInfo, navigateToSearch } = useSearch();
+  const { pageInfo, query, setQuery, navigateToSearch } = useSearch();
+
+  const onChange: React.FormEventHandler<HTMLInputElement> = (e) => {
+    e.preventDefault();
+    setQuery(e.currentTarget.value);
+    localStorage.setItem("query", e.currentTarget.value);
+  };
 
   return (
     <div className="searchBar">
@@ -21,6 +27,8 @@ const SearchBar = () => {
           name="search"
           placeholder={pageInfo.placeholder}
           autoComplete="off"
+          value={query || localStorage.getItem("query") || ""}
+          onChange={(e) => onChange(e)}
         />
       </form>
     </div>
