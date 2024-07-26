@@ -29,7 +29,7 @@ export const useSignIn = () => {
 
         setTimeout(() => {
           navigate("/");
-        }, 1500);
+        }, 2000);
       }
 
       if (res.statusCode === 400 && res.status === "error") {
@@ -56,6 +56,8 @@ export const useSignIn = () => {
   };
 
   const signOut = async () => {
+    setSubmission({ status: "signing out", message: "" });
+
     try {
       await axios.post("/api/auth/logout");
 

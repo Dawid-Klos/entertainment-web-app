@@ -9,7 +9,6 @@ const Layout = () => {
       <Header />
       <SearchBar />
       <Outlet />
-      <div></div>
     </>
   );
 };

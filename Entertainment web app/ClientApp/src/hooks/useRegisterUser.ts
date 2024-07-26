@@ -17,9 +17,9 @@ export const useRegisterUser = () => {
     setSubmission({ status: "submitting", message: "" });
 
     try {
-      const login = await axios.post("/api/auth/register", body);
+      const registerUser = await axios.post("/api/auth/register", body);
 
-      const res = login.data;
+      const res = registerUser.data;
 
       if (res.statusCode === 200 && res.status === "success") {
         setSubmission({
@@ -33,7 +33,6 @@ export const useRegisterUser = () => {
       }
 
       if (res.statusCode === 400 && res.status === "error") {
-        console.log(res);
         setSubmission({
           status: "error",
           message: res.error.description,

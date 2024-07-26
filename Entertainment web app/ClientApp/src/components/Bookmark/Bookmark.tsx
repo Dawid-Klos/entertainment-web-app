@@ -1,7 +1,6 @@
 import { useLoaderData } from "react-router-dom";
 
 import Card from "@components/common/Card/Card";
-import Spinner from "@components/common/Spinner/Spinner";
 import { Movie } from "@commonTypes/content.types";
 
 import "./Bookmark.scss";
@@ -16,21 +15,22 @@ type BookmarkData = {
 };
 
 const Bookmark = () => {
-  const bookmarkData = useLoaderData() as BookmarkData;
-  const { tvSeries, movies } = bookmarkData;
+  const content = useLoaderData() as BookmarkData;
 
-  const bookmarkedMovies = (movies.data ||= []);
-  const bookmarkedTvSeries = (tvSeries.data ||= []);
+  const bookmarkedMovies = (content.movies.data ||= []);
+  const bookmarkedTvSeries = (content.tvSeries.data ||= []);
 
   return (
     <section className="bookmark-container">
       <section className="bookmark">
         <h1 className="bookmark__title">Bookmarked Movies</h1>
         <div className="bookmark__content">
-          {!bookmarkedMovies ? (
-            <Spinner loading={true} variant="primary" />
+          {bookmarkedMovies.length === 0 ? (
+            <p className="bookmark__empty">
+              You have not bookmarked any movies yet.
+            </p>
           ) : (
-            movies.data.map((movie) => (
+            bookmarkedMovies.map((movie) => (
               <Card key={movie.movieId} movie={movie} variant="primary" />
             ))
           )}
@@ -39,10 +39,12 @@ const Bookmark = () => {
       <section className="bookmark-tv">
         <h2 className="bookmark-tv__title">Bookmarked TV Series</h2>
         <div className="bookmark-tv__content">
-          {!bookmarkedTvSeries ? (
-            <Spinner loading={true} variant="primary" />
+          {bookmarkedTvSeries.length === 0 ? (
+            <p className="bookmark-tv__empty">
+              You have not bookmarked any TV series yet.
+            </p>
           ) : (
-            tvSeries.data.map((movie) => (
+            bookmarkedTvSeries.map((movie) => (
               <Card key={movie.movieId} movie={movie} variant="primary" />
             ))
           )}

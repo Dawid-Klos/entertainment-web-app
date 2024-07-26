@@ -8,8 +8,8 @@ import Recommended from "./Recommended/Recommended";
 import "./Home.scss";
 
 type HomeContent = {
-  trending: Movie[];
-  recommended: Movie[];
+  trending: { data: Movie[] };
+  recommended: { data: Movie[] };
 };
 
 const Home = () => {

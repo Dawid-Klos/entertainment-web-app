@@ -4,24 +4,28 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { pages } from "../config/constants";
 
 export const useSearch = () => {
+  const [query, setQuery] = useState("");
   const [pageInfo, setPageInfo] = useState(pages.home);
 
   const location = useLocation();
   const navigate = useNavigate();
 
-  const navigateToSearch = (e: any) => {
+  const navigateToSearch: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
+    const userQuery = query.trim();
 
-    const query = e.target.search.value;
+    if (!userQuery || userQuery.length < 3) {
+      return;
+    }
 
     const searchParams = new URLSearchParams(location.search);
-    searchParams.set("query", query);
+    searchParams.set("query", userQuery);
 
     const searchPath =
       pageInfo.path === "/"
         ? "/search"
         : pageInfo.path.toLowerCase() + "/search";
-    console.log("search path ", searchPath);
+
     navigate(`${searchPath}?${searchParams.toString()}`);
   };
 
@@ -34,10 +38,15 @@ export const useSearch = () => {
       currentPage = currentPage ? currentPage : pages.home;
       setPageInfo(currentPage);
     }
+
+    console.log("rerendered");
+    console.log("query: ", query);
   }, [location.pathname]);
 
   return {
     pageInfo,
+    query,
+    setQuery,
     navigateToSearch,
   };
 };
