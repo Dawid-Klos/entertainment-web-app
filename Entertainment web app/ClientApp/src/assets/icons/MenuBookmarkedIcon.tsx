@@ -1,8 +1,8 @@
-type MenuBookmarkedIcon = {
+type IconProps = {
   className?: string;
 };
 
-const MenuBookmarkedIcon = ({ className }: MenuBookmarkedIcon) => {
+const MenuBookmarkedIcon = ({ className }: IconProps) => {
   return (
     <svg width="17" height="20" xmlns="http://www.w3.org/2000/svg">
       <path

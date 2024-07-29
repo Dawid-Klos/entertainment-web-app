@@ -1,8 +1,8 @@
-type MenuHomeIcon = {
+type IconProps = {
   className?: string;
 };
 
-const MenuHomeIcon = ({ className }: MenuHomeIcon) => {
+const MenuHomeIcon = ({ className }: IconProps) => {
   return (
     <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg">
       <path
