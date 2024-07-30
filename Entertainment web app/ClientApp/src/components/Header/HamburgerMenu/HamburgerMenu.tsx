@@ -7,9 +7,14 @@ import "./HamburgerMenu.scss";
 
 interface DropdownProps {
   state: string;
+  user: {
+    firstname: string;
+    lastname: string;
+    email: string;
+  };
 }
 
-const HamburgerMenu = ({ state }: DropdownProps) => {
+const HamburgerMenu = ({ state, user }: DropdownProps) => {
   const { signOut, submission } = useSignIn();
 
   return (
@@ -17,8 +22,10 @@ const HamburgerMenu = ({ state }: DropdownProps) => {
       className={`dropdown ${state === "on" ? "dropdown--active" : state === "hiding" && "dropdown--hidden"}`}
     >
       <div className="dropdown-header">
-        <p className="dropdown-header__title">User name</p>
-        <p className="dropdown-header__subtitle">user@user.com</p>
+        <p className="dropdown-header__title">
+          {user.firstname + " " + user.lastname}
+        </p>
+        <p className="dropdown-header__subtitle">{user.email}</p>
       </div>
       <span className="dropdown__line"></span>
       <NavLink className="dropdown__link" to="/profile">

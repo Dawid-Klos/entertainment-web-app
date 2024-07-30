@@ -3,13 +3,18 @@ import { useState } from "react";
 import logo from "@assets/logo.svg";
 import avatar from "@assets/image-avatar.png";
 import MoreIcon from "@assets/icons/MoreIcon";
+import type { User } from "@commonTypes/auth.types";
 
 import Nav from "./Nav/Nav";
 import HamburgerMenu from "./HamburgerMenu/HamburgerMenu";
 
 import "./Header.scss";
 
-const Header = () => {
+type HeaderProps = {
+  userInfo: User;
+};
+
+const Header = ({ userInfo }: HeaderProps) => {
   const [dropdownState, setDropdownState] = useState("off");
 
   const toggleDropdown = () => {
@@ -40,7 +45,7 @@ const Header = () => {
           />
         </button>
       </div>
-      <HamburgerMenu state={dropdownState} />
+      <HamburgerMenu state={dropdownState} user={userInfo} />
     </header>
   );
 };
