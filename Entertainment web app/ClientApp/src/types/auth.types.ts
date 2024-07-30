@@ -10,3 +10,10 @@ export type RegisterBody = {
   Password: string;
   ConfirmPassword: string | null;
 };
+
+export type User = {
+  id: string;
+  firstname: string;
+  lastname: string;
+  email: string;
+};

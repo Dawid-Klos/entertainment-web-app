@@ -5,9 +5,10 @@ using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
-using Entertainment_web_app.Models.Auth;
-using Entertainment_web_app.Data;
 using Entertainment_web_app.Common.Responses;
+using Entertainment_web_app.Models.Auth;
+using Entertainment_web_app.Models.Dto;
+using Entertainment_web_app.Data;
 
 namespace Entertainment_web_app.Services;
 
@@ -25,13 +26,13 @@ public class AuthService : IAuthService
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public Result AuthenticateUser()
+    public Result<UserDto> AuthenticateUser()
     {
         var userContext = _httpContextAccessor.HttpContext;
 
         if (userContext?.User.Identity == null)
         {
-            return Result.Failure(new Error("Unauthorized", "User is not authenticated"));
+            return Result<UserDto>.Failure(new Error("Unauthorized", "User is not authenticated"));
         }
 
         var userToken = userContext.Request.Cookies["_auth"];
@@ -50,10 +51,19 @@ public class AuthService : IAuthService
 
         if (validatedToken == null)
         {
-            return Result.Failure(new Error("Unauthorized", "Invalid token"));
+            return Result<UserDto>.Failure(new Error("Unauthorized", "Invalid token"));
         }
 
-        return Result.Success();
+        var userInfo = new UserDto
+        {
+            Id = userContext.User.FindFirstValue(ClaimTypes.NameIdentifier),
+            UserName = userContext.User.FindFirstValue(ClaimTypes.Email),
+            Email = userContext.User.FindFirstValue(ClaimTypes.Email),
+            Firstname = userContext.User.FindFirstValue(ClaimTypes.GivenName),
+            Lastname = userContext.User.FindFirstValue(ClaimTypes.Surname)
+        };
+
+        return Result<UserDto>.Success(userInfo);
     }
 
     public async Task<Result> RegisterUser(RegisterViewModel model)
@@ -117,7 +127,9 @@ public class AuthService : IAuthService
         List<Claim> claims = new List<Claim>
         {
             new Claim(ClaimTypes.Email, model.Email),
-            new Claim(ClaimTypes.NameIdentifier, user.Id)
+            new Claim(ClaimTypes.NameIdentifier, user.Id),
+            new Claim(ClaimTypes.GivenName, user.Firstname ?? ""),
+            new Claim(ClaimTypes.Surname, user.Lastname ?? "")
         };
 
         var userRoles = await _userManager.GetRolesAsync(user);

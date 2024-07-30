@@ -31,7 +31,9 @@ const routerConfig = [
         return redirect("/login");
       }
 
-      return null;
+      const { id, firstname, lastname, email } = userLoggedIn;
+
+      return { id, firstname, lastname, email };
     },
     children: [
       {
@@ -69,7 +71,7 @@ const routerConfig = [
         loader: ({ request }: ActionFunctionArgs) => {
           const url = new URL(request.url);
           let query = url.searchParams.get("query");
-          query = query ? query : ""; 
+          query = query ? query : "";
 
           return searchMovies(query);
         },

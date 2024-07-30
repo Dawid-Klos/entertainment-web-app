@@ -38,9 +38,6 @@ export const useSearch = () => {
       currentPage = currentPage ? currentPage : pages.home;
       setPageInfo(currentPage);
     }
-
-    console.log("rerendered");
-    console.log("query: ", query);
   }, [location.pathname]);
 
   return {

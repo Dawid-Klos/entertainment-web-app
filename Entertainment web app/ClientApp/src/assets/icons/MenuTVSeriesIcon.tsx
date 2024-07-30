@@ -1,8 +1,8 @@
-type MenuTVSeriesIcon = {
+type IconProps = {
   className?: string;
 };
 
-const MenuTVSeriesIcon = ({ className }: MenuTVSeriesIcon) => {
+const MenuTVSeriesIcon = ({ className }: IconProps) => {
   return (
     <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg">
       <path

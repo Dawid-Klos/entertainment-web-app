@@ -22,7 +22,7 @@ const Search = () => {
     setTitle(
       `Found ${movies.length} results for "${searchResult.query}" in ${searchResult.category}`,
     );
-  }, [searchResult]);
+  }, [searchResult, movies.length]);
 
   return (
     <div className="search">

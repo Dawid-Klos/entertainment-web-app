@@ -5,11 +5,13 @@
 
   width: 100%;
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   background-color: $color-semi-dark-blue;
   padding: 0.75rem 1rem;
   margin-left: -1rem;
+  border-bottom: 1px solid $color-greyish-blue;
 
   @include breakpoint(tablet) {
     width: calc(100% - 2rem);
@@ -52,33 +54,44 @@
   align-items: center;
   justify-content: center;
 
+  &__button {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    padding-block: 1rem 0.5rem;
+    border: none;
+    color: $color-greyish-blue;
+  }
+
+  &:hover &__text {
+    @include transition(color);
+    color: $color-white;
+  }
+
   &__avatar {
     background-color: $color-white;
-    border: 1px solid $color-white;
+    border: 1.5px solid $color-white;
     border-radius: 50%;
-    width: 1.5rem;
-    height: 1.5rem;
+    width: 2rem;
+    height: 2rem;
 
     @include breakpoint(desktop_md) {
       width: 2.5rem;
       height: 2.5rem;
     }
   }
-  &__button {
-    display: flex;
-    flex-flow: column nowrap;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    font-size: 0.8rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    cursor: pointer;
-    padding-block: 1rem 0.5rem;
-    border: none;
-    color: $color-greyish-blue;
 
-    &:hover {
+  &__icon {
+    @include transition(color);
+
+    color: $color-greyish-blue;
+    width: 1.5rem;
+    height: auto;
+
+    &--active {
       @include transition(color);
       color: $color-white;
     }
