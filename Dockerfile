@@ -15,4 +15,4 @@ FROM mcr.microsoft.com/dotnet/aspnet:6.0
 EXPOSE 8080
 WORKDIR /app
 COPY --from=build /app .
-ENTRYPOINT ["./Entertainment web app"]
+ENTRYPOINT ["./entertainment-web-app"]
