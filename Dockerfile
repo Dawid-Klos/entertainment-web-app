@@ -19,6 +19,7 @@ RUN dotnet restore
 
 # copy everything else and build app
 COPY ${src}/. ./${src}/
+COPY ${src}.Tests/. ./${src}.Tests/
 WORKDIR /source/${src}
 RUN dotnet publish -c release -o /app --no-restore
 
