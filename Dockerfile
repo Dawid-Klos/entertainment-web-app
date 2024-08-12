@@ -6,7 +6,8 @@ WORKDIR /source
 RUN apt-get update && \
     apt-get install -y curl unzip && \
     curl -sL https://deb.nodesource.com/setup_22.x | bash - && \
-    apt-get install -y nodejs
+    apt-get install -y nodejs && \
+    npm install -g yarn
 
 ARG src="Entertainment web app"
 
