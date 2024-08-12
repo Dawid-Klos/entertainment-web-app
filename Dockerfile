@@ -2,7 +2,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /source
 
-ARG src=Entertainment web app
+ARG src="Entertainment web app"
 
 # copy csproj and restore as distinct layers
 COPY *.sln .
