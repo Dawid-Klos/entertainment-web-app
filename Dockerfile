@@ -7,6 +7,7 @@ ARG src="Entertainment web app"
 # copy csproj and restore as distinct layers
 COPY *.sln .
 COPY ${src}/*.csproj ./${src}/
+COPY ${src}.Tests/*.csproj ./${src}.Tests/
 RUN dotnet restore
 
 # copy everything else and build app
