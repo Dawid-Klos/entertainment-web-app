@@ -1,18 +1,21 @@
+# https://hub.docker.com/_/microsoft-dotnet
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /source
-ARG src="Entertainment web app"
+
+ARG src=Entertainment web app
 
 # copy csproj and restore as distinct layers
-COPY ${src}/*.csproj .
+COPY *.sln .
+COPY ${src}/*.csproj ./${src}/
 RUN dotnet restore
 
 # copy everything else and build app
-COPY ${src}/. .
-RUN dotnet publish --no-restore -o /app
+COPY ${src}/. ./${src}/
+WORKDIR /source/${src}
+RUN dotnet publish -c release -o /app --no-restore
 
 # final stage/image
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
-EXPOSE 8080
 WORKDIR /app
-COPY --from=build /app .
-ENTRYPOINT ["./entertainment-web-app"]
+COPY --from=build /app ./
+ENTRYPOINT ["dotnet", "Entertainment_web_app.dll"]
