@@ -6,7 +6,7 @@ import Spinner from "@components/common/Spinner/Spinner";
 import "./HamburgerMenu.scss";
 
 interface HamburgerMenuProps {
-  state: string;
+  state: "on" | "off" | "hiding";
   user: {
     firstname: string;
     lastname: string;
@@ -23,7 +23,7 @@ const HamburgerMenu = ({ state, user }: HamburgerMenuProps) => {
     >
       <div className="dropdown-header">
         <p className="dropdown-header__title">
-          {user.firstname + " " + user.lastname}
+          {`${user.firstname} ${user.lastname}`}
         </p>
         <p className="dropdown-header__subtitle">{user.email}</p>
       </div>
