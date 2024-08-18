@@ -5,7 +5,7 @@ import Spinner from "@components/common/Spinner/Spinner";
 
 import "./HamburgerMenu.scss";
 
-interface DropdownProps {
+interface HamburgerMenuProps {
   state: string;
   user: {
     firstname: string;
@@ -14,7 +14,7 @@ interface DropdownProps {
   };
 }
 
-const HamburgerMenu = ({ state, user }: DropdownProps) => {
+const HamburgerMenu = ({ state, user }: HamburgerMenuProps) => {
   const { signOut, submission } = useSignIn();
 
   return (
