@@ -1,48 +1,51 @@
 import { NavLink, useLocation } from "react-router-dom";
 
-import MenuHomeIcon from "@assets/icons/MenuHomeIcon";
-import MenuMoviesIcon from "@assets/icons/MenuMoviesIcon";
-import MenuTVSeriesIcon from "@assets/icons/MenuTVSeriesIcon";
-import MenuBookmarkedIcon from "@assets/icons/MenuBookmarkedIcon";
+import Link from "./Link/Link";
 
 import "./Nav.scss";
 
-const Nav = () => {
+type NavProps = {
+  isExpanded: boolean;
+  collapseHeader: () => void;
+};
+
+const Nav = ({ isExpanded, collapseHeader }: NavProps) => {
   const { pathname } = useLocation();
   const isSearchPage = "/search".includes(pathname);
 
+  const collpaseHeader = () => {
+    if (!isExpanded) return;
+
+    collapseHeader();
+  };
+
   return (
-    <nav className="nav">
-      <NavLink className="nav__link" to="/">
+    <nav className={`nav ${isExpanded ? "nav--expanded" : ""}`}>
+      <NavLink className="nav__link" to="/" onClick={collpaseHeader}>
         {({ isActive }) => (
-          <MenuHomeIcon
-            className={
-              isSearchPage || isActive
-                ? "nav__link--active"
-                : "nav__link--default"
-            }
+          <Link
+            isActive={isActive || isSearchPage}
+            to="home"
+            isExpanded={isExpanded}
           />
         )}
       </NavLink>
-      <NavLink className="nav__link" to="/movies">
+
+      <NavLink className="nav__link" to="/movies" onClick={collpaseHeader}>
         {({ isActive }) => (
-          <MenuMoviesIcon
-            className={isActive ? "nav__link--active" : "nav__link--default"}
-          />
+          <Link isActive={isActive} to="movies" isExpanded={isExpanded} />
         )}
       </NavLink>
-      <NavLink className="nav__link" to="/tv-series">
+
+      <NavLink className="nav__link" to="/tv-series" onClick={collpaseHeader}>
         {({ isActive }) => (
-          <MenuTVSeriesIcon
-            className={isActive ? "nav__link--active" : "nav__link--default"}
-          />
+          <Link isActive={isActive} to="tv-series" isExpanded={isExpanded} />
         )}
       </NavLink>
-      <NavLink className="nav__link" to="/bookmarked">
+
+      <NavLink className="nav__link" to="/bookmarked" onClick={collpaseHeader}>
         {({ isActive }) => (
-          <MenuBookmarkedIcon
-            className={isActive ? "nav__link--active" : "nav__link--default"}
-          />
+          <Link isActive={isActive} to="bookmarked" isExpanded={isExpanded} />
         )}
       </NavLink>
     </nav>

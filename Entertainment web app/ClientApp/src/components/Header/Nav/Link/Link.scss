@@ -1,0 +1,81 @@
+@import "../../../../styles/_variables";
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.link {
+  @include transition(color);
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+
+  @include breakpoint(tablet) {
+    padding: 1rem;
+  }
+
+  @include breakpoint(desktop_md) {
+    padding: 1rem;
+
+    &:hover .link__icon,
+    &:hover .link__icon--active {
+      @include transition(fill);
+
+      fill: $color-red;
+    }
+  }
+
+  &--active &__icon {
+    @include transition(fill);
+    fill: $color-white;
+  }
+
+  &--active > &__text {
+    @include transition(color);
+    color: $color-white;
+  }
+
+  &__icon {
+    @include transition(fill);
+
+    fill: #5a698f;
+  }
+
+  &__text {
+    display: none;
+
+    &--visible {
+      display: none;
+
+      @include breakpoint(desktop_md) {
+        position: absolute;
+        display: block;
+        width: max-content;
+        font: $medium-body-desktop;
+        font-weight: 500;
+        color: $color-greyish-blue;
+        left: 100%;
+        top: 50%;
+        opacity: 0;
+        transform: translate(-0%, -50%);
+        animation: fade-in 0.3s ease-in-out forwards 0.25s;
+      }
+    }
+  }
+
+  svg {
+    transform: scale(0.9);
+
+    @include breakpoint(tablet) {
+      transform: scale(1.1);
+    }
+  }
+}

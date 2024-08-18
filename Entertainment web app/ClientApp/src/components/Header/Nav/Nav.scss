@@ -3,55 +3,21 @@
 .nav {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
 
   @include breakpoint(desktop_md) {
-    max-width: 30%;
     min-height: 100%;
+    display: flex;
+    align-items: flex-start;
     flex-direction: column;
     justify-self: flex-start;
-
-    &__link:hover .nav__link--default {
-      @include transition(fill);
-
-      fill: $color-red;
-    }
-
-    &__link:hover .nav__link--active {
-      @include transition(fill);
-
-      fill: $color-red;
-    }
+    gap: 0.5rem;
+    min-width: 2rem;
   }
 
-  &__link {
-    @include transition(color);
-
-    display: flex;
-    align-items: center;
-    padding: 0.5rem;
-
-    @include breakpoint(tablet) {
-      padding: 1rem;
-    }
-  }
-
-  &__link--default {
-    @include transition(fill);
-
-    fill: #5a698f;
-  }
-
-  &__link--active {
-    @include transition(fill);
-
-    fill: $color-white;
-  }
-
-  svg {
-    transform: scale(0.8);
-
-    @include breakpoint(tablet) {
-      transform: scale(1);
-    }
+  &--expanded {
+    min-width: 10rem;
+    transition: min-width 0.3s ease-in-out;
   }
 }

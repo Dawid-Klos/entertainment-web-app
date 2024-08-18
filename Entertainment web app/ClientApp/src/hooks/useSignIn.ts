@@ -35,7 +35,7 @@ export const useSignIn = () => {
       if (res.statusCode === 400 && res.status === "error") {
         setSubmission({
           status: "error",
-          message: "The password does not match or you do not have an account.",
+          message: "Invalid email or password. Please, try again.",
         });
       }
 
