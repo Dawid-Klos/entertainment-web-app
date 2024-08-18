@@ -1,5 +1,23 @@
 @import "../../styles/_variables";
 
+@keyframes expand {
+  0% {
+    min-width: 3rem;
+  }
+  100% {
+    min-width: 12rem;
+  }
+}
+
+@keyframes hide {
+  0% {
+    min-width: 12rem;
+  }
+  100% {
+    min-width: 3rem;
+  }
+}
+
 .header {
   grid-area: header;
 
@@ -22,27 +40,37 @@
   @include breakpoint(desktop_md) {
     grid-area: aside;
     place-self: flex-start;
-
-    max-width: 4rem;
-    min-height: 90dvh;
+    min-width: 3rem;
+    min-height: calc(95dvh - 5rem);
     position: sticky;
     top: 2rem;
     left: 0;
     margin-left: 0;
-    flex-direction: column;
-  }
+    border: none;
 
-  @include breakpoint(desktop_lg) {
-    min-height: calc(100dvh - 5rem);
+    display: grid;
+    align-content: space-between;
+    justify-content: center;
+    padding: 2rem 1rem;
+
+    &--hidden {
+      animation: hide 0.1s ease-in-out both 0.2s;
+    }
+
+    &--expanded {
+      min-width: 12rem;
+      animation: expand 0.3s ease-in-out forwards;
+    }
   }
 
   &__logo {
-    width: 1.6em;
-    height: 1.3em;
+    width: 1.6rem;
+    height: 1.3rem;
 
     @include breakpoint(desktop_md) {
-      width: 2em;
-      height: 1.6em;
+      justify-self: center;
+      width: 2rem;
+      height: 1.6rem;
     }
   }
 }
@@ -54,6 +82,20 @@
   align-items: center;
   justify-content: center;
 
+  @include breakpoint(desktop_md) {
+    align-self: flex-end;
+
+    &:hover &__text {
+      @include transition(color);
+      color: $color-white;
+    }
+
+    &:hover &__icon {
+      @include transition(color);
+      color: $color-red;
+    }
+  }
+
   &__button {
     display: flex;
     flex-flow: column nowrap;
@@ -64,11 +106,6 @@
     padding-block: 1rem 0.5rem;
     border: none;
     color: $color-greyish-blue;
-  }
-
-  &:hover &__text {
-    @include transition(color);
-    color: $color-white;
   }
 
   &__avatar {
